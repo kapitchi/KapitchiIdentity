@@ -12,11 +12,6 @@ return array(
     'di' => array(
         'definition' => array(
             'class' => array(
-//                'Zend\Acl\Acl' => array(
-//                    'addRole' => array(
-//                        'block' => array('type' => 'Application\Block', 'required' => true)
-//                    )
-//                )
             )
         ),
         'instance' => array(
