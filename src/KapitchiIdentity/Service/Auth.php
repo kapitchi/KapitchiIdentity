@@ -6,11 +6,14 @@ use Zend\Authentication\AuthenticationService as ZendAuthenticationService,
         Zend\Di\Locator,
     KapitchiIdentity\Model\AuthIdentity,
     KapitchiIdentity\Service\Acl,
-    Zend\Authentication\Adapter;
+    Zend\Authentication\Adapter,
+        Zend\EventManager\EventCollection,
+        Zend\EventManager\EventManager;
 
 class Auth extends ZendAuthenticationService {
     
     protected $locator;
+    protected $events;
 
     public function authenticate(Adapter $adapter) {
         $result = $adapter->authenticate();
@@ -19,6 +22,11 @@ class Auth extends ZendAuthenticationService {
             $this->clearIdentity();
         }
 
+        $this->events()->trigger('authenticate.post', array(
+            'result' => $result,
+            'adapter' => $adapter,
+        ));
+        
         if($result->isValid()) {
             if($adapter instanceof Auth\AuthIdentityResolver) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
@@ -41,23 +49,7 @@ class Auth extends ZendAuthenticationService {
     {
         $this->getStorage()->clear();
         
-        //clear ACL cache also!
-        $acl = $this->getLocator()->get('KapitchiIdentity\Service\Acl');
-        $acl->invalidateCache();
-    }
-    
-    public function getRoleId() {
-        if(!$this->hasIdentity()) {
-            return 'guest';
-        }
-        
-        $authIdentity = $this->getIdentity();
-        $roleId = $authIdentity->getRoleId();
-        if(empty($roleId)) {
-            throw new \Exception("User has got no role, why???");
-        }
-        
-        return $roleId;
+        $this->events()->trigger('clearIdentity.post');
     }
     
     public function getLocalIdentityId() {
@@ -82,5 +74,38 @@ class Auth extends ZendAuthenticationService {
         return $this->locator;
     }
     
+    /**
+     * Set the event manager instance used by this context
+     * 
+     * @param  EventCollection $events 
+     * @return mixed
+     */
+    public function setEventManager(EventCollection $events)
+    {
+        $this->events = $events;
+        return $this;
+    }
+    
+    /**
+     * Retrieve the event manager
+     *
+     * Lazy-loads an EventManager instance if none registered.
+     * 
+     * @return EventCollection
+     */
+    public function events()
+    {
+        if (!$this->events instanceof EventCollection) {
+            $this->setEventManager(new EventManager(array(__CLASS__, get_class($this))));
+            $this->attachDefaultListeners();
+        }
+        return $this->events;
+    }
+    
+    protected function attachDefaultListeners() {
+        $events = $this->events();
+        
+        //$events->attach('invalidateCache', array($this, 'invalidateSessionCache'), -10);
+    }
     
 }

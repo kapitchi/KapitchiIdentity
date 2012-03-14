@@ -6,6 +6,8 @@ use KapitchiBase\Service\ServiceAbstract,
  Zend\EventManager\EventCollection,
  Zend\EventManager\EventManager,
     Zend\Acl\Acl as ZendAcl,
+        Zend\Acl\Role,
+        Zend\Acl\Role\GenericRole,
         Zend\EventManager\Event,
     Zend\Acl\Exception\InvalidArgumentException as ZendAclInvalidArgumentException;
 
@@ -25,7 +27,7 @@ class Acl extends ServiceAbstract {
             //this is your chance to load resource ACL up!
             $this->triggerEvent('loadResource', array(
                 'acl' => $acl,
-                'role' => $roleId,
+                'roleId' => $roleId,
                 'resource' => $resource,
                 'privilage' => $privilege
             ));
@@ -33,7 +35,7 @@ class Acl extends ServiceAbstract {
             //persist (possibly) update ACL into cache mechanism e.g. session etc.
             $this->triggerEvent('cacheAcl', array(
                 'acl' => $acl,
-                'role' => $roleId,
+                'roleId' => $roleId,
                 'resource' => $resource,
                 'privilage' => $privilege
             ));
@@ -51,15 +53,29 @@ class Acl extends ServiceAbstract {
     
     public function invalidateCache() {
         $this->triggerEvent('invalidateCache', array(
-            'role' => $this->getRoleId(),
+            'roleId' => $this->getRoleId(),
         ));
         
         $this->acl = null;
     }
     
+    /**
+     * @return Zend\Acl\Role
+     */
+    protected function getRole() {
+        $result = $this->events()->trigger('getRole', $this, array(), function($ret) {
+            return $ret instanceof Role;
+        });
+        $role = $result->last();
+        if(!$role instanceof Role) {
+            $role = new GenericRole(self::ROLE_GUEST);
+        }
+        
+        return $role;
+    }
+    
     protected function getRoleId() {
-        $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
-        return $authService->getRoleId();
+        return $this->getRole()->getRoleId();
     }
     
     protected function getAcl() {
@@ -132,5 +148,7 @@ class Acl extends ServiceAbstract {
         $events->attach('cacheAcl', array($this, 'persistSessionAcl'), -10);
         
         $events->attach('invalidateCache', array($this, 'invalidateSessionCache'), -10);
+        
+        $events->attach('getRoleId', array($this, 'persistSessionAcl'));
     }
 }
