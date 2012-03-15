@@ -1,6 +1,6 @@
 <?php
 return array(
-    'kapitchiidentity' => array(
+    'KapitchiIdentity' => array(
         'auth_adapters' => array('kapitchi-http_auth_adapter'),
     ),
     //XXX ACL is used 

@@ -5,14 +5,24 @@ namespace KapitchiIdentity\Controller;
 use Zend\Authentication\Adapter as AuthAdapter,
         Exception as AuthException,
         Zend\Stdlib\ResponseDescription as Response,
-        Zend\View\Model\ViewModel as ViewModel;
+        Zend\View\Model\ViewModel as ViewModel,
+        KapitchiIdentity\Module as Module;
 
 class AuthController extends \Zend\Mvc\Controller\ActionController {
+    protected $module;
+    
+    public function __construct(Module $module) {
+        $this->module = $module;
+    }
+    
     public function indexAction() {
         $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
 
         $aclService = $this->getLocator()->get('KapitchiIdentity\Service\Acl');
         $ret = $aclService->isAllowed('kapitchiidentity.auth.indexAction');
+        
+        var_dump($this->module->getOption('auth_adapter'));
+        exit;
         //$new = new \Zend\Session\SessionManager();
         //$new->start();
         var_dump($ret);
