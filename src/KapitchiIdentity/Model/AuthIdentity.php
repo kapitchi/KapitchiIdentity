@@ -3,7 +3,7 @@
 namespace KapitchiIdentity\Model;
 
 use Zend\Acl\Role,
-    ZfcBase\Model\ModelAbstract;
+    KapitchiBase\Model\ModelAbstract;
 
 class AuthIdentity extends ModelAbstract implements Role {
     protected $identity;

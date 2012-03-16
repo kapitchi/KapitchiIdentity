@@ -1,7 +1,7 @@
 <?php
 namespace KapitchiIdentity\Model;
 
-use ZfcBase\Model\ModelAbstract;
+use KapitchiBase\Model\ModelAbstract;
 
 class AuthCredential extends ModelAbstract implements IdentityAware {
     protected $identityId;

@@ -36,6 +36,10 @@ class Module implements AutoloaderProvider, LocatorRegistered
         */
         
         $events = StaticEventManager::getInstance();
+        
+        $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init',
+                array($locator->get('KapitchiIdentity\Service\Auth\Credential'), 'onInit'));
+        
         $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($locator) {
             $acl = $locator->get('KapitchiIdentity\Service\Acl');
             $acl->invalidateCache();
@@ -140,10 +144,10 @@ class Module implements AutoloaderProvider, LocatorRegistered
     
     public function getOptions() {
         $config = $this->getConfig();
-        if(empty($config[__NAMESPACE__])) {
+        if(empty($config[__NAMESPACE__]['options'])) {
             return array();
         }
-        return $config[__NAMESPACE__];
+        return $config[__NAMESPACE__]['options'];
     }
     
     public function getConfig()

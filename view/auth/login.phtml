@@ -1,13 +1,13 @@
 <?php
 $model = $this->viewModel()->getCurrent();
-var_dump($model->getAuthOptions());
-var_dump($model->getVariables());
-$model->form->addElement('submit', 'Login');
+//var_dump($model->getAuthOptions());
+//var_dump($model->getVariables());
+$loginForm = $model->loginForm;
+$loginForm->addElement('submit', 'Login');
 ?>
 
-LOGIN
-TEST: <?=$model->submodel?>
+LOGIN TEST: <?=$model->submodel?>
 
 <?=$this->renderChildModel('submodel')?>
 
-<?=$model->form?>
+<?=$loginForm?>

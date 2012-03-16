@@ -43,8 +43,8 @@ abstract class StrategyAbstract extends ServiceAbstract implements Strategy, \Ze
         $this->viewModel = $viewModel;
     }
 
-    public function getForm() {
-        return $this->getViewModel()->form;
+    public function getLoginForm() {
+        return $this->getViewModel()->loginForm;
     }
 
     public function getResponse() {

@@ -2,7 +2,7 @@
 
 namespace KapitchiIdentity\Model;
 
-use ZfcBase\Model\ModelAbstract;
+use KapitchiBase\Model\ModelAbstract;
 
 class Identity extends ModelAbstract {
     protected $id;

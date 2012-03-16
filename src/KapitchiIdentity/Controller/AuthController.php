@@ -10,6 +10,9 @@ use Zend\Authentication\Adapter as AuthAdapter,
 
 class AuthController extends \Zend\Mvc\Controller\ActionController {
     protected $module;
+    protected $loginForm;
+    protected $loginViewModel;
+    protected $authService;
     
     public function __construct(Module $module) {
         $this->module = $module;
@@ -19,10 +22,8 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
 
         $aclService = $this->getLocator()->get('KapitchiIdentity\Service\Acl');
-        $ret = $aclService->isAllowed('kapitchiidentity.auth.indexAction');
+        $ret = $aclService->isAllowed('KapitchiIdentity\Controller\AuthController.indexAction');
         
-        var_dump($this->module->getOption('auth_adapter'));
-        exit;
         //$new = new \Zend\Session\SessionManager();
         //$new->start();
         var_dump($ret);
@@ -38,8 +39,12 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
 
     }
     
+    public function registerAction() {
+        
+    }
+    
     public function logoutAction() {
-        $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
+        $authService = $this->getAuthService();
         $authService->clearIdentity();
         
         $res = $this->events()->trigger('logout.post', $this, array(), function($ret) {
@@ -52,18 +57,13 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function loginAction() {
-        //test
-        //$this->events()->attach($this->getLocator()->get('KapitchiIdentity\Service\Auth\Http'));
-        //$this->events()->attach($this->getLocator()->get('KapitchiIdentity\Service\Auth\Test'));
-        $this->events()->attach($this->getLocator()->get('KapitchiIdentity\Service\Auth\Credential'));
-        //END
-        
         $response = $this->getResponse();
         $request = $this->getRequest();
         
-        $form = $this->getLocator()->get('KapitchiIdentity\Form\Login');
-        $viewModel = $this->getLocator()->get('KapitchiIdentity\View\Model\AuthLogin');
-        $viewModel->setVariable('form', $form);
+        //TODO use DI here!
+        $form = $this->getLoginForm();
+        $viewModel = $this->getLoginViewModel();
+        $viewModel->setVariable('loginForm', $form);
         
         $params = array(
             'request' => $request,
@@ -81,7 +81,8 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         
         //init event returns AuthAdapter -- we are ready to authenticate!
         if($adapter instanceof AuthAdapter) {
-            $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
+            //TODO use DI here!
+            $authService = $this->getAuthService();
 
             $result = $authService->authenticate($adapter);
             
@@ -105,6 +106,7 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         return $viewModel;
     }
     
+    //listeners
     protected function attachDefaultListeners()
     {
         parent::attachDefaultListeners();
@@ -114,12 +116,44 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function logoutPost($e) {
-        return $this->redirect()->toRoute('kapitchiidentity');
+        return $this->redirect()->toRoute('KapitchiIdentity/login');
     }
     
     public function loginPost($e) {
         if($e->getParam('result')->isValid()) {
-            return $this->redirect()->toRoute('kapitchiidentity');
+            return $this->redirect()->toRoute('KapitchiIdentity/me');
         }
     }
+    
+    
+    //getters/setters
+    public function getModule() {
+        return $this->module;
+    }
+    
+    public function getLoginForm() {
+        return $this->loginForm;
+    }
+
+    public function setLoginForm($loginForm) {
+        $this->loginForm = $loginForm;
+    }
+
+    public function getLoginViewModel() {
+        return $this->loginViewModel;
+    }
+
+    public function setLoginViewModel($loginViewModel) {
+        $this->loginViewModel = $loginViewModel;
+    }
+
+    public function getAuthService() {
+        return $this->authService;
+    }
+
+    public function setAuthService($authService) {
+        $this->authService = $authService;
+    }
+
+
 }

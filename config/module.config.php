@@ -1,7 +1,9 @@
 <?php
 return array(
     'KapitchiIdentity' => array(
-        'auth_adapters' => array('kapitchi-http_auth_adapter'),
+        'options' => array(
+            'auth_adapters' => array('kapitchi-http_auth_adapter')
+        ),
     ),
     //XXX ACL is used 
     'acl' => array(
@@ -23,6 +25,14 @@ return array(
                      ),
                 ),
             ),
+            //controllers
+            'KapitchiIdentity\Controller\AuthController' => array(
+                'parameters' => array(
+                    'authService' => 'KapitchiIdentity\Service\Auth',
+                    'loginForm' => 'KapitchiIdentity\Form\Login',
+                    'loginViewModel' => 'KapitchiIdentity\View\Model\AuthLogin',
+                ),
+            ),
             
             //SERVICES
             'KapitchiIdentity\Service\Identity' => array(
@@ -33,6 +43,7 @@ return array(
             'KapitchiIdentity\Service\Auth\Credential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialZendDb',
+                    'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),
             
@@ -76,17 +87,23 @@ return array(
             'Zend\Mvc\Router\RouteStack' => array(
                 'parameters' => array(
                     'routes' => array(
-                        'kapitchiidentity' => array(
+                        'KapitchiIdentity' => array(
                             'type' => 'Zend\Mvc\Router\Http\Literal',
                             'options' => array(
                                 'route'    => '/identity',
-                                'defaults' => array(
-                                    'controller' => 'KapitchiIdentity\Controller\AuthController',
-                                    'action'     => 'index',
-                                ),
                             ),
-                            'may_terminate' => true,
+                            'may_terminate' => false,
                             'child_routes' => array(
+                                'me' => array(
+                                    'type' => 'Literal',
+                                    'options' => array(
+                                        'route' => '/me',
+                                        'defaults' => array(
+                                            'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                            'action'     => 'me',
+                                        ),
+                                    ),
+                                ),
                                 'login' => array(
                                     'type' => 'Literal',
                                     'options' => array(
@@ -94,16 +111,6 @@ return array(
                                         'defaults' => array(
                                             'controller' => 'KapitchiIdentity\Controller\AuthController',
                                             'action'     => 'login',
-                                        ),
-                                    ),
-                                ),
-                                'authenticate' => array(
-                                    'type' => 'Literal',
-                                    'options' => array(
-                                        'route' => '/authenticate',
-                                        'defaults' => array(
-                                            'controller' => 'KapitchiIdentity\Controller\AuthController',
-                                            'action'     => 'authenticate',
                                         ),
                                     ),
                                 ),
@@ -122,11 +129,42 @@ return array(
                                     'options' => array(
                                         'route' => '/register',
                                         'defaults' => array(
-                                            'controller' => 'KapitchiIdentity\Controller\AuthController',
+                                            'controller' => 'KapitchiIdentity\Controller\IdentityController',
                                             'action'     => 'register',
                                         ),
                                     ),
                                 ),
+                                'read' => array(
+                                    'type' => 'Literal',
+                                    'options' => array(
+                                        'route' => '/read',
+                                        'defaults' => array(
+                                            'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                            'action'     => 'read',
+                                        ),
+                                    ),
+                                ),
+                                'create' => array(
+                                    'type' => 'Literal',
+                                    'options' => array(
+                                        'route' => '/create',
+                                        'defaults' => array(
+                                            'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                            'action'     => 'create',
+                                        ),
+                                    ),
+                                ),
+                                'index' => array(
+                                    'type' => 'Literal',
+                                    'options' => array(
+                                        'route' => '/index',
+                                        'defaults' => array(
+                                            'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                            'action'     => 'index',
+                                        ),
+                                    ),
+                                ),
+                                
                             ),
                         ),
                     ),

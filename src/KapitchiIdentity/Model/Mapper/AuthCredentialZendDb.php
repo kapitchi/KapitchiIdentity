@@ -3,11 +3,14 @@
 namespace KapitchiIdentity\Model\Mapper;
 
 use KapitchiBase\Mapper\DbAdapterMapper,
-    KapitchiIdentity\Model\AuthCredential;
+    KapitchiIdentity\Model\AuthCredential,
+    KapitchiIdentity\Model\Mapper\AuthCredential as AuthCredentialMapper;
 
-class AuthCredentialZendDb extends DbAdapterMapper {
+class AuthCredentialZendDb extends DbAdapterMapper implements AuthCredentialMapper {
+    protected $tableName = 'auth_credential';
+    
     public function findByUsername($username) {
-        $ret = $this->getTableGateway('auth_credential')->select(array(
+        $ret = $this->getTableGateway($this->tableName)->select(array(
             'username' => $username
         ));
         

@@ -10,22 +10,14 @@ use Zend\EventManager\EventCollection,
 
 class Credential extends StrategyAbstract implements AuthIdentityResolver {
     protected $credentialMapper;
-    protected $credentialForm;
+    protected $credentialLoginForm;
     
     public function init() {
         $request = $this->getRequest();
         
-        $form = $this->getForm();
+        $form = $this->getLoginForm();
         
-        $this->credentialForm = new Form();
-        $this->credentialForm->addElement('text', 'username', array(
-            'label' => 'Username',
-        ));
-        $this->credentialForm->addElement('password', 'password', array(
-            'label' => 'Password',
-        ));
-        
-        $form->addSubForm($this->credentialForm, 'credential');
+        $form->addSubForm($this->getCredentialLoginForm(), 'credential');
         
         if($request->isPost()) {
             //TODO this should be partial check only!!!
@@ -51,7 +43,7 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
     public function authenticate() {
         $mapper = $this->getCredentialMapper();
         $user = $mapper->findByUsername($this->username);
-        $form = $this->credentialForm;
+        $form = $this->getCredentialLoginForm();
         if(!$user) {
             $form->getElement('username')->addError('User not found');
             return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, null);
@@ -65,6 +57,14 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         return new Result(Result::SUCCESS, $this->username);
     }
     
+    public function getCredentialLoginForm() {
+        return $this->credentialLoginForm;
+    }
+
+    public function setCredentialLoginForm($credentialLoginForm) {
+        $this->credentialLoginForm = $credentialLoginForm;
+    }
+
     public function getCredentialMapper() {
         return $this->credentialMapper;
     }
