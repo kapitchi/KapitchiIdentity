@@ -2,9 +2,9 @@
 
 namespace KapitchiIdentity\Form;
 
-use ZfcBase\Form\ProvidesEventsForm;
+use KapitchiBase\Form\Form;
 
-class Login extends ProvidesEventsForm {
+class Login extends Form {
     public function init() {
         
     }

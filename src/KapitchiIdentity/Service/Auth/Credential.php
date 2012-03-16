@@ -17,14 +17,16 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         
         $form = $this->getLoginForm();
         
-        $form->addSubForm($this->getCredentialLoginForm(), 'credential');
+        $credentialForm = $this->getCredentialLoginForm();
+        $form->addExtsSubForm($credentialForm, 'KapitchiIdentity_Credential');
         
         if($request->isPost()) {
             //TODO this should be partial check only!!!
-            if($form->isValid($request->post()->toArray())) {
+            $postData = $request->post()->toArray();
+            if($form->isValid($postData)) {
                 //return this strategy which implements auth adapter also
-                $values = $form->getValues();
-                $val = $values['credential'];
+                $values = $form->getExtsSubForm('KapitchiIdentity_Credential')->getValues();
+                $val = $values['KapitchiIdentity_Credential'];
                 $this->username = $val['username'];
                 $this->password = $val['password'];
                 

@@ -2,9 +2,9 @@
 
 namespace KapitchiIdentity\Form;
 
-use ZfcBase\Form\ProvidesEventsForm;
+use KapitchiBase\Form\Form;
 
-class AuthCredentialLogin extends ProvidesEventsForm {
+class AuthCredentialLogin extends Form {
     
     public function init() {
         $this->addElement('text', 'username', array(

@@ -33,6 +33,12 @@ return array(
                     'loginViewModel' => 'KapitchiIdentity\View\Model\AuthLogin',
                 ),
             ),
+            'KapitchiIdentity\Controller\IdentityController' => array(
+                'parameters' => array(
+                    'identityService' => 'KapitchiIdentity\Service\Identity',
+                    'identityForm' => 'KapitchiIdentity\Form\Identity',
+                ),
+            ),
             
             //SERVICES
             'KapitchiIdentity\Service\Identity' => array(
@@ -147,10 +153,10 @@ return array(
                                 'create' => array(
                                     'type' => 'Literal',
                                     'options' => array(
-                                        'route' => '/create',
+                                        'route' => '/edit',
                                         'defaults' => array(
                                             'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                            'action'     => 'create',
+                                            'action'     => 'edit',
                                         ),
                                     ),
                                 ),

@@ -4,6 +4,8 @@ namespace KapitchiIdentity\Service;
 
 use Zend\Authentication\AuthenticationService as ZendAuthenticationService,
         Zend\Di\Locator,
+        Exception as NoLocalIdException,
+        Exception as NoLoggedInException,
     KapitchiIdentity\Model\AuthIdentity,
     KapitchiIdentity\Service\Acl,
     Zend\Authentication\Adapter,
@@ -54,13 +56,13 @@ class Auth extends ZendAuthenticationService {
     
     public function getLocalIdentityId() {
         if(!$this->hasIdentity()) {
-            throw new \Exception("User is not logged in");
+            throw new NoLoggedInException("User is not logged in");
         }
         
         $authIdentity = $this->getIdentity();
         $localId = $authIdentity->getLocalIdentityId();
         if(empty($localId)) {
-            throw new \Exception("User has got no local identity");
+            throw new NoLocalIdException("User has got no local identity");
         }
         
         return $localId;
