@@ -43,6 +43,7 @@ return array(
             //SERVICES
             'KapitchiIdentity\Service\Identity' => array(
                 'parameters' => array(
+                    'modelPrototype' => 'KapitchiIdentity\Model\Identity',
                     'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityZendDb',
                 ),
             ),

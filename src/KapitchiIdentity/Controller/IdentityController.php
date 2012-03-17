@@ -52,7 +52,7 @@ class IdentityController extends ZendActionController {
             $postData = $request->post()->toArray();
             if($form->isValid($postData)) {
                 $ret = $this->getIdentityService()->persist($form->getValues());
-                $values = $ret['identity']->toArray();
+                $values = $ret['model']->toArray();
                 $form->populate($values);
             }
         }
