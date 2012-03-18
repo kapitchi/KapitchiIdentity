@@ -2,21 +2,31 @@
 
 namespace KapitchiIdentity\Service;
 
-use KapitchiBase\Service\ServiceAbstract,
- Zend\EventManager\EventCollection,
- Zend\EventManager\EventManager,
-    Zend\Acl\Acl as ZendAcl,
+use     Zend\EventManager\EventCollection,
+        Zend\EventManager\EventManager,
+        Zend\Acl\Acl as ZendAcl,
         Zend\Acl\Role,
         Zend\Acl\Role\GenericRole,
         Zend\EventManager\Event,
-    Zend\Acl\Exception\InvalidArgumentException as ZendAclInvalidArgumentException;
+        Zend\Acl\Exception\InvalidArgumentException as ZendAclInvalidArgumentException,
+        KapitchiBase\Service\ServiceAbstract,
+        KapitchiIdentity\Module;
 
 class Acl extends ServiceAbstract {
     const ROLE_GUEST = 'guest';
     const ROLE_AUTH = 'auth';
     const ROLE_USER = 'user';
     
+    protected $module;
     protected $acl;
+    
+    /**
+     * TODO XXX there is a bug in DI while injecting a module works with constructor only!
+     * @param Module $module 
+     */
+    public function __construct(Module $module) {
+        $this->setModule($module);
+    }
     
     public function isAllowed($resource = null, $privilege = null) {
         $acl = $this->getAcl();
@@ -145,10 +155,18 @@ class Acl extends ServiceAbstract {
         $events->attach('loadAcl', array($this, 'loadDefaultAcl'), -20);
         $events->attach('loadAcl', array($this, 'loadSessionAcl'), -10);
         
-        $events->attach('cacheAcl', array($this, 'persistSessionAcl'), -10);
+        if($this->getModule()->getOption('acl.enable_cache', false)) {
+            $events->attach('cacheAcl', array($this, 'persistSessionAcl'), -10);
+            $events->attach('invalidateCache', array($this, 'invalidateSessionCache'), -10);
+        }
         
-        $events->attach('invalidateCache', array($this, 'invalidateSessionCache'), -10);
-        
-        $events->attach('getRoleId', array($this, 'persistSessionAcl'));
+    }
+    
+    public function setModule(Module $module) {
+        $this->module = $module;
+    }
+    
+    public function getModule() {
+        return $this->module;
     }
 }

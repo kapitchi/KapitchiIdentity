@@ -2,7 +2,9 @@
 return array(
     'KapitchiIdentity' => array(
         'options' => array(
-            'auth_adapters' => array('kapitchi-http_auth_adapter')
+            'acl' => array(
+                'enable_cache' => false
+            )
         ),
     ),
     //XXX ACL is used 
