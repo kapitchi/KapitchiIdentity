@@ -3,8 +3,9 @@
 namespace KapitchiIdentity\Model\Mapper;
 
 use KapitchiIdentity\Model\Mapper\Identity as IdentityMapper,
-    KapitchiIdentity\Model\Identity,
-    KapitchiBase\Mapper\DbAdapterMapper;
+    KapitchiBase\Mapper\DbAdapterMapper,
+    KapitchiBase\Model\ModelAbstract,
+    KapitchiIdentity\Model\Identity;
     //Zend\Paginator\Adapter as PaginatorAdapter;
     //Zend\Paginator\AdapterAggregate;
 
@@ -12,7 +13,7 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
     protected $tableName = 'identity';
     private $identityTable;
     
-    public function findById($id) {
+    public function findByPriKey($id) {
         $identityTable = $this->getIdentityTable();
         $result = $identityTable->select(array(
             'id' => $id
@@ -25,7 +26,7 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
         return Identity::fromArray($row->getArrayCopy());
     }
     
-    public function persist(Identity $model) {
+    public function persist(ModelAbstract $model) {
         if($model->getId()) {
             $ret = $this->update($model);
         }
@@ -36,12 +37,18 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
         return $ret;
     }
     
-    public function remove(Identity $model) {
+    public function remove(ModelAbstract $model) {
         var_dump($model);
         exit;
     }
     
-    protected function insert(Identity $model) {
+    public function getPaginatorAdapter(array $params) {
+        $this->getIdentityTable()->setSelectResultPrototype(new \Zend\Db\ResultSet\ResultSet(new Identity));
+        $iterator = $this->getIdentityTable()->select();
+        return new \Zend\Paginator\Adapter\Iterator($iterator);
+    }
+    
+    protected function insert(ModelAbstract $model) {
         $identityTable = $this->getIdentityTable();
         
         $data = $model->toArray();
@@ -51,7 +58,7 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
         return $ret;
     }
     
-    protected function update(Identity $model) {
+    protected function update(ModelAbstract $model) {
         $identityTable = $this->getIdentityTable();
         
         $data = $model->toArray();
@@ -59,12 +66,6 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
         $ret = $identityTable->update($data, array('id' => $model->getId()));
         
         return $ret;
-    }
-    
-    public function getPaginatorAdapter(array $params) {
-        $this->getIdentityTable()->setSelectResultPrototype(new \Zend\Db\ResultSet\ResultSet(new Identity));
-        $iterator = $this->getIdentityTable()->select();
-        return new \Zend\Paginator\Adapter\Iterator($iterator);
     }
     
     protected function getIdentityTable() {

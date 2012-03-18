@@ -2,11 +2,8 @@
 
 namespace KapitchiIdentity\Model\Mapper;
 
-use KapitchiIdentity\Model\Identity as Model;
+use KapitchiBase\Mapper\ModelMapper;
 
-interface Identity {
-    public function findById($id);
-    public function persist(Model $model);
-    public function remove(Model $model);
-    public function getPaginatorAdapter(array $params);
+interface Identity extends ModelMapper {
+    
 }

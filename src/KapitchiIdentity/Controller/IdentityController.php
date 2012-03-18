@@ -23,7 +23,7 @@ class IdentityController extends ZendActionController {
         //$id = $authService->getLocalIdentityId();
         
         $identityService = $this->getIdentityService();
-        $identity = $identityService->get(array('id' => 1), true);
+        $identity = $identityService->get(array('priKey' => 1), true);
         var_dump($identity);
         
         $paginator = $identityService->getPaginator();
