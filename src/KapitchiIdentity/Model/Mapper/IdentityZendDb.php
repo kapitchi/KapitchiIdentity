@@ -42,10 +42,19 @@ class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
         exit;
     }
     
+    /**
+     * TODO finish this properly!
+     * @param array $params
+     * @return \Zend\Paginator\Adapter\Iterator 
+     */
     public function getPaginatorAdapter(array $params) {
         $this->getIdentityTable()->setSelectResultPrototype(new \Zend\Db\ResultSet\ResultSet(new Identity));
         $iterator = $this->getIdentityTable()->select();
-        return new \Zend\Paginator\Adapter\Iterator($iterator);
+        $array = array();
+        foreach($iterator as $item) {
+            $array[] = $item;
+        }
+        return new \Zend\Paginator\Adapter\ArrayAdapter($array);
     }
     
     protected function insert(ModelAbstract $model) {

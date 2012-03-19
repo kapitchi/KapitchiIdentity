@@ -54,15 +54,21 @@ class Auth extends ZendAuthenticationService {
         $this->events()->trigger('clearIdentity.post');
     }
     
+    /**
+     * TODO should I throw the exception here?
+     * @return int|null
+     */
     public function getLocalIdentityId() {
         if(!$this->hasIdentity()) {
-            throw new NoLoggedInException("User is not logged in");
+            //throw new NoLoggedInException("User is not logged in");
+            return null;
         }
         
         $authIdentity = $this->getIdentity();
         $localId = $authIdentity->getLocalIdentityId();
         if(empty($localId)) {
-            throw new NoLocalIdException("User has got no local identity");
+            //throw new NoLocalIdException("User has got no local identity");
+            return null;
         }
         
         return $localId;

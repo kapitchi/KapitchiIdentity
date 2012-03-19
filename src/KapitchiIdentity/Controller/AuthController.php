@@ -116,12 +116,12 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function logoutPost($e) {
-        return $this->redirect()->toRoute('KapitchiIdentity/login');
+        return $this->redirect()->toRoute('KapitchiIdentity/auth/login');
     }
     
     public function loginPost($e) {
         if($e->getParam('result')->isValid()) {
-            return $this->redirect()->toRoute('KapitchiIdentity/me');
+            return $this->redirect()->toRoute('KapitchiIdentity/identity/me');
         }
     }
     

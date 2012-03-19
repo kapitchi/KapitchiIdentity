@@ -5,6 +5,7 @@ namespace KapitchiIdentity\Controller;
 use Zend\Authentication\Adapter as AuthAdapter,
         Zend\Stdlib\ResponseDescription as Response,
         Zend\View\Model\ViewModel as ViewModel,
+        KapitchiBase\View\Model\Table as TableViewModel,
         KapitchiIdentity\Module as Module,
         Zend\Mvc\Controller\ActionController as ZendActionController,
         RunTimeException as NoIdException;
@@ -24,27 +25,27 @@ class IdentityController extends ZendActionController {
         
         $identityService = $this->getIdentityService();
         $identity = $identityService->get(array('priKey' => 1), true);
-        var_dump($identity);
-        
-        $paginator = $identityService->getPaginator();
-        $paginator->setCurrentPageNumber(4);
-        $paginator->setItemCountPerPage(3);
-        $items = $paginator->getCurrentItems();
-        foreach($items as $item) {
-            var_dump($item);
-        }
-        exit;
         
         $model = new ViewModel(
             array('identity' => $identity,
         ));
+        return $model;
     }
     
     public function indexAction() {
+        $routeMatch = $this->getEvent()->getRouteMatch();
+        $page = $routeMatch->getParam('page', 1);
         
+        $paginator = $this->getIdentityService()->getPaginator();
+        $paginator->setItemCountPerPage(10);
+        $paginator->setCurrentPageNumber($page);
+        
+        return new TableViewModel(array(
+            'paginator' => $paginator
+        ));
     }
     
-    public function editAction() {
+    public function createAction() {
         $form = $this->getIdentityForm();
         
         $request = $this->getRequest();
@@ -52,18 +53,51 @@ class IdentityController extends ZendActionController {
             $postData = $request->post()->toArray();
             if($form->isValid($postData)) {
                 $ret = $this->getIdentityService()->persist($form->getValues());
-                $values = $ret['model']->toArray();
-                $form->populate($values);
+                return $this->redirect()->toRoute('KapitchiIdentity/identity/update', array('id' => $ret['model']->getId()));
             }
         }
         
         $form->addElement('submit', 'submit', array(
-            'label' => 'Save'
+            'label' => 'Create'
         ));
         
-        return array(
+        $viewModel = new ViewModel(array(
             'identityForm' => $form
-        );
+        ));
+        $viewModel->setTemplate('identity/update');
+        return $viewModel;
+    }
+    
+    public function updateAction() {
+        $id = $this->getIdentityId();
+        if(empty($id)) {
+            throw new NoIdException("No id");
+        }
+        
+        $form = $this->getIdentityForm();
+        
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $postData = $request->post()->toArray();
+            if($form->isValid($postData)) {
+                $ret = $this->getIdentityService()->persist($form->getValues());
+            }
+        }
+        
+        $identity = $this->getIdentityService()->get(array(
+            'priKey' => $id
+        ), true);
+        $form->populate($identity->toArray());
+        
+        $form->addElement('submit', 'submit', array(
+            'label' => 'Update'
+        ));
+        
+        $viewModel = new ViewModel(array(
+            'identityForm' => $form
+        ));
+        $viewModel->setTemplate('identity/update');
+        return $viewModel;
     }
     
     public function deleteAction() {
@@ -72,12 +106,9 @@ class IdentityController extends ZendActionController {
     }
     
     //helper methods
-    protected function getQueryIdentityId() {
-        $id = $this->getRequest()->query()->id;
-        if(empty($id)) {
-            throw new NoIdException('No id param');
-        }
-        
+    protected function getIdentityId() {
+        $routeMatch = $this->getEvent()->getRouteMatch();
+        $id = $routeMatch->getParam('id');
         return $id;
     }
     

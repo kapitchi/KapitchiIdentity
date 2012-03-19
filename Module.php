@@ -38,14 +38,51 @@ class Module extends ModuleAbstract {
         
         $events = StaticEventManager::getInstance();
         
+        //XXX
+        $events->attach('KapitchiIdentity\Service\Acl', 'loadResource', function(Event $e) {
+            $acl = $e->getParam('acl');
+            $resource = $e->getParam('resource');
+            
+            //XXX this allows everything for user account
+            $acl->addResource($resource);
+            $acl->allow('user', $resource, null);
+        });
+        
+        $events->attach('KapitchiBase\Service\ServiceAbstract', 'persist.pre', function(Event $e) {
+                    //var_dump($e);
+                    //exit;
+        });
+        
+        $acl = $locator->get('KapitchiIdentity\Service\Acl');
+        $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function(Event $e) use ($acl) {
+            $allowed = $acl->isAllowed('node');
+            //var_dump($allowed);
+            //exit;
+        });
+        //END
+        
+        //register auth strategies
         $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init',
                 array($locator->get('KapitchiIdentity\Service\Auth\Credential'), 'onInit'));
         
+        //acl-auth
         $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($locator) {
             $acl = $locator->get('KapitchiIdentity\Service\Acl');
             $acl->invalidateCache();
         });
         
+        //auth-identity
+        $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function($e) use($locator) {
+            $service = $locator->get('KapitchiIdentity\Service\Auth');
+            $identity = $e->getParam('model');
+            
+            $id = $service->getLocalIdentityId();
+            if($id !== null) {
+                $identity->setOwnerId($id);
+            }
+        });
+        
+        //auth-acl
         $events->attach('KapitchiIdentity\Service\Acl', 'getRole', function($e) use($locator) {
             $authService = $locator->get('KapitchiIdentity\Service\Auth');
             if(!$authService->hasIdentity()) {
@@ -61,18 +98,6 @@ class Module extends ModuleAbstract {
             return $authIdentity;
         });
             
-        $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init', function(Event $e) use ($locator) {
-            $acl = $locator->get('KapitchiIdentity\Service\Acl');
-        });
-        
-        $events->attach('KapitchiIdentity\Service\Acl', 'loadResource', function(Event $e) {
-            $acl = $e->getParam('acl');
-            $resource = $e->getParam('resource');
-            
-            //XXX this allows everything for user account
-            $acl->addResource($resource);
-            $acl->allow('user', $resource, null);
-        });
     }
     
 }
