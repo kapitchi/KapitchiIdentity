@@ -17,6 +17,12 @@ class Module extends ModuleAbstract {
         
         $events = StaticEventManager::getInstance();
         
+        //route protector
+        if($this->getOption('acl.enable_route_protector', true)) {
+            $routeProtector = $locator->get('KapitchiIdentity\Service\Acl\ProtectorRoute');
+            $app->events()->attach('dispatch', array($routeProtector, 'dispatch'), 1000);
+        }
+        
         //register auth strategies
         $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init',
                 array($locator->get('KapitchiIdentity\Service\Auth\Credential'), 'onInit'));

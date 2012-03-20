@@ -22,8 +22,10 @@ class ProtectorRoute implements Protector {
             throw new NoRouteResourceFoundException("No route resource found");
         }
         
-        if(!$this->getAclService()->isAllowed($routeResource)) {
-            throw new NotAuthorizedException("You are not allowed to access this route '$routeName' ($routeResource)");
+        $acl = $this->getAclService();
+        if(!$acl->isAllowed($routeResource)) {
+            $roleId = $acl->getRole()->getRoleId();
+            throw new NotAuthorizedException("You ($roleId) are not allowed to access this route '$routeName' ($routeResource)");
         }
     }
     
