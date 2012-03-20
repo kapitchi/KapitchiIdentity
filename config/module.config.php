@@ -2,21 +2,12 @@
 return array(
     'KapitchiIdentity' => array(
         'options' => array(
-            'acl' => array(
-                'enable_cache' => false
-            ),
             'identity' => array(
                 'view' => array(
                     'item_count_per_page' => 10,
                 )
             )
         ),
-    ),
-    //XXX ACL is used 
-    'acl' => array(
-        'resources' => array(
-            
-        )
     ),
     'di' => array(
         'definition' => array(
@@ -60,11 +51,6 @@ return array(
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),
-            'KapitchiIdentity\Service\Acl' => array(
-                'parameters' => array(
-                    'aclLoader' => 'KapitchiIdentity\Model\Mapper\AclLoaderConfig',
-                ),
-            ),
             //mappers
             'KapitchiIdentity\Model\Mapper\IdentityZendDb' => array(
                 'parameters' => array(
@@ -72,11 +58,10 @@ return array(
                 ),
             ),
             //ACL
-            'KapitchiIdentity\Model\Mapper\AclLoaderConfig' => array(
+            'KapitchiAcl\Model\Mapper\AclLoaderConfig' => array(
                 'parameters' => array(
                     'config' => array(
                         'resources' => array(
-                            'Route/Default' => null,
                             'KapitchiIdentity' => array(
                                 'KapitchiIdentity/Route' => null,
                                 'KapitchiIdentity/Route/Identity' => null,
@@ -84,15 +69,8 @@ return array(
                                 'KapitchiIdentity/Route/Auth/Logout' => null,
                             ),
                         ),
-                        'roles' => array(
-                            'guest' => null,
-                            'auth' => null,
-                            'user' => 'auth',
-                            'admin' => 'auth',
-                        ),
                         'rules' => array(
                             'allow' => array(
-                                'allow/default_route' => array(array('auth', 'guest'), 'Route/Default'),
                                 'KapitchiIdentity/allow/identity/default' => array('user', 'KapitchiIdentity/Route/Identity'),
                                 'KapitchiIdentity/allow/auth/logout' => array('auth', 'KapitchiIdentity/Route/Auth/Logout'),
                                 'KapitchiIdentity/allow/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
@@ -104,11 +82,9 @@ return array(
                     ),
                 ),
             ),
-            'KapitchiIdentity\Service\Acl\ProtectorRoute' => array(
+            'KapitchiAcl\Guard\Route' => array(
                 'parameters' => array(
-                    'aclService' => 'KapitchiIdentity\Service\Acl',
                     'routeResourceMap' => array(
-                        'default' => 'Route/Default',
                         'child_map' => array(
                             'KapitchiIdentity' => array(
                                 'default' => 'KapitchiIdentity/Route',

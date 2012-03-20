@@ -2,13 +2,12 @@
 
 namespace KapitchiIdentity\Service;
 
-use Zend\Authentication\AuthenticationService as ZendAuthenticationService,
+use     Zend\Authentication\AuthenticationService as ZendAuthenticationService,
         Zend\Di\Locator,
         Exception as NoLocalIdException,
         Exception as NoLoggedInException,
-    KapitchiIdentity\Model\AuthIdentity,
-    KapitchiIdentity\Service\Acl,
-    Zend\Authentication\Adapter,
+        KapitchiIdentity\Model\AuthIdentity,
+        Zend\Authentication\Adapter,
         Zend\EventManager\EventCollection,
         Zend\EventManager\EventManager;
 
@@ -35,7 +34,7 @@ class Auth extends ZendAuthenticationService {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
             }
             else {
-                $authIdentity = new AuthIdentity($result->getIdentity(), Acl::ROLE_AUTH);
+                $authIdentity = new AuthIdentity($result->getIdentity(), 'auth');
             }
             $this->getStorage()->write($authIdentity);
         }
