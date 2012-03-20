@@ -30,6 +30,7 @@ class Auth extends ZendAuthenticationService {
         ));
         
         if($result->isValid()) {
+            //mz: TODO hmmmmmmmmmmmmmmmmmmmmmm.........
             if($adapter instanceof Auth\AuthIdentityResolver) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
             }

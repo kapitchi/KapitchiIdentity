@@ -5,11 +5,11 @@ namespace KapitchiIdentity\Model\Mapper;
 use Zend\Acl\Acl as ZendAcl,
     Zend\Session\Container;
 
-class AclSession implements Acl {
+class AclCacheSession implements Acl {
     private $session;
     private $containerOffset = 'acl';
     
-    public function loadByRoleId($roleId) {
+    public function findByRoleId($roleId) {
         $cont = $this->getContainer();
         if($cont->offsetExists($this->containerOffset)) {
             $aclSerialized = $cont->offsetGet($this->containerOffset);

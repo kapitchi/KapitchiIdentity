@@ -57,18 +57,6 @@ return array(
             ),
             
             //mappers
-            //DB adapter
-            'Zend\Db\Adapter\Adapter' => array(
-                'parameters' => array(
-                    'driver' => array(
-                        'driver' => 'Pdo',
-                        'username' => 'root',
-                        'password' => '',
-                        'dsn'   => 'mysql:dbname=creditors_drazobnik;hostname=localhost',
-                    ),
-                )
-            ),
-            
             'KapitchiIdentity\Model\Mapper\IdentityZendDb' => array(
                 'parameters' => array(
                     'adapter' => 'Zend\Db\Adapter\Adapter',
@@ -88,6 +76,13 @@ return array(
                 'parameters'  => array(
                     'paths' => array(
                         'kapitchiidentity' => __DIR__ . '/../view',
+                    ),
+                ),
+            ),
+            'Zend\View\HelperLoader' => array(
+                'parameters' => array(
+                    'map' => array(
+                        'identity' => 'KapitchiIdentity\View\Helper\Identity',
                     ),
                 ),
             ),
