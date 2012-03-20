@@ -5,8 +5,7 @@ namespace KapitchiIdentity\Service\Auth;
 use Zend\EventManager\EventCollection,
         Zend\Authentication\Result,
         Zend\Form\Form,
-        KapitchiIdentity\Model\AuthIdentity,
-        KapitchiIdentity\Service\Acl as AclService;
+        KapitchiIdentity\Model\AuthIdentity;
 
 class Credential extends StrategyAbstract implements AuthIdentityResolver {
     protected $credentialMapper;
@@ -39,7 +38,7 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         $mapper = $this->getCredentialMapper();
         $user = $mapper->findByUsername($id);
         
-        return new AuthIdentity($id, AclService::ROLE_USER, $user->getIdentityId());
+        return new AuthIdentity($id, 'user', $user->getIdentityId());
     }
     
     public function authenticate() {
