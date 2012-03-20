@@ -65,12 +65,6 @@ return array(
                     'aclLoader' => 'KapitchiIdentity\Model\Mapper\AclLoaderConfig',
                 ),
             ),
-            'KapitchiIdentity\Service\Acl\ProtectorRoute' => array(
-                'parameters' => array(
-                    'aclService' => 'KapitchiIdentity\Service\Acl',
-                    'defaultResolution' => 'deny',
-                ),
-            ),
             //mappers
             'KapitchiIdentity\Model\Mapper\IdentityZendDb' => array(
                 'parameters' => array(
