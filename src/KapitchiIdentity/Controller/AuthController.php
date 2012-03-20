@@ -18,29 +18,8 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         $this->module = $module;
     }
     
-    public function indexAction() {
-        $authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
-
-        $aclService = $this->getLocator()->get('KapitchiIdentity\Service\Acl');
-        $ret = $aclService->isAllowed('KapitchiIdentity\Controller\AuthController.indexAction');
-        
-        //$new = new \Zend\Session\SessionManager();
-        //$new->start();
-        var_dump($ret);
-        var_dump($_SESSION);
-        exit;
-        /*$ret = $this->getLocator()->get('KapitchiIdentity\Service\Identity');
-        $x = $ret->persist(array(
-            'id' => 3,
-            'created' => '2012-12-12 10:00:00',
-            'ownerId' => 1,
-        ));
-        */
-
-    }
-    
     public function registerAction() {
-        
+        //TODO
     }
     
     public function logoutAction() {

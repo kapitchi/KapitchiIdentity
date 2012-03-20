@@ -10,21 +10,21 @@ $columns = array(
     <thead>
         <tr>
         <?php foreach($columns as $columnId => $columnLabel):?>
-            <td><?=$columnLabel?></td>
+            <td><?php echo $columnLabel?></td>
         <?php endforeach;?>
         </tr>
     </thead>
     <tbody>
         <?php foreach($paginator as $item):?>
             <tr>
-                <td><a href="<?=$this->url('KapitchiIdentity/identity/update', array('id' => $item['id']))?>">Edit</a></td>
+                <td><a href="<?php echo $this->url('KapitchiIdentity/identity/update', array('id' => $item['id']))?>">Edit</a></td>
                 <?php foreach($columns as $columnId => $columnLabel):?>
-                <td><?=$item[$columnId]?></td>
+                <td><?php echo $item[$columnId]?></td>
                 <?php endforeach?>
             </tr>
         <?php endforeach;?>
     </tbody>
 </table>
-<?=$this->paginationControl($paginator,
+<?php echo $this->paginationControl($paginator,
                             'Sliding',
                             'paginator'); ?>

@@ -20,15 +20,19 @@ class IdentityController extends ZendActionController {
     }
     
     public function meAction() {
-        //$authService = $this->getLocator()->get('KapitchiIdentity\Service\Auth');
-        //$id = $authService->getLocalIdentityId();
+        //mz: TODO I believe getLocalIdentityId should throw exception if not logged in!
+        $id = $this->getLocator()->get('KapitchiIdentity\Service\Auth')->getLocalIdentityId();
+        if(empty($id)) {
+            throw new \Exception("User is not logged in!");
+        }
         
         $identityService = $this->getIdentityService();
-        $identity = $identityService->get(array('priKey' => 1), true);
+        $identity = $identityService->get(array('priKey' => $id), true);
         
         $model = new ViewModel(
             array('identity' => $identity,
         ));
+        
         return $model;
     }
     
@@ -37,7 +41,7 @@ class IdentityController extends ZendActionController {
         $page = $routeMatch->getParam('page', 1);
         
         $paginator = $this->getIdentityService()->getPaginator();
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($this->getModule()->getOption('identity.view.item_count_per_page', 10));
         $paginator->setCurrentPageNumber($page);
         
         return new TableViewModel(array(

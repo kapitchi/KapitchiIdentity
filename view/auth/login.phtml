@@ -6,8 +6,8 @@ $loginForm = $model->loginForm;
 $loginForm->addElement('submit', 'Login');
 ?>
 
-LOGIN TEST: <?=$model->submodel?>
+LOGIN TEST: <?php echo $model->submodel?>
 
-<?=$this->renderChildModel('submodel')?>
+<?php echo $this->renderChildModel('submodel')?>
 
-<?=$loginForm?>
+<?php echo $loginForm?>

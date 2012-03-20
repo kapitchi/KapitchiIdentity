@@ -11,65 +11,14 @@ use Zend\Module\Manager,
 
 class Module extends ModuleAbstract {
     
-    public function getDir() {
-        return __DIR__;
-    }
-    
-    public function getNamespace() {
-        return __NAMESPACE__;
-    }
-
     public function bootstrap(Manager $moduleManager, Application $app) {
         $locator      = $app->getLocator();
         
-        //route protector test
-        /*$app->events()->attach('route', function(MvcEvent $e) use($locator) {
-            $routeName = $e->getRouteMatch()->getMatchedRouteName();
-            
-            $aclService = $locator->get('KapitchiIdentity\Service\Acl');
-            $aclService->invalidateCache();
-            $ret = $aclService->isAllowed('route/' . $routeName);
-            if(!$ret) {
-                $e->setError('error-controller-cannot-dispatch');
-            }
-            
-        }, -10);
-        */
-        
         $events = StaticEventManager::getInstance();
-        
-        //XXX
-        $events->attach('KapitchiIdentity\Service\Acl', 'loadResource', function(Event $e) {
-            $acl = $e->getParam('acl');
-            $resource = $e->getParam('resource');
-            
-            //XXX this allows everything for user account
-            $acl->addResource($resource);
-            $acl->allow('user', $resource, null);
-        });
-        
-        $events->attach('KapitchiBase\Service\ServiceAbstract', 'persist.pre', function(Event $e) {
-                    //var_dump($e);
-                    //exit;
-        });
-        
-        $acl = $locator->get('KapitchiIdentity\Service\Acl');
-        $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function(Event $e) use ($acl) {
-            $allowed = $acl->isAllowed('node');
-            //var_dump($allowed);
-            //exit;
-        });
-        //END
         
         //register auth strategies
         $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init',
                 array($locator->get('KapitchiIdentity\Service\Auth\Credential'), 'onInit'));
-        
-        //acl-auth
-        $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($locator) {
-            $acl = $locator->get('KapitchiIdentity\Service\Acl');
-            $acl->invalidateCache();
-        });
         
         //auth-identity
         $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function($e) use($locator) {
@@ -82,22 +31,30 @@ class Module extends ModuleAbstract {
             }
         });
         
-        //auth-acl
-        $events->attach('KapitchiIdentity\Service\Acl', 'getRole', function($e) use($locator) {
+        //acl
+        $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($locator) {
+            $acl = $locator->get('KapitchiAcl\Service\Acl');
+            $acl->invalidateCache();
+        });
+        
+        $events->attach('KapitchiAcl\Service\Acl', 'getRole', function($e) use($locator) {
             $authService = $locator->get('KapitchiIdentity\Service\Auth');
             if(!$authService->hasIdentity()) {
                 return;
             }
 
             $authIdentity = $authService->getIdentity();
-//            $roleId = $authIdentity->getRoleId();
-//            if(empty($roleId)) {
-//                throw new \Exception("User has got no role, why???");
-//            }
-
             return $authIdentity;
         });
             
+    }
+    
+    public function getDir() {
+        return __DIR__;
+    }
+    
+    public function getNamespace() {
+        return __NAMESPACE__;
     }
     
 }

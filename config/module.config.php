@@ -2,16 +2,12 @@
 return array(
     'KapitchiIdentity' => array(
         'options' => array(
-            'acl' => array(
-                'enable_cache' => false
+            'identity' => array(
+                'view' => array(
+                    'item_count_per_page' => 10,
+                )
             )
         ),
-    ),
-    //XXX ACL is used 
-    'acl' => array(
-        'resources' => array(
-            
-        )
     ),
     'di' => array(
         'definition' => array(
@@ -55,26 +51,57 @@ return array(
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),
-            
             //mappers
-            //DB adapter
-            'Zend\Db\Adapter\Adapter' => array(
-                'parameters' => array(
-                    'driver' => array(
-                        'driver' => 'Pdo',
-                        'username' => 'root',
-                        'password' => '',
-                        'dsn'   => 'mysql:dbname=creditors_drazobnik;hostname=localhost',
-                    ),
-                )
-            ),
-            
             'KapitchiIdentity\Model\Mapper\IdentityZendDb' => array(
                 'parameters' => array(
                     'adapter' => 'Zend\Db\Adapter\Adapter',
                 ),
             ),
-            
+            //ACL
+            'KapitchiAcl\Model\Mapper\AclLoaderConfig' => array(
+                'parameters' => array(
+                    'config' => array(
+                        'resources' => array(
+                            'KapitchiIdentity' => array(
+                                'KapitchiIdentity/Route' => null,
+                                'KapitchiIdentity/Route/Identity' => null,
+                                'KapitchiIdentity/Route/Auth/Login' => null,
+                                'KapitchiIdentity/Route/Auth/Logout' => null,
+                            ),
+                        ),
+                        'rules' => array(
+                            'allow' => array(
+                                'KapitchiIdentity/allow/identity/default' => array('user', 'KapitchiIdentity/Route/Identity'),
+                                'KapitchiIdentity/allow/auth/logout' => array('auth', 'KapitchiIdentity/Route/Auth/Logout'),
+                                'KapitchiIdentity/allow/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
+                             ),
+                            'deny' => array(
+                                'KapitchiIdentity/deny/default_route' => array('guest', 'KapitchiIdentity/Route'),
+                             ),
+                        ),
+                    ),
+                ),
+            ),
+            'KapitchiAcl\Guard\Route' => array(
+                'parameters' => array(
+                    'routeResourceMap' => array(
+                        'child_map' => array(
+                            'KapitchiIdentity' => array(
+                                'default' => 'KapitchiIdentity/Route',
+                                'child_map' => array(
+                                    'identity' => 'KapitchiIdentity/Route/Identity',
+                                    'auth' => array(
+                                        'child_map' => array(
+                                            'login' => 'KapitchiIdentity/Route/Auth/Login',
+                                            'logout' => 'KapitchiIdentity/Route/Auth/Logout',
+                                         )
+                                     )
+                                 )
+                            )
+                        )
+                    ),
+                ),
+            ),
             //View models
             'KapitchiIdentity\View\Model\AuthLogin' => array(
                 'parameters' => array(
@@ -88,6 +115,13 @@ return array(
                 'parameters'  => array(
                     'paths' => array(
                         'kapitchiidentity' => __DIR__ . '/../view',
+                    ),
+                ),
+            ),
+            'Zend\View\HelperLoader' => array(
+                'parameters' => array(
+                    'map' => array(
+                        'identity' => 'KapitchiIdentity\View\Helper\Identity',
                     ),
                 ),
             ),
