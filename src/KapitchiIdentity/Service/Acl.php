@@ -98,7 +98,7 @@ class Acl extends ServiceAbstract {
     /**
      * @return Zend\Acl\Role
      */
-    protected function getRole() {
+    public function getRole() {
         $result = $this->events()->trigger('getRole', $this, array(), function($ret) {
             return $ret instanceof Role;
         });
@@ -185,20 +185,20 @@ class Acl extends ServiceAbstract {
         $events = $this->events();
         
         //load default roles
-        $events->attach('loadStaticAcl', function($e) {
-            $acl = $e->getParam('acl');
-            //init default roles
-            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_GUEST);
-            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_AUTH);
-            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_USER);
-            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_ADMIN);
-        });
+//        $events->attach('loadStaticAcl', function($e) {
+//            $acl = $e->getParam('acl');
+//            //init default roles
+//            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_GUEST);
+//            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_AUTH);
+//            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_USER);
+//            $acl->addRole(\KapitchiIdentity\Service\Acl::ROLE_ADMIN);
+//        });
         
         //AclLoaderMapper
         $aclLoader = $this->getAclLoader();
         $events->attach('loadStaticAcl', function($e) use ($aclLoader) {
             if($aclLoader instanceof AclLoader) {
-                $aclLoader->loadAclByRoleId($e->getRoleId());
+                $aclLoader->loadAclByRoleId($e->getParam('acl'), $e->getParam('roleId'));
             }
         });
         

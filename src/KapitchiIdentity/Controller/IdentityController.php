@@ -41,7 +41,7 @@ class IdentityController extends ZendActionController {
         $page = $routeMatch->getParam('page', 1);
         
         $paginator = $this->getIdentityService()->getPaginator();
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage($this->getModule()->getOption('identity.view.item_count_per_page', 10));
         $paginator->setCurrentPageNumber($page);
         
         return new TableViewModel(array(

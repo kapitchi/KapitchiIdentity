@@ -35,7 +35,7 @@ class AclLoaderConfig implements AclLoader {
                 $this->loadResources($acl, $value, $key);
             }
             else {
-                $acl->addResource($value, $parent);
+                $acl->addResource($key, $parent);
             }
         }
     }
