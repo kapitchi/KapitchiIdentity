@@ -63,6 +63,9 @@ return array(
                     'config' => array(
                         'resources' => array(
                             'KapitchiIdentity' => array(
+                                //models
+                                'KapitchiIdentity/Model/Identity' => null,
+                                //routes
                                 'KapitchiIdentity/Route' => null,
                                 'KapitchiIdentity/Route/Identity' => null,
                                 'KapitchiIdentity/Route/Auth/Login' => null,
@@ -71,12 +74,17 @@ return array(
                         ),
                         'rules' => array(
                             'allow' => array(
-                                'KapitchiIdentity/allow/identity/default' => array('user', 'KapitchiIdentity/Route/Identity'),
-                                'KapitchiIdentity/allow/auth/logout' => array('auth', 'KapitchiIdentity/Route/Auth/Logout'),
-                                'KapitchiIdentity/allow/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
+                                //models
+                                //TODO XXX mz: finish this - for testing only now!
+                                'KapitchiIdentity/allow/model/identity' => array('user', 'KapitchiIdentity/Model/Identity'),
+                                //routes
+                                'KapitchiIdentity/allow/route/identity' => array('user', 'KapitchiIdentity/Route/Identity'),
+                                'KapitchiIdentity/allow/route/auth/logout' => array('auth', 'KapitchiIdentity/Route/Auth/Logout'),
+                                'KapitchiIdentity/allow/route/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
+                                'KapitchiIdentity/allow/route/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
                              ),
                             'deny' => array(
-                                'KapitchiIdentity/deny/default_route' => array('guest', 'KapitchiIdentity/Route'),
+                                'KapitchiIdentity/deny/route/default_route' => array('guest', 'KapitchiIdentity/Route'),
                              ),
                         ),
                     ),
@@ -101,6 +109,30 @@ return array(
                         )
                     ),
                 ),
+            ),
+            'KapitchiAcl\Model\Mapper\EventGuardDefMapConfig' => array(
+                'parameters' => array(
+                    'config' => array(
+                        'KapitchiIdentity/Model/Identity.get' => array(
+                            'eventId' => 'KapitchiIdentity\Service\Identity',
+                            'event' => 'get.load',
+                            'resource' => 'KapitchiIdentity/Model/Identity',
+                            'privilege' => 'get',
+                        ),
+                        'KapitchiIdentity/Model/Identity.persist' => array(
+                            'eventId' => 'KapitchiIdentity\Service\Identity',
+                            'event' => 'persist.pre',
+                            'resource' => 'KapitchiIdentity/Model/Identity',
+                            'privilege' => 'persist',
+                        ),
+                        'KapitchiIdentity/Model/Identity.remove' => array(
+                            'eventId' => 'KapitchiIdentity\Service\Identity',
+                            'event' => 'remove.pre',
+                            'resource' => 'KapitchiIdentity/Model/Identity',
+                            'privilege' => 'remove',
+                        ),
+                    )
+                )
             ),
             //View models
             'KapitchiIdentity\View\Model\AuthLogin' => array(
