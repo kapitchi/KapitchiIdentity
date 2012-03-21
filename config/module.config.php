@@ -82,9 +82,9 @@ return array(
                     ),
                 ),
             ),
-            'KapitchiAcl\Guard\Route' => array(
+            'KapitchiAcl\Model\Mapper\RouteResourceMapConfig' => array(
                 'parameters' => array(
-                    'routeResourceMap' => array(
+                    'config' => array(
                         'child_map' => array(
                             'KapitchiIdentity' => array(
                                 'default' => 'KapitchiIdentity/Route',
