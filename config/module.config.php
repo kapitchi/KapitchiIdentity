@@ -6,6 +6,9 @@ return array(
                 'view' => array(
                     'item_count_per_page' => 10,
                 )
+            ),
+            'plugins' => array(
+                'KapitchiAcl' => true
             )
         ),
     ),
@@ -57,7 +60,15 @@ return array(
                     'adapter' => 'Zend\Db\Adapter\Adapter',
                 ),
             ),
-            //ACL
+            //plugins
+            'KapitchiIdentity\Plugin\KapitchiAcl' => array(
+                'parameters' => array(
+                    'aclService' => 'KapitchiAcl\Service\Acl',
+                    'authService' => 'KapitchiIdentity\Service\Auth',
+                ),
+            ),
+            
+            //ACL plugin
             'KapitchiAcl\Model\Mapper\AclLoaderConfig' => array(
                 'parameters' => array(
                     'config' => array(

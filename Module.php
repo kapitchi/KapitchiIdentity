@@ -31,21 +31,11 @@ class Module extends ModuleAbstract {
             }
         });
         
-        //acl
-        $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($locator) {
-            $acl = $locator->get('KapitchiAcl\Service\Acl');
-            $acl->invalidateCache();
-        });
-        
-        $events->attach('KapitchiAcl\Service\Acl', 'getRole', function($e) use($locator) {
-            $authService = $locator->get('KapitchiIdentity\Service\Auth');
-            if(!$authService->hasIdentity()) {
-                return;
-            }
-
-            $authIdentity = $authService->getIdentity();
-            return $authIdentity;
-        });
+        //plugins
+        if($this->getOption('plugins.KapitchiAcl', true)) {
+            $plugin = $locator->get('KapitchiIdentity\Plugin\KapitchiAcl');
+            $plugin->bootstrap();
+        }
             
     }
     
