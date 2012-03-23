@@ -17,7 +17,7 @@ $columns = array(
     <tbody>
         <?php foreach($paginator as $item):?>
             <tr>
-                <td><a href="<?php echo $this->url('KapitchiIdentity/identity/update', array('id' => $item['id']))?>">Edit</a></td>
+                <td><a href="<?php echo $this->url('KapitchiIdentity/Identity/Update', array('id' => $item['id']))?>">Edit</a></td>
                 <?php foreach($columns as $columnId => $columnLabel):?>
                 <td><?php echo $item[$columnId]?></td>
                 <?php endforeach?>

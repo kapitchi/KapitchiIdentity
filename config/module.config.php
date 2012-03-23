@@ -10,6 +10,7 @@ return array(
             'auth' => array(
                 'strategies' => array(
                     'KapitchiIdentity\AuthStrategy\Credential' => true,
+                    'KapitchiIdentity\AuthStrategy\Http' => false,
                 )
             ),
             'plugins' => array(

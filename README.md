@@ -19,6 +19,7 @@ Features
   * LDAP [NOT STARTED]
 * Identity management [IN PROGRESS]
 * Identity - Role management [NOT STARTED]
+* Role management [NOT STARTED]
 
 
 Requirements
@@ -43,15 +44,26 @@ Application services
 ### KapitchiIdentity\Service\Auth
 
 This service extends from Zend\Authentication\AuthenticationService so provides whole API as Zend class does.
-It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID.
+It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID only.
 
 New public methods (against [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php)):
 
 * getLocalIdentityId() - helper method which returns users local identity id. If user is not logged in throws an exception.
 
+### KapitchiIdentity\Service\Role
+
+TODO 
+
+Public methods:
+
+* getCurrentRole() - returns current identity's role object
+
+
 ### KapitchiIdentity\Service\Identity
 
 Service for CRUD operations on Identity objects.
+
+TODO
 
 Authentication strategies
 -------------------------
@@ -72,10 +84,13 @@ This will trigger an authentication on the adapter a strategy provides.
 
 Once an user is authenticated successfully Auth service checks if strategy is able to provide local identity ID. In order to recognize this a strategy needs to implement AuthIdentityResolver interface.
 
+TODO
+
+
 Events
 ------
 
-### KapitchiIdentity\Auth\AuthController.login.pre
+### KapitchiIdentity\Auth\AuthController:login.pre
 
 This event can be used to add new fields into login form which can be retrieve from AuthLogin view model.
 It can be also used by modules to lock out login e.g. to certain IP addresses on a black list.  
@@ -122,6 +137,8 @@ Parameters:
 
 
 ### KapitchiIdentity\Service\Auth:authenticate.valid
+
+Event is trigger after user has successfully authenticated but before their auth identity is stored into auth storage.
 
 Parameters:
 

@@ -7,10 +7,14 @@ use Zend\EventManager\EventCollection;
 class Http extends StrategyAbstract {
     private $adapter;
     
-    public function init() {
-        return $this->getAdapter();
+    protected function loginPre() {
+        
     }
     
+    protected function loginAuth() {
+        return $this->getAdapter();
+    }
+
     public function authenticate() {
         $adapter = $this->getAdapter();
         

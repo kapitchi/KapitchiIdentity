@@ -44,6 +44,14 @@ class Module extends ModuleAbstract {
             }
         });
         
+        //role identity form extensioin
+        $events->attach('di', 'newInstance', function($e) use($locator) {
+            $instance = $e->getParam('instance');
+            if($instance instanceof \KapitchiIdentity\Form\Identity) {
+                $instance->addExtSubForm($locator->get('KapitchiIdentity\Form\IdentityRole'), 'KapitchiIdentity_IdentityRole');
+            }
+        });
+        
         //plugins
         if($this->getOption('plugins.ZfcAcl', true)) {
             $plugin = $locator->get('KapitchiIdentity\Plugin\ZfcAcl');
