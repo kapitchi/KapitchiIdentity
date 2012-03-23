@@ -2,22 +2,12 @@
 
 namespace KapitchiIdentity\Model;
 
-use     Zend\Acl\Resource as AclResource,
-        KapitchiBase\Model\ModelAbstract;
+use ZfcBase\Model\ModelAbstract;
 
 class Identity extends ModelAbstract {
     protected $id;
     protected $created;
     protected $ownerId;
-    
-    public function getResourceId() {
-        $resourceId = 'KapitchiIdentity/Identity';
-        if($this->getId()) {
-            $resourceId .= '/' . $this->getId();
-        }
-        
-        return $resourceId;
-    }
     
     public function getId() {
         return $this->id;

@@ -52,7 +52,34 @@ class Module extends ModuleAbstract {
             }
         });
         
-        //plugins
+        
+        $events->attach('KapitchiIdentity\Service\Identity', array('get.exts', 'get.ext.KapitchiIdentity_IdentityRole'), function($e) use($locator) {
+            $identity = $e->getParam('model');
+            $identityRoleService = $locator->get('KapitchiIdentity\Service\IdentityRole');
+            $model = $identityRoleService->get(array(
+                'identityId' => $identity->getId()
+            ));
+
+            if($model) {
+                $identity->ext('KapitchiIdentity_IdentityRole', $model);
+            }
+        
+        });
+        
+        $events->attach('KapitchiIdentity\Service\Identity', array('persist.post'), function($e) use($locator) {
+            $data = $e->getParam('data');
+            if(!empty($data['exts']['KapitchiIdentity_IdentityRole'])) {
+                $identity = $e->getParam('model');
+                $service = $locator->get('KapitchiIdentity\Service\IdentityRole');
+                $modelData = $data['exts']['KapitchiIdentity_IdentityRole'];
+                $modelData['identityId'] = $identity->getId();
+                $ret = $service->persist($modelData);
+                $model = $ret['model'];
+
+                $identity->ext('KapitchiIdentity_IdentityRole', $model);
+            }
+        });
+        
         if($this->getOption('plugins.ZfcAcl', true)) {
             $plugin = $locator->get('KapitchiIdentity\Plugin\ZfcAcl');
             $plugin->bootstrap();

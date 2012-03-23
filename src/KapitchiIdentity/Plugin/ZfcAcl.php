@@ -2,20 +2,22 @@
 
 namespace KapitchiIdentity\Plugin;
 
+use Zend\EventManager\StaticEventManager;
+
 class ZfcAcl {
     protected $aclService;
-    protected $roleService;
+    protected $identityRoleService;
     
     public function bootstrap() {
-        $events = \Zend\EventManager\StaticEventManager::getInstance();
+        $events = StaticEventManager::getInstance();
         $instance = $this;
         $events->attach('KapitchiIdentity\Service\Auth', array('authenticate.valid', 'clearIdentity.post'), function($e) use($instance) {
             $instance->getAclService()->invalidateCache();
         });
         
         $events->attach('ZfcAcl\Service\Acl', 'getRole', function($e) use($instance) {
-            $roleService = $instance->getRoleService();
-            return $roleService->getCurrentRole();
+            $service = $instance->getIdentityRoleService();
+            return $service->getCurrentRole();
         });
     }
     
@@ -27,12 +29,12 @@ class ZfcAcl {
         $this->aclService = $aclService;
     }
 
-    public function getRoleService() {
-        return $this->roleService;
+    public function getIdentityRoleService() {
+        return $this->identityRoleService;
     }
 
-    public function setRoleService($roleService) {
-        $this->roleService = $roleService;
+    public function setIdentityRoleService($identityRoleService) {
+        $this->identityRoleService = $identityRoleService;
     }
 
 

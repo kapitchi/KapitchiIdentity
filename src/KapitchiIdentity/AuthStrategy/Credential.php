@@ -25,11 +25,11 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         $request = $this->getRequest();
         if($request->isPost()) {
             $postData = $request->post()->toArray();
-            if(!isset($postData['ext'][$this->extName])) {
+            if(!isset($postData['exts'][$this->extName])) {
                 return;
             }
             
-            $formData = $postData['ext'][$this->extName];
+            $formData = $postData['exts'][$this->extName];
             $form = $this->getCredentialLoginForm();
             if($form->isValid($formData)) {
                 $values = $form->getValues();

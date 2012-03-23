@@ -3,13 +3,12 @@
 namespace KapitchiIdentity\Service;
 
 use     Zend\Acl\Role\GenericRole,
-        ZfcBase\Service\ServiceAbstract,
+        KapitchiBase\Service\ModelServiceAbstract,
         KapitchiIdentity\Model\AuthIdentity;
         
-class Role extends ServiceAbstract {
+class IdentityRole extends ModelServiceAbstract {
     protected $authService;
     protected $currentRole;
-    protected $identityRoleMapper;
     
     public function getCurrentRole() {
         if($this->currentRole === null) {
@@ -34,7 +33,9 @@ class Role extends ServiceAbstract {
                 return $this->currentRole;
             }
             
-            $role = $this->getByIdentityId($localIdentityId);
+            $role = $this->get(array(
+                'identityId' => $localIdentityId
+            ));
             if(!$role) {
                 throw new \Exception("I can't find current role!");
             }
@@ -44,8 +45,17 @@ class Role extends ServiceAbstract {
         return $this->currentRole;
     }
     
-    public function getByIdentityId($identityId) {
-        return $this->getIdentityRoleMapper()->findByIdentityId($identityId);
+    protected function attachDefaultListeners() {
+        parent::attachDefaultListeners();
+        
+        $mapper = $this->getMapper();
+        $this->events()->attach('get.load', function($e) use ($mapper){
+            $filter = $e->getParam('identityId');
+            if(!$filter) {
+                return;
+            }
+            return $mapper->findByIdentityId($filter);
+        });
     }
     
     //getters/setters
@@ -57,14 +67,4 @@ class Role extends ServiceAbstract {
         $this->authService = $authService;
     }
     
-    public function getIdentityRoleMapper() {
-        return $this->identityRoleMapper;
-    }
-
-    public function setIdentityRoleMapper($identityRoleMapper) {
-        $this->identityRoleMapper = $identityRoleMapper;
-    }
-
-
-
 }

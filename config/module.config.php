@@ -54,10 +54,11 @@ return array(
                     'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
                 ),
             ),
-            'KapitchiIdentity\Service\Role' => array(
+            'KapitchiIdentity\Service\IdentityRole' => array(
                 'parameters' => array(
                     'authService' => 'KapitchiIdentity\Service\Auth',
-                    'identityRoleMapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
+                    'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
+                    'modelPrototype' => 'KapitchiIdentity\Model\IdentityRole',
                 ),
             ),
             //auth strategies
@@ -82,7 +83,7 @@ return array(
             'KapitchiIdentity\Plugin\ZfcAcl' => array(
                 'parameters' => array(
                     'aclService' => 'ZfcAcl\Service\Acl',
-                    'roleService' => 'KapitchiIdentity\Service\Role',
+                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole',
                 ),
             ),
             
@@ -107,9 +108,8 @@ return array(
                                 //TODO XXX mz: finish this - for testing only now!
                                 'KapitchiIdentity/allow/model/identity' => array('user', 'KapitchiIdentity/Model/Identity'),
                                 //routes
-                                'KapitchiIdentity/allow/route/identity' => array('user', 'KapitchiIdentity/Route/Identity'),
+                                'KapitchiIdentity/allow/route/identity' => array('admin', 'KapitchiIdentity/Route/Identity'),
                                 'KapitchiIdentity/allow/route/auth/logout' => array('auth', 'KapitchiIdentity/Route/Auth/Logout'),
-                                'KapitchiIdentity/allow/route/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
                                 'KapitchiIdentity/allow/route/auth/login' => array('guest', 'KapitchiIdentity/Route/Auth/Login'),
                              ),
                             'deny' => array(

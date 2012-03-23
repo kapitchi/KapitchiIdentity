@@ -4,7 +4,7 @@ namespace KapitchiIdentity\Model\Mapper;
 
 use KapitchiIdentity\Model\Mapper\Identity as IdentityMapper,
     KapitchiBase\Mapper\DbAdapterMapper,
-    KapitchiBase\Model\ModelAbstract,
+    ZfcBase\Model\ModelAbstract,
     KapitchiIdentity\Model\Identity;
     //Zend\Paginator\Adapter as PaginatorAdapter;
     //Zend\Paginator\AdapterAggregate;

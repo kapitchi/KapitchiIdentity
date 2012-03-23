@@ -2,6 +2,8 @@
 
 namespace KapitchiIdentity\Model\Mapper;
 
-interface IdentityRole {
+use KapitchiBase\Mapper\ModelMapper;
+
+interface IdentityRole extends ModelMapper {
     public function findByIdentityId($id);
 }
