@@ -24,9 +24,13 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     
     public function logoutAction() {
         $authService = $this->getAuthService();
+        $identity = $authService->getIdentity();
+        
         $authService->clearIdentity();
         
-        $res = $this->events()->trigger('logout.post', $this, array(), function($ret) {
+        $res = $this->events()->trigger('logout.post', $this, array(
+            'authIdentity' => $identity,
+        ), function($ret) {
             return $ret instanceof Response;
         });
         $response = $res->last();
@@ -39,18 +43,17 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         $response = $this->getResponse();
         $request = $this->getRequest();
         
-        //TODO use DI here!
         $form = $this->getLoginForm();
         $viewModel = $this->getLoginViewModel();
         $viewModel->setVariable('loginForm', $form);
         
         $params = array(
-            'request' => $request,
-            'response' => $response,
             'viewModel' => $viewModel,
         );
         
-        $res = $this->events()->trigger('authenticate.init', $this, $params, function($ret) {
+        $this->events()->trigger('login.pre', $this, $params);
+        
+        $res = $this->events()->trigger('login.auth', $this, $params, function($ret) {
             return ($ret instanceof AuthAdapter || $ret instanceof Response);
         });
         $adapter = $res->last();
@@ -76,9 +79,9 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
                 return $ret instanceof Response;
             });
             
-            $response = $res->last();
-            if($response instanceof Response) {
-                return $response;
+            $result = $res->last();
+            if($result instanceof Response) {
+                return $result;
             }
         }
 
@@ -95,12 +98,12 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function logoutPost($e) {
-        return $this->redirect()->toRoute('KapitchiIdentity/auth/login');
+        return $this->redirect()->toRoute('KapitchiIdentity/Auth/Login');
     }
     
     public function loginPost($e) {
         if($e->getParam('result')->isValid()) {
-            return $this->redirect()->toRoute('KapitchiIdentity/identity/me');
+            return $this->redirect()->toRoute('KapitchiIdentity/Identity/Me');
         }
     }
     

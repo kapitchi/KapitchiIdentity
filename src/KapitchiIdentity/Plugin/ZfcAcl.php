@@ -2,18 +2,18 @@
 
 namespace KapitchiIdentity\Plugin;
 
-class KapitchiAcl {
+class ZfcAcl {
     protected $aclService;
     protected $authService;
     
     public function bootstrap() {
         $events = \Zend\EventManager\StaticEventManager::getInstance();
         $instance = $this;
-        $events->attach('KapitchiIdentity\Service\Auth', 'clearIdentity.post', function($e) use($instance) {
-            $instance->getAclService()->invalideCache();
+        $events->attach('KapitchiIdentity\Service\Auth', array('authenticate.post', 'clearIdentity.post'), function($e) use($instance) {
+            $instance->getAclService()->invalidateCache();
         });
 
-        $events->attach('KapitchiAcl\Service\Acl', 'getRole', function($e) use($instance) {
+        $events->attach('ZfcAcl\Service\Acl', 'getRole', function($e) use($instance) {
             $authService = $instance->getAuthService();
             if(!$authService->hasIdentity()) {
                 return;

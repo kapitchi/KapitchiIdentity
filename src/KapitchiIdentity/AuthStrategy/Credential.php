@@ -1,30 +1,38 @@
 <?php
 
-namespace KapitchiIdentity\Service\Auth;
+namespace KapitchiIdentity\AuthStrategy;
 
 use Zend\EventManager\EventCollection,
         Zend\Authentication\Result,
         Zend\Form\Form,
+        KapitchiIdentity\Service\AuthIdentityResolver,
         KapitchiIdentity\Model\AuthIdentity;
 
 class Credential extends StrategyAbstract implements AuthIdentityResolver {
     protected $credentialMapper;
     protected $credentialLoginForm;
+    protected $extName = 'KapitchiIdentity_Credential';
     
-    public function init() {
+    public function loginPre() {
         $request = $this->getRequest();
-        
         $form = $this->getLoginForm();
         
         $credentialForm = $this->getCredentialLoginForm();
-        $form->addExtSubForm($credentialForm, 'KapitchiIdentity_Credential');
-        
+        $form->addExtSubForm($credentialForm, $this->extName);
+    }
+    
+    protected function loginAuth() {
+        $request = $this->getRequest();
         if($request->isPost()) {
-            //TODO this should be partial check only!!!
             $postData = $request->post()->toArray();
-            if($form->isValid($postData)) {
-                //return this strategy which implements auth adapter also
-                $values = $form->getExtSubForm('KapitchiIdentity_Credential')->getValues();
+            if(!isset($postData['ext'][$this->extName])) {
+                return;
+            }
+            
+            $formData = $postData['ext'][$this->extName];
+            $form = $this->getCredentialLoginForm();
+            if($form->isValid($formData)) {
+                $values = $form->getValues();
                 $val = $values['KapitchiIdentity_Credential'];
                 $this->username = $val['username'];
                 $this->password = $val['password'];

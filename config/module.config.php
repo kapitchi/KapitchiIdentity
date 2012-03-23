@@ -7,8 +7,13 @@ return array(
                     'item_count_per_page' => 10,
                 )
             ),
+            'auth' => array(
+                'strategies' => array(
+                    'KapitchiIdentity\AuthStrategy\Credential' => true,
+                )
+            ),
             'plugins' => array(
-                'KapitchiAcl' => true
+                'ZfcAcl' => true
             )
         ),
     ),
@@ -48,7 +53,8 @@ return array(
                     'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityZendDb',
                 ),
             ),
-            'KapitchiIdentity\Service\Auth\Credential' => array(
+            //auth strategies
+            'KapitchiIdentity\AuthStrategy\Credential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialZendDb',
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
@@ -61,15 +67,15 @@ return array(
                 ),
             ),
             //plugins
-            'KapitchiIdentity\Plugin\KapitchiAcl' => array(
+            'KapitchiIdentity\Plugin\ZfcAcl' => array(
                 'parameters' => array(
-                    'aclService' => 'KapitchiAcl\Service\Acl',
+                    'aclService' => 'ZfcAcl\Service\Acl',
                     'authService' => 'KapitchiIdentity\Service\Auth',
                 ),
             ),
             
             //ACL plugin
-            'KapitchiAcl\Model\Mapper\AclLoaderConfig' => array(
+            'ZfcAcl\Model\Mapper\AclLoaderConfig' => array(
                 'parameters' => array(
                     'config' => array(
                         'resources' => array(
@@ -101,18 +107,19 @@ return array(
                     ),
                 ),
             ),
-            'KapitchiAcl\Model\Mapper\RouteResourceMapConfig' => array(
+            'ZfcAcl\Model\Mapper\RouteResourceMapConfig' => array(
                 'parameters' => array(
+                    'default' => 'Route',
                     'config' => array(
                         'child_map' => array(
                             'KapitchiIdentity' => array(
                                 'default' => 'KapitchiIdentity/Route',
                                 'child_map' => array(
-                                    'identity' => 'KapitchiIdentity/Route/Identity',
-                                    'auth' => array(
+                                    'Identity' => 'KapitchiIdentity/Route/Identity',
+                                    'Auth' => array(
                                         'child_map' => array(
-                                            'login' => 'KapitchiIdentity/Route/Auth/Login',
-                                            'logout' => 'KapitchiIdentity/Route/Auth/Logout',
+                                            'Login' => 'KapitchiIdentity/Route/Auth/Login',
+                                            'Logout' => 'KapitchiIdentity/Route/Auth/Logout',
                                          )
                                      )
                                  )
@@ -121,7 +128,7 @@ return array(
                     ),
                 ),
             ),
-            'KapitchiAcl\Model\Mapper\EventGuardDefMapConfig' => array(
+            'ZfcAcl\Model\Mapper\EventGuardDefMapConfig' => array(
                 'parameters' => array(
                     'config' => array(
                         'KapitchiIdentity/Model/Identity.get' => array(
@@ -180,14 +187,14 @@ return array(
                             ),
                             'may_terminate' => false,
                             'child_routes' => array(
-                                'identity' => array(
+                                'Identity' => array(
                                     'type' => 'Literal',
                                     'options' => array(
                                         'route'    => '/identity',
                                     ),
                                     'may_terminate' => false,
                                     'child_routes' => array(
-                                        'me' => array(
+                                        'Me' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/me',
@@ -197,7 +204,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'login' => array(
+                                        'Login' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/login',
@@ -207,7 +214,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'logout' => array(
+                                        'Logout' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/logout',
@@ -217,17 +224,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'register' => array(
-                                            'type' => 'Literal',
-                                            'options' => array(
-                                                'route' => '/register',
-                                                'defaults' => array(
-                                                    'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                                    'action'     => 'register',
-                                                ),
-                                            ),
-                                        ),
-                                        'create' => array(
+                                        'Create' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/create',
@@ -237,7 +234,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'update' => array(
+                                        'Update' => array(
                                             'type' => 'Segment',
                                             'options' => array(
                                                 'route' => '/update/:id',
@@ -247,7 +244,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'index' => array(
+                                        'Index' => array(
                                             'type' => 'Segment',
                                             'options' => array(
                                                 'route' => '/index[/page/:page]',
@@ -260,14 +257,14 @@ return array(
 
                                     ),
                                 ),
-                                'auth' => array(
+                                'Auth' => array(
                                     'type' => 'Literal',
                                     'options' => array(
                                         'route'    => '/auth',
                                     ),
                                     'may_terminate' => false,
                                     'child_routes' => array(
-                                        'login' => array(
+                                        'Login' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/login',
@@ -277,7 +274,7 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'logout' => array(
+                                        'Logout' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/logout',
@@ -287,12 +284,12 @@ return array(
                                                 ),
                                             ),
                                         ),
-                                        'register' => array(
+                                        'Register' => array(
                                             'type' => 'Literal',
                                             'options' => array(
                                                 'route' => '/register',
                                                 'defaults' => array(
-                                                    'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                                    'controller' => 'KapitchiIdentity\Controller\AuthController',
                                                     'action'     => 'register',
                                                 ),
                                             ),

@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Service\Auth;
+namespace KapitchiIdentity\AuthStrategy;
 
 use Zend\EventManager\EventCollection;
 
@@ -37,5 +37,6 @@ class Http extends StrategyAbstract {
         
         return $this->adapter;
     }
+    
     
 }

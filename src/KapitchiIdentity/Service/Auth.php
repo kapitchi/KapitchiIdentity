@@ -13,7 +13,6 @@ use     Zend\Authentication\AuthenticationService as ZendAuthenticationService,
 
 class Auth extends ZendAuthenticationService {
     
-    protected $locator;
     protected $events;
 
     public function authenticate(Adapter $adapter) {
@@ -23,19 +22,20 @@ class Auth extends ZendAuthenticationService {
             $this->clearIdentity();
         }
 
-        $this->events()->trigger('authenticate.post', array(
-            'result' => $result,
-            'adapter' => $adapter,
-        ));
-        
         if($result->isValid()) {
-            //mz: TODO hmmmmmmmmmmmmmmmmmmmmmm.........
-            if($adapter instanceof Auth\AuthIdentityResolver) {
+            if($adapter instanceof AuthIdentityResolver) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
             }
             else {
                 $authIdentity = new AuthIdentity($result->getIdentity(), 'auth');
             }
+            
+            $this->events()->trigger('authenticate.valid', array(
+                'result' => $result,
+                'adapter' => $adapter,
+                'authIdentity' => $authIdentity,
+            ));
+            
             $this->getStorage()->write($authIdentity);
         }
         
@@ -49,37 +49,30 @@ class Auth extends ZendAuthenticationService {
      */
     public function clearIdentity()
     {
+        $id = $this->getIdentity();
+        
         $this->getStorage()->clear();
         
-        $this->events()->trigger('clearIdentity.post');
+        $this->events()->trigger('clearIdentity.post', $this, array(
+           'authIdentity' => $id 
+        ));
     }
     
     /**
-     * TODO should I throw the exception here?
-     * @return int|null
+     * @return int
      */
     public function getLocalIdentityId() {
         if(!$this->hasIdentity()) {
-            //throw new NoLoggedInException("User is not logged in");
-            return null;
+            throw new NoLoggedInException("User is not logged in");
         }
         
         $authIdentity = $this->getIdentity();
         $localId = $authIdentity->getLocalIdentityId();
         if(empty($localId)) {
-            //throw new NoLocalIdException("User has got no local identity");
-            return null;
+            throw new NoLocalIdException("User has got no local identity");
         }
         
         return $localId;
-    }
-    
-    public function setLocator(Locator $locator) {
-        $this->locator = $locator;
-    }
-    
-    public function getLocator() {
-        return $this->locator;
     }
     
     /**

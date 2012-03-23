@@ -20,11 +20,7 @@ class IdentityController extends ZendActionController {
     }
     
     public function meAction() {
-        //mz: TODO I believe getLocalIdentityId should throw exception if not logged in!
         $id = $this->getLocator()->get('KapitchiIdentity\Service\Auth')->getLocalIdentityId();
-        if(empty($id)) {
-            throw new \Exception("User is not logged in!");
-        }
         
         $identityService = $this->getIdentityService();
         $identity = $identityService->get(array('priKey' => $id), true);

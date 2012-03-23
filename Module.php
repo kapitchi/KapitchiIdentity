@@ -15,10 +15,23 @@ class Module extends ModuleAbstract {
         $locator      = $app->getLocator();
         
         $events = StaticEventManager::getInstance();
+        $instance = $this;
         
         //register auth strategies
-        $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.init',
-                array($locator->get('KapitchiIdentity\Service\Auth\Credential'), 'onInit'));
+        $events->attach('KapitchiIdentity\Controller\AuthController', 'login.pre', function($e) use ($locator, $instance) {
+            $strategies = $instance->getOption('auth.strategies', array());
+            $controller = $e->getTarget();
+            foreach($strategies as $strategyDi => $enabled) {
+                if($enabled) {
+                    $strategy = $locator->get($strategyDi);
+                    if(!$strategy instanceof AuthStrategy\Strategy) {
+                        throw RuntimeException(get_class($strategy) . " is not auth strategy");
+                    }
+                    $controller->events()->attachAggregate($strategy);
+                    $strategy->onLoginPre($e);
+                }
+            }
+        });
         
         //auth-identity
         $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function($e) use($locator) {
@@ -32,8 +45,8 @@ class Module extends ModuleAbstract {
         });
         
         //plugins
-        if($this->getOption('plugins.KapitchiAcl', true)) {
-            $plugin = $locator->get('KapitchiIdentity\Plugin\KapitchiAcl');
+        if($this->getOption('plugins.ZfcAcl', true)) {
+            $plugin = $locator->get('KapitchiIdentity\Plugin\ZfcAcl');
             $plugin->bootstrap();
         }
             

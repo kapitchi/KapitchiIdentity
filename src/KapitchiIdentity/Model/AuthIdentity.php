@@ -3,7 +3,8 @@
 namespace KapitchiIdentity\Model;
 
 use Zend\Acl\Role,
-    KapitchiBase\Model\ModelAbstract;
+    ZfcBase\Model\ModelAbstract,
+    InvalidArgumentException;
 
 class AuthIdentity extends ModelAbstract implements Role {
     protected $identity;
@@ -11,13 +12,18 @@ class AuthIdentity extends ModelAbstract implements Role {
     protected $localIdentityId;
     
     public function __construct($identity, $roleId, $localIdentityId = null) {
+        $this->setIdentity($identity);
         $this->setRoleId($roleId);
         
-        $this->identity = $identity;
-        $this->localIdentityId = $localIdentityId;
+        if($localIdentityId !== null) {
+            $this->setLocalIdentityId($localIdentityId);
+        }
     }
     
     public function setRoleId($roleId) {
+        if(empty($roleId)) {
+            throw InvalidArgumentException("Role ID must be a non empty string");
+        }
         $this->roleId = $roleId;
     }
     
@@ -28,9 +34,17 @@ class AuthIdentity extends ModelAbstract implements Role {
     public function getIdentity() {
         return $this->identity;
     }
-    
+
+    public function setIdentity($identity) {
+        $this->identity = $identity;
+    }
+
     public function getLocalIdentityId() {
         return $this->localIdentityId;
+    }
+
+    public function setLocalIdentityId($localIdentityId) {
+        $this->localIdentityId = $localIdentityId;
     }
     
 //    public function serialize() {

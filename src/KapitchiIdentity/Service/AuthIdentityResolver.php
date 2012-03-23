@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Service\Auth;
+namespace KapitchiIdentity\Service;
 
 interface AuthIdentityResolver {
     public function resolveAuthIdentity($id);
