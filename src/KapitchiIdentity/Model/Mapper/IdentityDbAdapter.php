@@ -9,7 +9,7 @@ use KapitchiIdentity\Model\Mapper\Identity as IdentityMapper,
     //Zend\Paginator\Adapter as PaginatorAdapter;
     //Zend\Paginator\AdapterAggregate;
 
-class IdentityZendDb extends DbAdapterMapper implements IdentityMapper {
+class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
     protected $tableName = 'identity';
     private $identityTable;
     

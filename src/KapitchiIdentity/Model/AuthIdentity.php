@@ -2,35 +2,32 @@
 
 namespace KapitchiIdentity\Model;
 
-use Zend\Acl\Role,
-    ZfcBase\Model\ModelAbstract,
+use ZfcBase\Model\ModelAbstract,
     InvalidArgumentException;
 
-class AuthIdentity extends ModelAbstract implements Role {
+class AuthIdentity extends ModelAbstract {
     protected $identity;
-    protected $roleId;
     protected $localIdentityId;
+    protected $roleId;
     
-    public function __construct($identity, $roleId, $localIdentityId = null) {
+    public function __construct($identity, $localIdentityId = null, $roleId = null) {
         $this->setIdentity($identity);
-        $this->setRoleId($roleId);
-        
         if($localIdentityId !== null) {
             $this->setLocalIdentityId($localIdentityId);
         }
-    }
-    
-    public function setRoleId($roleId) {
-        if(empty($roleId)) {
-            throw InvalidArgumentException("Role ID must be a non empty string");
+        if($roleId !== null) {
+            $this->setRoleId($roleId);
         }
-        $this->roleId = $roleId;
     }
     
     public function getRoleId() {
         return $this->roleId;
     }
-    
+
+    public function setRoleId($roleId) {
+        $this->roleId = $roleId;
+    }
+        
     public function getIdentity() {
         return $this->identity;
     }
@@ -47,17 +44,7 @@ class AuthIdentity extends ModelAbstract implements Role {
         $this->localIdentityId = $localIdentityId;
     }
     
-//    public function serialize() {
-//        return serialize($this->toArray());
-//    }
-//    
-//    public function unserialize($data) {
-//        var_dump($data);
-//        exit;
-//        $this->fromArray($data);
-//    }
-    
     public function __toString() {
-        return $this->getIdentity() . ' [' . $this->getRoleId() . ']';
+        return $this->getIdentity() . ' [' . $this->getLocalIdentityId() . ']';
     }
 }

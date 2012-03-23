@@ -6,7 +6,7 @@ use KapitchiBase\Mapper\DbAdapterMapper,
     KapitchiIdentity\Model\AuthCredential,
     KapitchiIdentity\Model\Mapper\AuthCredential as AuthCredentialMapper;
 
-class AuthCredentialZendDb extends DbAdapterMapper implements AuthCredentialMapper {
+class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialMapper {
     protected $tableName = 'auth_credential';
     
     public function findByUsername($username) {

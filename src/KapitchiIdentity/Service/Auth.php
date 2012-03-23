@@ -4,16 +4,18 @@ namespace KapitchiIdentity\Service;
 
 use     Zend\Authentication\AuthenticationService as ZendAuthenticationService,
         Zend\Di\Locator,
-        Exception as NoLocalIdException,
-        Exception as NoLoggedInException,
-        KapitchiIdentity\Model\AuthIdentity,
         Zend\Authentication\Adapter,
         Zend\EventManager\EventCollection,
-        Zend\EventManager\EventManager;
-
+        Zend\EventManager\EventManager,
+        Zend\Acl\Role\GenericRole,
+        KapitchiIdentity\Model\AuthIdentity,
+        Exception as NoLocalIdException,
+        Exception as NoLoggedInException;
+        
 class Auth extends ZendAuthenticationService {
     
     protected $events;
+    protected $role;
 
     public function authenticate(Adapter $adapter) {
         $result = $adapter->authenticate();
@@ -27,7 +29,7 @@ class Auth extends ZendAuthenticationService {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
             }
             else {
-                $authIdentity = new AuthIdentity($result->getIdentity(), 'auth');
+                $authIdentity = new AuthIdentity($result->getIdentity());
             }
             
             $this->events()->trigger('authenticate.valid', array(

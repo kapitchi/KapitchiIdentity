@@ -125,6 +125,7 @@ Parameters:
 
 Parameters:
 
+* result - authentication result
 * adapter - authentication adapter/strategy
 * authIdentity - [Auth identity](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) object
 

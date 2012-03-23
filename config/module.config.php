@@ -50,18 +50,29 @@ return array(
             'KapitchiIdentity\Service\Identity' => array(
                 'parameters' => array(
                     'modelPrototype' => 'KapitchiIdentity\Model\Identity',
-                    'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityZendDb',
+                    'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
+                ),
+            ),
+            'KapitchiIdentity\Service\Role' => array(
+                'parameters' => array(
+                    'authService' => 'KapitchiIdentity\Service\Auth',
+                    'identityRoleMapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
                 ),
             ),
             //auth strategies
             'KapitchiIdentity\AuthStrategy\Credential' => array(
                 'parameters' => array(
-                    'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialZendDb',
+                    'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),
             //mappers
-            'KapitchiIdentity\Model\Mapper\IdentityZendDb' => array(
+            'KapitchiIdentity\Model\Mapper\IdentityDbAdapter' => array(
+                'parameters' => array(
+                    'adapter' => 'Zend\Db\Adapter\Adapter',
+                ),
+            ),
+            'KapitchiIdentity\Model\Mapper\IdentityRoleMapper' => array(
                 'parameters' => array(
                     'adapter' => 'Zend\Db\Adapter\Adapter',
                 ),
@@ -70,7 +81,7 @@ return array(
             'KapitchiIdentity\Plugin\ZfcAcl' => array(
                 'parameters' => array(
                     'aclService' => 'ZfcAcl\Service\Acl',
-                    'authService' => 'KapitchiIdentity\Service\Auth',
+                    'roleService' => 'KapitchiIdentity\Service\Role',
                 ),
             ),
             

@@ -46,7 +46,7 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         $mapper = $this->getCredentialMapper();
         $user = $mapper->findByUsername($id);
         
-        return new AuthIdentity($id, 'user', $user->getIdentityId());
+        return new AuthIdentity($id, $user->getIdentityId());
     }
     
     public function authenticate() {
