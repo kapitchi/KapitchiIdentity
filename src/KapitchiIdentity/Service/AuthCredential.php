@@ -22,6 +22,8 @@ class AuthCredential extends ModelServiceAbstract {
         $instance = $this;
         $events = $this->events();
         $mapper = $this->getMapper();
+        
+        //get
         $events->attach('get.load', function($e) use ($mapper) {
             if($e->getParam('identityId')) {
                 return $mapper->findByIdentityId($e->getParam('identityId'));
@@ -31,6 +33,8 @@ class AuthCredential extends ModelServiceAbstract {
             }
         });
         
+        
+        //persist
         $events->attach('persist.pre', function($e) use ($mapper, $instance) {
             $model = $e->getParam('model');
             $data = $e->getParam('data');

@@ -15,7 +15,6 @@ use     Zend\Authentication\AuthenticationService as ZendAuthenticationService,
 class Auth extends ZendAuthenticationService {
     
     protected $events;
-    protected $role;
 
     public function authenticate(Adapter $adapter) {
         $result = $adapter->authenticate();

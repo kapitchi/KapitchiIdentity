@@ -27,11 +27,15 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
     }
     
     public function persist(ModelAbstract $model) {
+        $identityTable = $this->getIdentityTable();
+        $data = $this->toScalarValueArray($model);
         if($model->getId()) {
-            $ret = $this->update($model);
+            unset($data['id']);
+            $ret = $identityTable->update($data, array('id' => $model->getId()));
         }
         else {
-            $ret = $this->insert($model);
+            $ret = $identityTable->insert($data);
+            $model->setId((int)$identityTable->getLastInsertId());
         }
         
         return $ret;
@@ -55,26 +59,6 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
             $array[] = $item;
         }
         return new \Zend\Paginator\Adapter\ArrayAdapter($array);
-    }
-    
-    protected function insert(ModelAbstract $model) {
-        $identityTable = $this->getIdentityTable();
-        
-        $data = $model->toArray();
-        $ret = $identityTable->insert($data);
-        $model->setId((int)$identityTable->getLastInsertId());
-        
-        return $ret;
-    }
-    
-    protected function update(ModelAbstract $model) {
-        $identityTable = $this->getIdentityTable();
-        
-        $data = $model->toArray();
-        unset($data['id']);
-        $ret = $identityTable->update($data, array('id' => $model->getId()));
-        
-        return $ret;
     }
     
     protected function getIdentityTable() {

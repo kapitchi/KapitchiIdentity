@@ -54,7 +54,7 @@ class IdentityController extends ZendActionController {
             $postData = $request->post()->toArray();
             if($form->isValid($postData)) {
                 $ret = $this->getIdentityService()->persist($form->getValues());
-                return $this->redirect()->toRoute('KapitchiIdentity/identity/update', array('id' => $ret['model']->getId()));
+                return $this->redirect()->toRoute('KapitchiIdentity/Identity/Update', array('id' => $ret['model']->getId()));
             }
         }
         

@@ -46,24 +46,38 @@ Application services
 This service extends from Zend\Authentication\AuthenticationService so provides whole API as Zend class does.
 It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID only.
 
-New public methods (against [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php)):
+Public methods (against [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php)):
 
 * getLocalIdentityId() - helper method which returns users local identity id. If user is not logged in throws an exception.
 
-### KapitchiIdentity\Service\Role
+### KapitchiIdentity\Service\IdentityRole ([Model service](https://github.com/kapitchi/KapitchiBase/blob/master/src/KapitchiBase/Service/ModelServiceAbstract.php))
 
-TODO 
+This service is used to manage identity role relationship. Currently one role is supported only.
 
-Public methods:
+Public methods (plus model service methods):
 
 * getCurrentRole() - returns current identity's role object
+* get(array) - array(identityId => value)
+* persist(array)
+* remove(priKey)
 
 
 ### KapitchiIdentity\Service\Identity
 
 Service for CRUD operations on Identity objects.
 
-TODO
+* get(array) - array(priKey => value)
+* persist(array)
+* remove(priKey)
+
+### KapitchiIdentity\Service\AuthCredential
+
+Service for CRUD operations on AuthIdentity objects. Manages username and password for identities.
+
+* get(array) - array(identityId => value)
+* persist(array)
+* remove(priKey)
+
 
 Authentication strategies
 -------------------------
