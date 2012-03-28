@@ -4,26 +4,34 @@ return array(
         'options' => array(
             'identity' => array(
                 'view' => array(
-                    'item_count_per_page' => 10,
+                    'item_count_per_page' => 10,//identity index page - number of identies to render per page
                 )
             ),
             'auth' => array(
+                //you can register your new strategies by adding it into this option array
                 'strategies' => array(
-                    'KapitchiIdentity\AuthStrategy\Credential' => true,
-                    'KapitchiIdentity\AuthStrategy\Http' => false,
+                    'KapitchiIdentity\AuthStrategy\Credential' => true,//username/password strategy
+                    'KapitchiIdentity\AuthStrategy\Http' => false,//http strategy - needs to be finished
                 )
             ),
+            //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
             'plugins' => array(
+                //used to add credential (username/password) form when editing/creating identity
                 'IdentityAuthCredentialModel' => array(
                     'class' => 'KapitchiIdentity\Plugin\IdentityAuthCredentialModel',
                 ),
+                //adds role management for identities - identity form
                 'IdentityRoleModel' => array(
                     'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
                 ),
+                //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
                 'ZfcAcl' => array(
                     'class' => 'KapitchiIdentity\Plugin\ZfcAcl',
                 )
             )
+            
+            //SEE BELOW - "DI options" for more options
+            
         ),
     ),
     'di' => array(
@@ -32,16 +40,19 @@ return array(
             )
         ),
         'instance' => array(
-            'alias' => array(
-                'auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash'
-            ),
-            //needs configuring
+            //DI options
             'auth_credential_password_hash' => array(
                 'parameters' => array(
-                    'sharedSalt' => 'TODO-CHANGE ME!',
-                    'algorithm' => 'blowfish',
-                    'cost' => 0,
+                    'sharedSalt' => 'TODO-CHANGE ME!',//this is "shared salt" used to prefix all passwords and then encrypted to add additional protection
+                    'algorithm' => 'blowfish',//algorithm to be used to encrypt passwords - 'md5', 'blowfish', 'sha256', 'sha512'
+                    'cost' => 0,//used to set rounds param for e.g. sha256, ... see http://php.net/manual/en/function.crypt.php 
                 )
+            ),
+            
+            //END - DI options
+            
+            'alias' => array(
+                'auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash'
             ),
             
             //XXX

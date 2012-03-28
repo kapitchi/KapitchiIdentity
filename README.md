@@ -96,9 +96,23 @@ A strategy is responsible for adding these fields into login form and validating
 If the strategy finds out the form (a strategy checks only fields/subform it has added) is valid i.e. user provided both user name and password it returns authentication adapter (itself).
 This will trigger an authentication on the adapter a strategy provides.
 
-Once an user is authenticated successfully Auth service checks if strategy is able to provide local identity ID. In order to recognize this a strategy needs to implement AuthIdentityResolver interface.
+Once an user is authenticated successfully Auth service checks if strategy is able to provide local identity ID. In order to recognize this a strategy needs to implement [AuthIdentityResolver interface](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Service/AuthIdentityResolver.php).
+If it does so, $strategy->resolveAuthIdentity(id) is called and is responsible to return [AuthIdentity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) with local identity id set.
+Otherwise generic AuthIdentity with _auth_ role is created by default with no local identity id set.
+
+### Registering new authentication strategy
 
 TODO
+
+Roles
+-----
+
+Responsibility of this module is to provide role of an user also. At the moment only one role can be assigned to a identity/user.
+A role should be known from local identity id (if authentication strategy is able to resolve it).
+Some strategies might not implement this although. These strategies are required to implement AuthIdentityResolver and set role id to AuthIdentity.
+
+Example might be Facebook Connect strategy which is used to authenticate Facebook users to the site.
+Such strategy can set 'facebook' role for the user. This can be then used to help an application to decide (usign ZfcAcl module) if an user can see certain (social/facebook) blocks. I hope this makes sense ;)
 
 
 Events
@@ -171,5 +185,18 @@ Parameters:
 * authIdentity - [Auth identity](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) object
 
 
+
+Model services events
+---------------------
+
+Model services implements common API to persist/remove models.
+
+TODO
+
+### KapitchiIdentity\Service\Identity
+
+### KapitchiIdentity\Service\IdentityRole
+
+### KapitchiIdentity\Service\AuthCredential
 
 
