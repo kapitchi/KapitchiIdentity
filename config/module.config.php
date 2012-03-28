@@ -14,7 +14,12 @@ return array(
                 )
             ),
             'plugins' => array(
-                'ZfcAcl' => true
+                'IdentityRoleModel' => array(
+                    'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
+                ),
+                'ZfcAcl' => array(
+                    'class' => 'KapitchiIdentity\Plugin\ZfcAcl',
+                )
             )
         ),
     ),
@@ -61,6 +66,12 @@ return array(
                     'modelPrototype' => 'KapitchiIdentity\Model\IdentityRole',
                 ),
             ),
+            'KapitchiIdentity\Service\AuthCredential' => array(
+                'parameters' => array(
+                    'mapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
+                    'modelPrototype' => 'KapitchiIdentity\Model\AuthCredential',
+                ),
+            ),
             //auth strategies
             'KapitchiIdentity\AuthStrategy\Credential' => array(
                 'parameters' => array(
@@ -82,8 +93,16 @@ return array(
             //plugins
             'KapitchiIdentity\Plugin\ZfcAcl' => array(
                 'parameters' => array(
+                    //plugins should be using locators!!!
                     'aclService' => 'ZfcAcl\Service\Acl',
                     'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole',
+                ),
+            ),
+            'KapitchiIdentity\Plugin\IdentityRole' => array(
+                'parameters' => array(
+                    //'extName' => 'KapitchiIdentity_IdentityRole',
+                    //'modelService' => 'KapitchiIdentity\Service\Identity',
+                    //'modelFormClass' => 'KapitchiIdentity\Form\Identity',
                 ),
             ),
             

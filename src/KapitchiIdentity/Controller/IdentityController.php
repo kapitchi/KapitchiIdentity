@@ -3,12 +3,12 @@
 namespace KapitchiIdentity\Controller;
 
 use Zend\Authentication\Adapter as AuthAdapter,
-        Zend\Stdlib\ResponseDescription as Response,
-        Zend\View\Model\ViewModel as ViewModel,
-        KapitchiBase\View\Model\Table as TableViewModel,
-        KapitchiIdentity\Module as Module,
-        Zend\Mvc\Controller\ActionController as ZendActionController,
-        RunTimeException as NoIdException;
+    Zend\Stdlib\ResponseDescription as Response,
+    Zend\View\Model\ViewModel as ViewModel,
+    KapitchiBase\View\Model\Table as TableViewModel,
+    KapitchiIdentity\Module as Module,
+    Zend\Mvc\Controller\ActionController as ZendActionController,
+    RunTimeException as NoIdException;
 
 class IdentityController extends ZendActionController {
     protected $module;

@@ -6,7 +6,7 @@ use Zend\EventManager\EventCollection,
         Zend\EventManager\ListenerAggregate,
         KapitchiIdentity\Model\AuthIdentity;
 
-abstract class StrategyAbstract implements Strategy, ListenerAggregate {
+abstract class StrategyAbstract implements Strategy {
     protected $listeners = array();
     protected $viewModel;
     protected $controller;

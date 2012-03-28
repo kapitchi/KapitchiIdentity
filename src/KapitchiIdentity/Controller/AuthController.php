@@ -6,7 +6,9 @@ use Zend\Authentication\Adapter as AuthAdapter,
         Exception as AuthException,
         Zend\Stdlib\ResponseDescription as Response,
         Zend\View\Model\ViewModel as ViewModel,
-        KapitchiIdentity\Module as Module;
+        KapitchiIdentity\Module as Module,
+        KapitchiIdentity\AuthStrategy\Strategy as AuthStrategy,
+        RuntimeException as NotAuthStrategy;
 
 class AuthController extends \Zend\Mvc\Controller\ActionController {
     protected $module;
@@ -40,6 +42,9 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function loginAction() {
+        //register auth strategies
+        $this->registerAuthStrategies();
+        
         $response = $this->getResponse();
         $request = $this->getRequest();
         
@@ -86,6 +91,19 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         }
 
         return $viewModel;
+    }
+    
+    protected function registerAuthStrategies() {
+        $strategies = $this->getModule()->getOption('auth.strategies');
+        foreach($strategies as $strategyDi => $enabled) {
+            if($enabled) {
+                $strategy = $this->getLocator()->get($strategyDi);
+                if(!$strategy instanceof AuthStrategy) {
+                    throw new NotAuthStrategy(get_class($strategy) . " is not auth strategy");
+                }
+                $this->events()->attachAggregate($strategy);
+            }
+        }
     }
     
     //listeners

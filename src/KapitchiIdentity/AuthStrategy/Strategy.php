@@ -2,8 +2,9 @@
 
 namespace KapitchiIdentity\AuthStrategy;
 
-use Zend\Authentication\Adapter;
+use Zend\Authentication\Adapter,
+    Zend\EventManager\ListenerAggregate;
 
-interface Strategy extends Adapter {
+interface Strategy extends Adapter, ListenerAggregate {
     
 }

@@ -22,6 +22,7 @@ class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleMappe
     public function remove(ModelAbstract $model) {
         throw new \Exception('TODO');
     }
+    
     public function getPaginatorAdapter(array $params) {
         throw new \Exception('TODO');
     }
