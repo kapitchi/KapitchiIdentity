@@ -7,7 +7,7 @@ class AuthCredential extends ModelAbstract implements IdentityAware {
     protected $id;
     protected $identityId;
     protected $username;
-    protected $password;
+    protected $passwordHash;
     
     public function getId() {
         return $this->id;
@@ -24,15 +24,15 @@ class AuthCredential extends ModelAbstract implements IdentityAware {
     public function setUsername($username) {
         $this->username = $username;
     }
-
-    public function getPassword() {
-        return $this->password;
+    
+    public function getPasswordHash() {
+        return $this->passwordHash;
     }
 
-    public function setPassword($password) {
-        $this->password = $password;
+    public function setPasswordHash($passwordHash) {
+        $this->passwordHash = $passwordHash;
     }
-
+    
     public function getIdentityId() {
         return $this->identityId;
     }

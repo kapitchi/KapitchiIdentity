@@ -14,9 +14,12 @@ return array(
                 )
             ),
             'plugins' => array(
-                'IdentityRoleModel' => array(
-                    'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
+                'IdentityAuthCredentialModel' => array(
+                    'class' => 'KapitchiIdentity\Plugin\IdentityAuthCredentialModel',
                 ),
+//                'IdentityRoleModel' => array(
+//                    'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
+//                ),
                 'ZfcAcl' => array(
                     'class' => 'KapitchiIdentity\Plugin\ZfcAcl',
                 )
@@ -29,6 +32,19 @@ return array(
             )
         ),
         'instance' => array(
+            'alias' => array(
+                'auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash'
+            ),
+            //needs configuring
+            'auth_credential_password_hash' => array(
+                'parameters' => array(
+                    'sharedSalt' => 'TODO-CHANGE ME!',
+                    'algorithm' => 'blowfish',
+                    'cost' => 0,
+                )
+            ),
+            
+            //XXX
             'Zend\Authentication\Adapter\Http' => array(
                 'parameters' => array(
                     'config' => array(
@@ -37,6 +53,7 @@ return array(
                      ),
                 ),
             ),
+            
             //controllers
             'KapitchiIdentity\Controller\AuthController' => array(
                 'parameters' => array(
@@ -70,12 +87,19 @@ return array(
                 'parameters' => array(
                     'mapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'modelPrototype' => 'KapitchiIdentity\Model\AuthCredential',
+                    'passwordHash' => 'auth_credential_password_hash',
                 ),
             ),
+//            'KapitchiIdentity\Service\Password' => array(
+//                'parameters' => array(
+//                    'hash' => 'auth_identity_password_hash'
+//                )
+//            ),
             //auth strategies
             'KapitchiIdentity\AuthStrategy\Credential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
+                    'passwordHash' => 'auth_credential_password_hash',
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),

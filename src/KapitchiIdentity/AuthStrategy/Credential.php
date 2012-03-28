@@ -10,6 +10,7 @@ use Zend\EventManager\EventCollection,
 
 class Credential extends StrategyAbstract implements AuthIdentityResolver {
     protected $credentialMapper;
+    protected $passwordHash;
     protected $credentialLoginForm;
     protected $extName = 'KapitchiIdentity_Credential';
     
@@ -58,7 +59,8 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
             return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, null);
         }
         
-        if($user->getPassword() != $this->password) {
+        $hash = $user->getPasswordHash();
+        if(!$this->getPasswordHash()->isEqual($this->password, $hash)) {
             $form->getElement('password')->addError('Incorrect password');
             return new Result(Result::FAILURE_CREDENTIAL_INVALID, null);
         }
@@ -72,6 +74,15 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
 
     public function setCredentialLoginForm($credentialLoginForm) {
         $this->credentialLoginForm = $credentialLoginForm;
+    }
+    
+
+    public function getPasswordHash() {
+        return $this->passwordHash;
+    }
+
+    public function setPasswordHash($passwordHash) {
+        $this->passwordHash = $passwordHash;
     }
 
     public function getCredentialMapper() {
