@@ -8,7 +8,7 @@ use KapitchiBase\Mapper\DbAdapterMapper,
     KapitchiIdentity\Model\Mapper\AuthCredential as AuthCredentialMapper;
 
 class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialMapper {
-    protected $tableName = 'auth_credential';
+    protected $tableName = 'identity_auth_credential';
     
     public function findByPriKey($key) {
         

@@ -100,7 +100,12 @@ Once an user is authenticated successfully Auth service checks if strategy is ab
 If it does so, $strategy->resolveAuthIdentity(id) is called and is responsible to return [AuthIdentity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) with local identity id set.
 Otherwise generic AuthIdentity with _auth_ role is created by default with no local identity id set.
 
-### Registering new authentication strategy
+### Extending authentication strategies
+
+You have got two options how to extends authentication with your own authentication strategy.
+
+#### Implement listener for login.auth event
+In order to implement simplest authentication strategy you just need to register listener to KapitchiIdentity\Controller\AuthController:login.auth event.
 
 TODO
 

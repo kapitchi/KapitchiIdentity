@@ -45,9 +45,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         //register auth strategies
         $this->registerAuthStrategies();
         
-        $response = $this->getResponse();
-        $request = $this->getRequest();
-        
         $form = $this->getLoginForm();
         $viewModel = $this->getLoginViewModel();
         $viewModel->setVariable('loginForm', $form);
