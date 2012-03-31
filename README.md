@@ -17,8 +17,11 @@ Features
   * HTTP Basic/Digest [IN PROGRESS]
   * Facebook Connect [NOT STARTED]
   * LDAP [NOT STARTED]
+* Registration 
+  * User name/password form ([RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php)) [COMPLETED]
+  * Email activation (username as email address) [NOT STARTED]
 * Identity management [IN PROGRESS]
-* Identity - Role management [NOT STARTED]
+* Identity - Role management ([IdentityRoleModel plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRoleModel.php)) [COMPLETED]
 * Role management [NOT STARTED]
 
 

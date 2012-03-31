@@ -24,6 +24,7 @@ return array(
                 'IdentityRoleModel' => array(
                     'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
                 ),
+                //adds username/password form to registration form
                 'RegistrationAuthCredential' => array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
                 ),

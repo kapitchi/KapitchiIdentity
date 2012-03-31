@@ -12,6 +12,7 @@ class Registration extends ModelServiceAbstract {
 
     protected $identityMapper;
     protected $identityRoleMapper;
+    protected $defaultRoleId = 'user';
     
     public function register(array $data) {
         $model = $this->createModelFromArray($data);
@@ -19,7 +20,7 @@ class Registration extends ModelServiceAbstract {
         //TODO DI
         $identity = new Identity();
         $identityRole = new IdentityRoleModel();
-        $identityRole->setRoleId('user');
+        $identityRole->setRoleId($this->getDefaultRoleId());
         
         $params = array(
             'data' => $data,
@@ -87,5 +88,12 @@ class Registration extends ModelServiceAbstract {
         $this->identityRoleMapper = $identityRoleMapper;
     }
 
+    public function getDefaultRoleId() {
+        return $this->defaultRoleId;
+    }
+
+    public function setDefaultRoleId($defaultRoleId) {
+        $this->defaultRoleId = $defaultRoleId;
+    }
 
 }
