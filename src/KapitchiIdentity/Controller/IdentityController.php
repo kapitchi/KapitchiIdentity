@@ -19,20 +19,6 @@ class IdentityController extends ZendActionController {
         $this->module = $module;
     }
     
-    public function meAction() {
-        $acl = $this->getLocator()->get('ZfcAcl\Service\Acl');
-        $id = $this->getLocator()->get('KapitchiIdentity\Service\Auth')->getLocalIdentityId();
-        
-        $identityService = $this->getIdentityService();
-        $identity = $identityService->get(array('priKey' => $id), true);
-        
-        $model = new ViewModel(
-            array('identity' => $identity,
-        ));
-        
-        return $model;
-    }
-    
     public function indexAction() {
         $routeMatch = $this->getEvent()->getRouteMatch();
         $page = $routeMatch->getParam('page', 1);
@@ -146,6 +132,5 @@ class IdentityController extends ZendActionController {
     public function setIdentityService($identityService) {
         $this->identityService = $identityService;
     }
-
 
 }

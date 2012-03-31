@@ -20,10 +20,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         $this->module = $module;
     }
     
-    public function registerAction() {
-        //TODO
-    }
-    
     public function logoutAction() {
         $authService = $this->getAuthService();
         $identity = $authService->getIdentity();
@@ -118,7 +114,7 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     
     public function loginPost($e) {
         if($e->getParam('result')->isValid()) {
-            return $this->redirect()->toRoute('KapitchiIdentity/Identity/Me');
+            return $this->redirect()->toRoute('KapitchiIdentity/Profile/Me');
         }
     }
     

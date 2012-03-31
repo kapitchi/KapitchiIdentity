@@ -2,7 +2,7 @@
 
 namespace KapitchiIdentity\Model\Mapper;
 
-use KapitchiBase\Mapper\DbAdapterMapper,
+use ZfcBase\Mapper\DbAdapterMapper,
     KapitchiIdentity\Model\AuthCredential,
     ZfcBase\Model\ModelAbstract,
     KapitchiIdentity\Model\Mapper\AuthCredential as AuthCredentialMapper;

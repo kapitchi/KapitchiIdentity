@@ -24,6 +24,9 @@ return array(
                 'IdentityRoleModel' => array(
                     'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
                 ),
+                'RegistrationAuthCredential' => array(
+                    'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
+                ),
                 //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
                 'ZfcAcl' => array(
                     'class' => 'KapitchiIdentity\Plugin\ZfcAcl',
@@ -79,6 +82,17 @@ return array(
                     'identityForm' => 'KapitchiIdentity\Form\Identity',
                 ),
             ),
+            'KapitchiIdentity\Controller\RegistrationController' => array(
+                'parameters' => array(
+                    'registrationService' => 'KapitchiIdentity\Service\Registration',
+                    'registrationForm' => 'KapitchiIdentity\Form\Registration',
+                ),
+            ),
+            'KapitchiIdentity\Controller\ProfileController' => array(
+                'parameters' => array(
+                    'identityService' => 'KapitchiIdentity\Service\Identity',
+                ),
+            ),
             
             //SERVICES
             'KapitchiIdentity\Service\Identity' => array(
@@ -101,11 +115,14 @@ return array(
                     'passwordHash' => 'auth_credential_password_hash',
                 ),
             ),
-//            'KapitchiIdentity\Service\Password' => array(
-//                'parameters' => array(
-//                    'hash' => 'auth_identity_password_hash'
-//                )
-//            ),
+            'KapitchiIdentity\Service\Registration' => array(
+                'parameters' => array(
+                    'mapper' => 'KapitchiIdentity\Model\Mapper\RegistrationDbAdapter',
+                    'identityMapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
+                    'identityRoleMapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
+                    'modelPrototype' => 'KapitchiIdentity\Model\Registration',
+                )
+            ),
             //auth strategies
             'KapitchiIdentity\AuthStrategy\Credential' => array(
                 'parameters' => array(

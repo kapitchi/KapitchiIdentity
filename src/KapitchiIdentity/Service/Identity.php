@@ -3,7 +3,7 @@
 namespace KapitchiIdentity\Service;
 
 use     Zend\Form\Form,
-        KapitchiBase\Service\ModelServiceAbstract,
+        ZfcBase\Service\ModelServiceAbstract,
         KapitchiIdentity\Model\Identity as IdentityModel;
 
 class Identity extends ModelServiceAbstract {

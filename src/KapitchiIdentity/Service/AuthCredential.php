@@ -3,7 +3,7 @@
 namespace KapitchiIdentity\Service;
 
 use     Zend\Form\Form,
-        KapitchiBase\Service\ModelServiceAbstract,
+        ZfcBase\Service\ModelServiceAbstract,
         KapitchiIdentity\Model\Identity as IdentityModel,
         KapitchiIdentity\Module as Module,
         InvalidArgumentException as PasswordNoMatch;

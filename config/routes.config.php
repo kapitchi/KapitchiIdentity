@@ -8,10 +8,10 @@ return array(
         ),
         'may_terminate' => false,
         'child_routes' => array(
-            'Identity' => array(
+            'Profile' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route'    => '/identity',
+                    'route'    => '/profile',
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
@@ -20,28 +20,27 @@ return array(
                         'options' => array(
                             'route' => '/me',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                'controller' => 'KapitchiIdentity\Controller\ProfileController',
                                 'action'     => 'me',
                             ),
                         ),
                     ),
-                    'Login' => array(
+                ),
+            ),
+            'Identity' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route'    => '/identity',
+                ),
+                'may_terminate' => false,
+                'child_routes' => array(
+                    'Register' => array(
                         'type' => 'Literal',
                         'options' => array(
-                            'route' => '/login',
+                            'route' => '/register',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\AuthController',
-                                'action'     => 'login',
-                            ),
-                        ),
-                    ),
-                    'Logout' => array(
-                        'type' => 'Literal',
-                        'options' => array(
-                            'route' => '/logout',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\AuthController',
-                                'action'     => 'logout',
+                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                'action'     => 'register',
                             ),
                         ),
                     ),
@@ -105,12 +104,21 @@ return array(
                             ),
                         ),
                     ),
+                ),
+            ),
+            'Registration' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route'    => '/registration',
+                ),
+                'may_terminate' => false,
+                'child_routes' => array(
                     'Register' => array(
                         'type' => 'Literal',
                         'options' => array(
                             'route' => '/register',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\AuthController',
+                                'controller' => 'KapitchiIdentity\Controller\RegistrationController',
                                 'action'     => 'register',
                             ),
                         ),

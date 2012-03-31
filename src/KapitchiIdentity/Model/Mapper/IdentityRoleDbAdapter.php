@@ -3,7 +3,7 @@
 namespace KapitchiIdentity\Model\Mapper;
 
 use ZfcBase\Model\ModelAbstract,
-    KapitchiBase\Mapper\DbAdapterMapper,
+    ZfcBase\Mapper\DbAdapterMapper,
     KapitchiIdentity\Model\Mapper\IdentityRole as IdentityRoleMapper,
     KapitchiIdentity\Model\IdentityRole;
 

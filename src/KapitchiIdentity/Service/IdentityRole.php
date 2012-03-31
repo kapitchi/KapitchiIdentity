@@ -3,7 +3,7 @@
 namespace KapitchiIdentity\Service;
 
 use     Zend\Acl\Role\GenericRole,
-        KapitchiBase\Service\ModelServiceAbstract,
+        ZfcBase\Service\ModelServiceAbstract,
         KapitchiIdentity\Model\AuthIdentity;
         
 class IdentityRole extends ModelServiceAbstract {

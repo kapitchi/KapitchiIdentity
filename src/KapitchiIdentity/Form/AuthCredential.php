@@ -2,7 +2,7 @@
 
 namespace KapitchiIdentity\Form;
 
-use KapitchiBase\Form\Form;
+use ZfcBase\Form\Form;
 
 class AuthCredential extends Form {
     
