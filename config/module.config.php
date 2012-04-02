@@ -17,16 +17,37 @@ return array(
             //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
             'plugins' => array(
                 //used to add credential (username/password) form when editing/creating identity
-                'IdentityAuthCredentialModel' => array(
-                    'class' => 'KapitchiIdentity\Plugin\IdentityAuthCredentialModel',
+                'IdentityAuthCredential' => array(
+                    'class' => 'KapitchiIdentity\Plugin\IdentityAuthCredential',
                 ),
                 //adds role management for identities - identity form
-                'IdentityRoleModel' => array(
-                    'class' => 'KapitchiIdentity\Plugin\IdentityRoleModel',
+                'IdentityRole' => array(
+                    'class' => 'KapitchiIdentity\Plugin\IdentityRole',
                 ),
+                
+                //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential
+                'RegistrationIdentity' => array(
+                    'class' => 'KapitchiIdentity\Plugin\RegistrationIdentity',
+                    'priority' => 100,
+                    'options' => array(
+                        'role' => 'user'//this role will be assigned to new identity
+                    )
+                ),
+                
                 //adds username/password form to registration form
                 'RegistrationAuthCredential' => array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
+                ),
+                //extends RegistrationAuthCredential for email/password registration with email activation
+                'RegistrationAuthCredentialEmail' => array(
+                    //'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredentialEmail',
+                ),
+                //extends RegistrationAuthCredential for email/password registration with email activation
+                'RegistrationAuthLogin' => array(
+                    'class' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
+                    'options' => array(
+                        'redirect_route' => 'KapitchiIdentity/Profile/Me'
+                    )
                 ),
                 //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
                 'ZfcAcl' => array(
@@ -118,10 +139,17 @@ return array(
             ),
             'KapitchiIdentity\Service\Registration' => array(
                 'parameters' => array(
+                    'aclContextService' => 'ZfcAcl\Service\Context',
                     'mapper' => 'KapitchiIdentity\Model\Mapper\RegistrationDbAdapter',
                     'identityMapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
                     'identityRoleMapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
                     'modelPrototype' => 'KapitchiIdentity\Model\Registration',
+                )
+            ),
+            'KapitchiIdentity\Service\IdentityRegistration' => array(
+                'parameters' => array(
+                    'mapper' => 'KapitchiIdentity\Model\Mapper\IdentityRegistrationDbAdapter',
+                    'modelPrototype' => 'KapitchiIdentity\Model\IdentityRegistration',
                 )
             ),
             //auth strategies

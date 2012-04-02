@@ -4,10 +4,10 @@ namespace KapitchiIdentity\Plugin;
 
 use ZfcBase\Model\ModelAbstract;
 
-class IdentityRoleModel extends \KapitchiBase\Plugin\ModelPlugin {
+class IdentityRole extends \KapitchiBase\Plugin\ModelPlugin {
     protected $modelServiceClass = 'KapitchiIdentity\Service\Identity';
     protected $modelFormClass = 'KapitchiIdentity\Form\Identity';
-    protected $extName = 'KapitchiIdentity_IdentityRole';
+    protected $extName = 'IdentityRole';
     
     public function getModel(ModelAbstract $model) {
         $service = $this->getLocator()->get('KapitchiIdentity\Service\IdentityRole');
@@ -23,7 +23,7 @@ class IdentityRoleModel extends \KapitchiBase\Plugin\ModelPlugin {
         return $form;
     }
     
-    public function persistModel(ModelAbstract $model, array $extData, array $data) {
+    public function persistModel(ModelAbstract $model, array $data, $extData) {
         $extData['identityId'] = $model->getId();
         return $this->getLocator()->get('KapitchiIdentity\Service\IdentityRole')->persist($extData);
     }

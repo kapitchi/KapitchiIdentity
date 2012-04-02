@@ -4,10 +4,10 @@ namespace KapitchiIdentity\Plugin;
 
 use ZfcBase\Model\ModelAbstract;
 
-class IdentityAuthCredentialModel extends \KapitchiBase\Plugin\ModelPlugin {
+class IdentityAuthCredential extends \KapitchiBase\Plugin\ModelPlugin {
     protected $modelServiceClass = 'KapitchiIdentity\Service\Identity';
     protected $modelFormClass = 'KapitchiIdentity\Form\Identity';
-    protected $extName = 'KapitchiIdentity_AuthCredential';
+    protected $extName = 'AuthCredential';
     
     public function getModel(ModelAbstract $model) {
         $service = $this->getLocator()->get('KapitchiIdentity\Service\AuthCredential');
@@ -23,9 +23,12 @@ class IdentityAuthCredentialModel extends \KapitchiBase\Plugin\ModelPlugin {
         return $form;
     }
     
-    public function persistModel(ModelAbstract $model, array $extData, array $data) {
-        $extData['identityId'] = $model->getId();
-        return $this->getLocator()->get('KapitchiIdentity\Service\AuthCredential')->persist($extData);
+    public function persistModel(ModelAbstract $model, array $data, $extData) {
+        if(!empty($extData)) {
+            $extData['identityId'] = $model->getId();
+            return $this->getLocator()->get('KapitchiIdentity\Service\AuthCredential')->persist($extData);
+        }
+        return null;
     }
     
     public function removeModel(ModelAbstract $model) {

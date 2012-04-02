@@ -5,18 +5,19 @@ namespace KapitchiIdentity\Model;
 use ZfcBase\Model\ModelAbstract;
 
 class Registration extends ModelAbstract {
-    //protected $id;
+    protected $id;
     protected $identityId;
     protected $requestIp;
     protected $created;
+    protected $data;
     
-//    public function getId() {
-//        return $this->id;
-//    }
-//    
-//    public function setId($id) {
-//        $this->id = $id;
-//    }
+    public function getId() {
+        return $this->id;
+    }
+    
+    public function setId($id) {
+        $this->id = $id;
+    }
     
     public function getCreated() {
         return $this->created;
@@ -40,6 +41,14 @@ class Registration extends ModelAbstract {
 
     public function setRequestIp($requestIp) {
         $this->requestIp = $requestIp;
+    }
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function setData($data) {
+        $this->data = $data;
     }
 
 

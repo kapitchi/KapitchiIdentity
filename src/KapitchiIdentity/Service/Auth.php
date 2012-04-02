@@ -19,10 +19,6 @@ class Auth extends ZendAuthenticationService {
     public function authenticate(Adapter $adapter) {
         $result = $adapter->authenticate();
 
-        if($this->hasIdentity()) {
-            $this->clearIdentity();
-        }
-
         if($result->isValid()) {
             if($adapter instanceof AuthIdentityResolver) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
@@ -37,10 +33,18 @@ class Auth extends ZendAuthenticationService {
                 'authIdentity' => $authIdentity,
             ));
             
-            $this->getStorage()->write($authIdentity);
+            $this->setIdentity($authIdentity);
         }
         
         return $result;
+    }
+    
+    public function setIdentity(AuthIdentity $authIdentity) {
+        if($this->hasIdentity()) {
+            $this->clearIdentity();
+        }
+        
+        $this->getStorage()->write($authIdentity);
     }
     
     /**
@@ -70,7 +74,7 @@ class Auth extends ZendAuthenticationService {
         $authIdentity = $this->getIdentity();
         $localId = $authIdentity->getLocalIdentityId();
         if(empty($localId)) {
-            throw new NoLocalIdException("User has got no local identity");
+            return null;
         }
         
         return $localId;

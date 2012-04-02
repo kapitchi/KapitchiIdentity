@@ -15,32 +15,16 @@ class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialM
     }
     
     public function persist(ModelAbstract $model) {
+        $table = $this->getTableGateway($this->tableName, true);
+        $data = $this->toScalarValueArray($model);
         if($model->getId()) {
-            $ret = $this->update($model);
+            unset($data['id']);
+            $ret = $table->update($data, array('id' => $model->getId()));
         }
         else {
-            $ret = $this->insert($model);
+            $ret = $table->insert($data);
+            $model->setId((int)$table->getLastInsertId());
         }
-        
-        return $ret;
-    }
-    
-    protected function insert(ModelAbstract $model) {
-        $identityTable = $this->getTableGateway($this->tableName);
-        
-        $data = $model->toArray();
-        $ret = $identityTable->insert($data);
-        $model->setId((int)$identityTable->getLastInsertId());
-        
-        return $ret;
-    }
-    
-    protected function update(ModelAbstract $model) {
-        $table = $this->getTableGateway($this->tableName);
-        
-        $data = $model->toArray();
-        unset($data['id']);
-        $ret = $table->update($data, array('id' => $model->getId()));
         
         return $ret;
     }

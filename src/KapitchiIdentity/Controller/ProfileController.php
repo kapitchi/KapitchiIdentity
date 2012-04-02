@@ -25,6 +25,10 @@ class ProfileController extends ZendActionController {
         $identityService = $this->getIdentityService();
         $identity = $identityService->get(array('priKey' => $id), true);
         
+        $ret = $acl->isAllowed($identity, 'remove');
+        var_dump($ret);
+        exit;
+        
         $model = new ViewModel(
             array('identity' => $identity,
         ));

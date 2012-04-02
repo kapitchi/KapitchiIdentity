@@ -8,7 +8,7 @@ use KapitchiIdentity\Model\Mapper\Registration as RegistrationMapper,
     KapitchiIdentity\Model\Registration;
 
 class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMapper {
-    protected $tableName = 'identity';
+    protected $tableName = 'identity_registration';
     
     public function findByPriKey($id) {
         $table = $this->getTableGateway($this->tableName);
@@ -20,17 +20,25 @@ class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMappe
             return null;
         }
         
-        return Registration::fromArray($row->getArrayCopy());
+        return $this->createModelFromArray($row->getArrayCopy());
     }
     
     public function persist(ModelAbstract $model) {
         $table = $this->getTableGateway($this->tableName, true);
-
-        $data = $this->toScalarValueArray(array(
-            'registrationRequestIp' => $model->getRequestIp(),
-            'registered' => $model->getCreated(),
-        ));
-        $ret = $table->update($data, array('id' => $model->getIdentityId()));
+        $data = $model->toArray();
+        if(!empty($data['data']) && !is_scalar($data['data'])) {
+            $data['data'] = serialize($data['data']);
+        }
+        $data = $this->toScalarValueArray($data);
+        if($model->getId()) {
+            unset($data['id']);
+            $ret = $table->update($data, array('id' => $model->getId()));
+        }
+        else {
+            $ret = $table->insert($data);
+            $model->setId((int)$table->getLastInsertId());
+        }
+        
         return $ret;
     }
     
@@ -46,6 +54,14 @@ class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMappe
     public function getPaginatorAdapter(array $params) {
         var_dump($params);
         exit;
+    }
+    
+    protected function createModelFromArray(array $data) {
+        if(!empty($data['data'])) {
+            $data['data'] = unserialize($data['data']);
+        }
+        
+        return Registration::fromArray($data);
     }
     
 }

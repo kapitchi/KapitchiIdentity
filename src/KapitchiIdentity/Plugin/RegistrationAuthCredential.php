@@ -4,40 +4,34 @@ namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\StaticEventManager,
     Zend\Mvc\AppContext as Application,
-    KapitchiBase\Plugin\PluginAbstract;
+    ZfcBase\Model\ModelAbstract,
+    KapitchiBase\Plugin\ModelPlugin as PluginAbstract;
 
 class RegistrationAuthCredential extends PluginAbstract {
-    public $extName = 'KapitchiIdentity_AuthCredential';
+    protected $modelServiceClass = 'KapitchiIdentity\Service\Registration';
+    protected $modelFormClass = 'KapitchiIdentity\Form\Registration';
+    protected $extName = 'AuthCredential';
     
-    protected function bootstrap(Application $application) {
-        $locator = $application->getLocator();
-        $instance = $this;
-        
-        $events = StaticEventManager::getInstance();
-        $events->attach('KapitchiIdentity\Form\Registration', 'construct.post', function($e) use($instance, $locator) {
-            $form = $locator->get('KapitchiIdentity\Form\Auth\Registration');
-            $e->getTarget()->addExtSubForm($form, $instance->extName);
-        });
-        
-        $events->attach('KapitchiIdentity\Service\Registration', 'register.post', function($e) use($instance, $locator) {
-            $data = $e->getParam('data');
-            if(isset($data['exts'][$instance->extName])) {
-                $extData = $data['exts'][$instance->extName];
-                
-                $model = $e->getParam('model');
-                $authService = $locator->get('KapitchiIdentity\Service\AuthCredential');
-                $mapper = $authService->getMapper();
-                $passwordHash = $authService->getPasswordHash();
-                
-                $authCredential = \KapitchiIdentity\Model\AuthCredential::fromArray($extData);
-                $authCredential->setPasswordHash($passwordHash->generateHash($extData['password']));
-                $authCredential->setIdentityId($model->getIdentityId());
-                
-                $mapper->persist($authCredential);
-                
-                $model->ext('KapitchiIdentity_AuthCredential', $authCredential);
-            }
-        });
-        
+    public function getForm() {
+        $form = $this->getLocator()->get('KapitchiIdentity\Form\AuthCredential\Registration');
+        return $form;
+    }
+
+    public function getModel(ModelAbstract $model) {
+        var_dump($model);
+        exit;
+    }
+
+    public function persistModel(ModelAbstract $model, array $data, $extData) {
+        //this assumes RegistrationIdentity plugin has been called already.
+        $identity = $model->ext('Identity');
+        $extData['identityId'] = $identity->getId();
+        $ret = $this->getLocator()->get('KapitchiIdentity\Service\AuthCredential')->persist($extData);
+        return $ret['model'];
+    }
+
+    public function removeModel(ModelAbstract $model) {
+        var_dump($model);
+        exit;
     }
 }

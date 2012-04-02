@@ -12,6 +12,13 @@ class AuthCredential extends ModelServiceAbstract {
     protected $module;
     protected $passwordHash;
     
+    public function getModelPrototype() {
+        $model = clone $this->modelPrototype;
+        //there is problem with Zend\Di passwordHash set on service set it to model also!
+        $model->setPasswordHash(null);
+        return $model;
+    }
+
     public function __construct(Module $module) {
         $this->module = $module;
     }
@@ -44,7 +51,7 @@ class AuthCredential extends ModelServiceAbstract {
                     throw new PasswordNoMatch("Passwords provided do not match");
                 }
                 
-                $hash = $instance->getPasswordHash()->generateHash(($data['password']));
+                $hash = $instance->getPasswordHash()->encrypt($data['password']);
                 $model->setPasswordHash($hash);
             }
         });

@@ -20,7 +20,7 @@ class RegistrationController  extends ZendActionController {
         if($request->isPost()) {
             $postData = $request->post()->toArray();
             if($form->isValid($postData)) {
-                $params  = $this->getRegistrationService()->register($form->getValues());
+                $params = $this->getRegistrationService()->register($form->getValues());
                 $res = $this->events()->trigger('register.post', $this, $params, function($ret) {
                     return $ret instanceof Response;
                 });
@@ -68,5 +68,5 @@ class RegistrationController  extends ZendActionController {
         $this->registrationForm = $registrationForm;
     }
 
-
+    
 }

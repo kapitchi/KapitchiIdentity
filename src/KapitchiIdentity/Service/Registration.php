@@ -10,53 +10,24 @@ use ZfcBase\Service\ModelServiceAbstract,
 
 class Registration extends ModelServiceAbstract {
 
+    protected $aclContextService;
     protected $identityMapper;
     protected $identityRoleMapper;
     protected $defaultRoleId = 'user';
     
     public function register(array $data) {
-        $model = $this->createModelFromArray($data);
-        $mapper = $this->getMapper();
-        //TODO DI
-        $identity = new Identity();
-        $identityRole = new IdentityRoleModel();
-        $identityRole->setRoleId($this->getDefaultRoleId());
-        
         $params = array(
             'data' => $data,
-            'model' => $model,
-            'identityModel' => $identity,
-            'identityRoleModel' => $identityRole,
         );
         
-        try {
-            if($mapper instanceof Transactional) {
-                $mapper->beginTransaction();
-            }
-            
-            $params = $this->triggerParamsMergeEvent('register.pre', $params);
-
-            $this->getIdentityMapper()->persist($identity);
-            
-            $identityRole->setIdentityId($identity->getId());
-            $this->getIdentityRoleMapper()->persist($identityRole);
-            
-            $model->setIdentityId($identity->getId());
-            $mapper->persist($model);
-
-            $params = $this->triggerParamsMergeEvent('register.post', $params);
-            
-            if($mapper instanceof Transactional) {
-                $mapper->commit();
-            }
-        }
-        catch(\Exception $e) {
-            if($mapper instanceof Transactional) {
-                $mapper->rollback();
-            }
-            throw $e;
-        }
+        $params = $this->triggerParamsMergeEvent('register.pre', $params);
         
+        //run persist in selfregistrator role context
+        $aclContext = $this->getAclContextService();
+        $params = $aclContext->runAs('selfregistrator', array($this, 'persist'), array($data));
+
+        $params = $this->triggerParamsMergeEvent('register.post', $params);
+            
         return $params;
     }
     
@@ -64,10 +35,9 @@ class Registration extends ModelServiceAbstract {
         parent::attachDefaultListeners();
         
         $events = $this->events();
-        $events->attach('register.pre', function($e) {
+        $events->attach('persist.pre', function($e) {
             $now = new \DateTime();
             $e->getParam('model')->setCreated($now);
-            $e->getParam('identityModel')->setCreated($now);
         });
     }
     
@@ -94,6 +64,14 @@ class Registration extends ModelServiceAbstract {
 
     public function setDefaultRoleId($defaultRoleId) {
         $this->defaultRoleId = $defaultRoleId;
+    }
+    
+    public function getAclContextService() {
+        return $this->aclContextService;
+    }
+
+    public function setAclContextService($aclContextService) {
+        $this->aclContextService = $aclContextService;
     }
 
 }
