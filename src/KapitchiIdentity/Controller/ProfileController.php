@@ -23,11 +23,7 @@ class ProfileController extends ZendActionController {
         $id = $this->getLocator()->get('KapitchiIdentity\Service\Auth')->getLocalIdentityId();
         
         $identityService = $this->getIdentityService();
-        $identity = $identityService->get(array('priKey' => $id), true);
-        
-        $ret = $acl->isAllowed($identity, 'remove');
-        var_dump($ret);
-        exit;
+        $identity = $identityService->get(array('priKey' => 1), true);
         
         $model = new ViewModel(
             array('identity' => $identity,

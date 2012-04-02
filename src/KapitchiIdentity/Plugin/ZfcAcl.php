@@ -32,6 +32,11 @@ class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
                 $acl->addRole($roleId, $staticRole);
             }
         });
+        
+        $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
+            $application->getLocator()->get('KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader'),
+            'onLoadResource'
+        ));
     }
     
 }

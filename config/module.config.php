@@ -11,6 +11,7 @@ return array(
                 //you can register your new strategies by adding it into this option array
                 'strategies' => array(
                     'KapitchiIdentity\AuthStrategy\Credential' => true,//username/password strategy
+                    'KapitchiIdentity\AuthStrategy\OAuth2' => false,//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
                     'KapitchiIdentity\AuthStrategy\Http' => false,//http strategy - needs to be finished
                 )
             ),
@@ -160,6 +161,11 @@ return array(
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
                 ),
             ),
+            'KapitchiIdentity\AuthStrategy\OAuth2' => array(
+                'parameters' => array(
+                    'OAuth2LoginForm' => 'KapitchiIdentity\Form\OAuth2\Login',
+                ),
+            ),
             //mappers
             'KapitchiIdentity\Model\Mapper\IdentityDbAdapter' => array(
                 'parameters' => array(
@@ -193,19 +199,28 @@ return array(
                     'config' => require 'acl.config.php'
                 ),
             ),
+            
+            'KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader' => array(
+                'parameters' => array(
+                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole',
+                    'resourceLoaderDefMapper' => 'KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper\ResourceLoaderDefConfig',
+                )
+            ),
+            'KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper\ResourceLoaderDefConfig' => array(
+                'parameters' => array(
+                    'config' => require 'acl-resourceloader.config.php'
+                )
+            ),
+            
             'ZfcAcl\Model\Mapper\RouteResourceMapConfig' => array(
                 'parameters' => array(
                     'config' => require 'acl-routeguard.config.php'
                 ),
             ),
+            
             'ZfcAcl\Model\Mapper\EventGuardDefMapConfig' => array(
                 'parameters' => array(
                     'config' => require 'acl-eventguard.config.php'
-                )
-            ),
-            'ZfcAcl\Model\Mapper\ResourceLoaderDefConfig' => array(
-                'parameters' => array(
-                    'config' => require 'acl-resourceloader.config.php'
                 )
             ),
             //View models

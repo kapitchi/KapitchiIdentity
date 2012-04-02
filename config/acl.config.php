@@ -23,8 +23,6 @@ return array(
             'KapitchiIdentity/Allow/Admin' => array('admin', 'KapitchiIdentity'),
             
             //models
-            'KapitchiIdentity/Allow/Model/xxx' => array('user', 'KapitchiIdentity\Model\Identity', 'get'),
-            
             'KapitchiIdentity/Allow/Model/1' => array('selfregistrator', 'KapitchiIdentity\Model\Identity', 'persist'),
             'KapitchiIdentity/Allow/Model/2' => array('selfregistrator', 'KapitchiIdentity\Model\Registration', 'persist'),
             

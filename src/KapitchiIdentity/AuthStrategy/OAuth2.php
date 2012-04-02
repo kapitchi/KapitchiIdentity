@@ -8,18 +8,20 @@ use Zend\EventManager\EventCollection,
         KapitchiIdentity\Service\AuthIdentityResolver,
         KapitchiIdentity\Model\AuthIdentity;
 
-class Credential extends StrategyAbstract implements AuthIdentityResolver {
-    protected $credentialMapper;
-    protected $passwordHash;
-    protected $credentialLoginForm;
-    protected $extName = 'Credential';
+class OAuth2 extends StrategyAbstract {
+    protected $extName = 'OAuth2';
+    protected $OAuth2LoginForm;
+    
+    public function __construct() {
+        $loader = new \Zend\Loader\StandardAutoloader();
+        $loader->registerNamespace('ZendService\OAuth2', 'vendor/ZendService-OAuth2/src/ZendService/OAuth2')->register();
+    }
     
     public function loginPre() {
-        $request = $this->getRequest();
         $form = $this->getLoginForm();
         
-        $credentialForm = $this->getCredentialLoginForm();
-        $form->addExtSubForm($credentialForm, $this->extName);
+        $extForm = $this->getOAuth2LoginForm();
+        $form->addExtSubForm($extForm, $this->extName);
     }
     
     protected function loginAuth() {
@@ -31,15 +33,24 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
             }
             
             $formData = $postData['exts'][$this->extName];
-            $form = $this->getCredentialLoginForm();
+            $form = $this->getOAuth2LoginForm();
             if($form->isValid($formData)) {
                 $values = $form->getValues();
                 $val = $values[$this->extName];
-                $this->username = $val['username'];
-                $this->password = $val['password'];
+                $endpoint = $val['endpoint'];
+                
+                $auth = new \ZendService\OAuth2\OAuth2(
+                    '916678163617.apps.googleusercontent.com',
+                    'IopnQ70n-D77-q1ZZ3dVj1gK',
+                    $this->getRequest(),
+                    'google'
+                );
+                $auth->setConfigValue('stage1', 'scope', array('https://www.googleapis.com/auth/userinfo.profile', 'scope'));
+                $token = $auth->getToken(true);
                 
                 return $this;
             }
+
         }
     }
     
@@ -68,29 +79,13 @@ class Credential extends StrategyAbstract implements AuthIdentityResolver {
         return new Result(Result::SUCCESS, $this->username);
     }
     
-    public function getCredentialLoginForm() {
-        return $this->credentialLoginForm;
+    public function getOAuth2LoginForm() {
+        return $this->OAuth2LoginForm;
     }
 
-    public function setCredentialLoginForm($credentialLoginForm) {
-        $this->credentialLoginForm = $credentialLoginForm;
-    }
-    
-
-    public function getPasswordHash() {
-        return $this->passwordHash;
+    public function setOAuth2LoginForm($OAuth2LoginForm) {
+        $this->OAuth2LoginForm = $OAuth2LoginForm;
     }
 
-    public function setPasswordHash($passwordHash) {
-        $this->passwordHash = $passwordHash;
-    }
-
-    public function getCredentialMapper() {
-        return $this->credentialMapper;
-    }
-
-    public function setCredentialMapper($credentialMapper) {
-        $this->credentialMapper = $credentialMapper;
-    }
     
 }
