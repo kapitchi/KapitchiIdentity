@@ -40,8 +40,8 @@ class OAuth2 extends StrategyAbstract {
                 $endpoint = $val['endpoint'];
                 
                 $auth = new \ZendService\OAuth2\OAuth2(
-                    '916678163617.apps.googleusercontent.com',
-                    'IopnQ70n-D77-q1ZZ3dVj1gK',
+                    'USER',
+                    'PASS',
                     $this->getRequest(),
                     'google'
                 );
