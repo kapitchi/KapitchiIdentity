@@ -52,7 +52,7 @@ class IdentityRole extends ModelServiceAbstract {
     public function getCurrentRole() {
         $role = $this->getCurrentStaticRole();
         if($role instanceof IdentityRoleModel) {
-            $identityRole = new GenericRole((string)$role->getIdentityId());
+            $identityRole = new GenericRole('identity/' . $role->getIdentityId());
             return $identityRole;
         }
         

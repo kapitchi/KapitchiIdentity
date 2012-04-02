@@ -203,6 +203,11 @@ return array(
                     'config' => require 'acl-eventguard.config.php'
                 )
             ),
+            'ZfcAcl\Model\Mapper\ResourceLoaderDefConfig' => array(
+                'parameters' => array(
+                    'config' => require 'acl-resourceloader.config.php'
+                )
+            ),
             //View models
             'KapitchiIdentity\View\Model\AuthLogin' => array(
                 'parameters' => array(
