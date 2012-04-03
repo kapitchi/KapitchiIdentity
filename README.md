@@ -41,46 +41,6 @@ Options
 -------
 See [module config](https://github.com/kapitchi/KapitchiIdentity/blob/master/config/module.config.php#L4) for all options available.
 
-Application services
---------------------
-
-### KapitchiIdentity\Service\Auth
-
-This service extends from Zend\Authentication\AuthenticationService so provides whole API as Zend class does.
-It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID only.
-
-Public methods (against [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php)):
-
-* getLocalIdentityId() - helper method which returns users local identity id. If user is not logged in throws an exception.
-
-### KapitchiIdentity\Service\IdentityRole ([Model service](https://github.com/kapitchi/KapitchiBase/blob/master/src/KapitchiBase/Service/ModelServiceAbstract.php))
-
-This service is used to manage identity role relationship. Currently one role is supported only.
-
-Public methods (plus model service methods):
-
-* getCurrentRole() - returns current identity's role object
-* get(array) - array(identityId => value)
-* persist(array)
-* remove(priKey)
-
-
-### KapitchiIdentity\Service\Identity
-
-Service for CRUD operations on Identity objects.
-
-* get(array) - array(priKey => value)
-* persist(array)
-* remove(priKey)
-
-### KapitchiIdentity\Service\AuthCredential
-
-Service for CRUD operations on AuthIdentity objects. Manages username and password for identities.
-
-* get(array) - array(identityId => value)
-* persist(array)
-* remove(priKey)
-
 
 Authentication strategies
 -------------------------
@@ -96,31 +56,89 @@ A strategy in general wraps all necessary functionality into one place and is re
 Every authentication strategy needs different data to be entered by the user. Standard credential auth needs user name and password, OpenID needs one field - OpenID identifier.
 A strategy is responsible for adding these fields into login form and validating them when the form is submitted.
 
-If the strategy finds out the form (a strategy checks only fields/subform it has added) is valid i.e. user provided both user name and password it returns authentication adapter (itself).
-This will trigger an authentication on the adapter a strategy provides.
+If the strategy finds out the form (a strategy checks only fields/subform it has added) is valid i.e. user provided both user name and password it triggers an authentication on the adapter a strategy provides.
 
 Once an user is authenticated successfully Auth service checks if strategy is able to provide local identity ID. In order to recognize this a strategy needs to implement [AuthIdentityResolver interface](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Service/AuthIdentityResolver.php).
-If it does so, $strategy->resolveAuthIdentity(id) is called and is responsible to return [AuthIdentity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) with local identity id set.
+If it does so, the service asks the strategy to resolve authenticated ID to [AuthIdentity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) with local identity id.
 Otherwise generic AuthIdentity with _auth_ role is created by default with no local identity id set.
 
-### Extending authentication strategies
+### Implementing new authentication strategies
 
-You have got two options how to extends authentication with your own authentication strategy.
+Implementing [abstract authentication strategy](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/AuthStrategy/StrategyAbstract.php) is most convenient way how you can implement new strategy.
+By doing so you automatically get access to auth controller, request, response objects, login form and view model.
 
-#### Implement listener for login.auth event
-In order to implement simplest authentication strategy you just need to register listener to KapitchiIdentity\Controller\AuthController:login.auth event.
 
 TODO
+
 
 Roles
 -----
 
-Responsibility of this module is to provide role of an user also. At the moment only one role can be assigned to a identity/user.
-A role should be known from local identity id (if authentication strategy is able to resolve it).
-Some strategies might not implement this although. These strategies are required to implement AuthIdentityResolver and set role id to AuthIdentity.
+Responsibility of this module is to provide role of an user also. At the moment only one role can be assigned to an identity/user.
+A role should be known from local identity id (if authentication strategy is able to resolve it as discussed above - Authentication strategies).
 
-Example might be Facebook Connect strategy which is used to authenticate Facebook users to the site.
-Such strategy can set 'facebook' role for the user. This can be then used to help an application to decide (usign ZfcAcl module) if an user can see certain (social/facebook) blocks. I hope this makes sense ;)
+A strategy is not required to resolve local identity id. Example might be Facebook Connect strategy which is used to authenticate Facebook users to the site only.
+Such strategy can set 'facebook' role for the user. This can be then used to help an application to decide (usign ZfcAcl module) if an user can see certain (social/facebook) blocks on the page.
+
+TODO - roles used, static/identity roles, registration - selfregistrator
+
+
+Application services
+--------------------
+This module provides services dealing with authentication, identity and role management described below.
+For common operations on models (like persisting, remove, retrieve) we use ZfcBase [Model service](https://github.com/ZF-Commons/ZfcBase/blob/master/src/ZfcBase/Service/ModelServiceAbstract.php).
+In this list model services are highlighted by "(Model service)".
+Model service provides this standard API:
+
+* get(array $key) - returns model instance; service implements minimum array('priKey' => [primarykey]) key search. Some services extends this e.g. array('identityId' => [identity id])
+* persist(array $data) - model data to persist; returns array('model' => $model)
+* remove($priKey) - removes model by primary key
+* getPaginator(array $params) - returns paginator; $params are used to instruct mapper what models to select, this depends on a mapper implementation
+
+
+### KapitchiIdentity\Service\Auth
+
+This service extends from [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php) so it provides whole API as the parent class does.
+It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID only.
+
+New public methods:
+
+* getLocalIdentityId() - helper method which returns users local identity id. If user is not logged in throws an exception.
+
+
+### KapitchiIdentity\Service\IdentityRole (Model service)
+
+This service is used to manage identity role relationship. Currently one role is supported only.
+
+Public methods (plus model service methods):
+
+* getCurrentRole() - returns current identity's role object - e.g. 'identity/111' which refers to identity 111 user role; if local identity id could not be resolved this will equal to whatever getCurrentStaticRole() returns.
+* getCurrentStaticRole() - returns current identity's static role - this is what has been assigned to the identity e.g. 'user', 'admin' etc.
+
+
+### KapitchiIdentity\Service\Identity (Model service)
+
+Service for CRUD operations on Identity objects.
+
+
+### KapitchiIdentity\Service\AuthCredential (Model service)
+
+Service for CRUD operations on AuthIdentity objects. Manages username and password for identities.
+
+
+### KapitchiIdentity\Service\Registration (Model service)
+
+Registration service providing CRUD operations on Registration objects. It also provides way for (self) user registration.
+
+Public methods (plus model service methods):
+
+* register(array $data) - runs $service->persist(data) under 'selfregistrator' user role.
+
+
+### KapitchiIdentity\Service\IdentityRegistration (Model service)
+
+Service for CRUD operations on IdentityRegistration objects.
+
 
 
 Events
@@ -194,17 +212,18 @@ Parameters:
 
 
 
-Model services events
+Model service events
 ---------------------
-
-Model services implements common API to persist/remove models.
 
 TODO
 
-### KapitchiIdentity\Service\Identity
-
-### KapitchiIdentity\Service\IdentityRole
-
-### KapitchiIdentity\Service\AuthCredential
+* get.load
+* get.post
+* get.exts
+* get.ext.[EXTENSION_NAME]
+* persist.pre
+* persist.post
+* remove.pre
+* remove.post
 
 

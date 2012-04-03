@@ -2,14 +2,19 @@
 
 namespace KapitchiIdentity\Model;
 
-use ZfcBase\Model\ModelAbstract;
+use Zend\Acl\Resource,
+    ZfcBase\Model\ModelAbstract;
 
-class Registration extends ModelAbstract {
+class Registration extends ModelAbstract implements Resource {
     protected $id;
     protected $identityId;
     protected $requestIp;
     protected $created;
     protected $data;
+    
+    public function getResourceId() {
+        return __CLASS__ . $this->getId();
+    }
     
     public function getId() {
         return $this->id;

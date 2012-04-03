@@ -24,11 +24,6 @@ class ResourceLoaderDefConfig implements ResourceLoaderDefMapper {
         }
         $def->setParentResource($cnf['parent_resource']);
         
-        if(empty($cnf['parent_role'])) {
-            throw new InvalidArgumentException("No parent_role");
-        }
-        $def->setParentRole($cnf['parent_role']);
-
         if(empty($cnf['allow_rules']) || !ArrayUtils::isHashTable($cnf['allow_rules'])) {
             throw new InvalidArgumentException("No allow_rules or it's not hash table");
         }

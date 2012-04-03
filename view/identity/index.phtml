@@ -6,9 +6,10 @@ $columns = array(
     'created' => 'Created',
 );
 ?>
-<table>
+<table border="1">
     <thead>
         <tr>
+            <td></td>
         <?php foreach($columns as $columnId => $columnLabel):?>
             <td><?php echo $columnLabel?></td>
         <?php endforeach;?>

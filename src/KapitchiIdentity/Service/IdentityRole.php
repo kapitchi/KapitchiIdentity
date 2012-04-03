@@ -36,11 +36,15 @@ class IdentityRole extends ModelServiceAbstract {
                 return $this->currentRole;
             }
             
-            $role = $this->get(array(
-                'identityId' => $localIdentityId
-            ));
-            if(!$role) {
-                throw new \Exception("I can't find current role!");
+            try {
+                $role = $this->get(array(
+                    'identityId' => $localIdentityId
+                ));
+            } catch(\Exception $e) {
+                //throw new \Exception("I can't find current role!", 0, $e);
+                //do we still have an identity in the DB?
+                $this->getAuthService()->clearIdentity();
+                $role = new GenericRole('guest');
             }
             
             $this->currentRole = $role;

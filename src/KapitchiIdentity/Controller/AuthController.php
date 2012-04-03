@@ -38,7 +38,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function loginAction() {
-        //register auth strategies
         $this->registerAuthStrategies();
         
         $form = $this->getLoginForm();
@@ -61,7 +60,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         
         //init event returns AuthAdapter -- we are ready to authenticate!
         if($adapter instanceof AuthAdapter) {
-            //TODO use DI here!
             $authService = $this->getAuthService();
 
             $result = $authService->authenticate($adapter);
@@ -87,10 +85,10 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     protected function registerAuthStrategies() {
-        $strategies = $this->getModule()->getOption('auth.strategies');
-        foreach($strategies as $strategyDi => $enabled) {
-            if($enabled) {
-                $strategy = $this->getLocator()->get($strategyDi);
+        $strategies = $this->getModule()->getOption('auth_strategies');
+        foreach($strategies as $strategyKey => $strategy) {
+            if(is_array($strategy) && !empty($strategy['class'])) {
+                $strategy = $this->getLocator()->get($strategy['class']);
                 if(!$strategy instanceof AuthStrategy) {
                     throw new NotAuthStrategy(get_class($strategy) . " is not auth strategy");
                 }

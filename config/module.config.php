@@ -7,13 +7,16 @@ return array(
                     'item_count_per_page' => 10,//identity index page - number of identies to render per page
                 )
             ),
-            'auth' => array(
-                //you can register your new strategies by adding it into this option array
-                'strategies' => array(
-                    'KapitchiIdentity\AuthStrategy\Credential' => true,//username/password strategy
-                    'KapitchiIdentity\AuthStrategy\OAuth2' => false,//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
-                    'KapitchiIdentity\AuthStrategy\Http' => false,//http strategy - needs to be finished
-                )
+            'auth_strategies' => array(
+                'Credential' => array(
+                    'class' => 'KapitchiIdentity\AuthStrategy\Credential'//username/password strategy
+                ),
+                'Http' => array(
+                    //'class' => 'KapitchiIdentity\AuthStrategy\Http', //NOT FINISHED
+                ),
+                'OAuth2' => array(
+                    //'class' => 'KapitchiIdentity\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
+                ),
             ),
             //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
             'plugins' => array(
