@@ -14,12 +14,14 @@ Features
 * Authentication
   * Credential [COMPLETE]
   * OpenID [IN PROGRESS]
+  * OAuth2 [IN PROGRESS]
   * HTTP Basic/Digest [IN PROGRESS]
   * Facebook Connect [NOT STARTED]
   * LDAP [NOT STARTED]
 * Registration 
   * User name/password form ([RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php)) [COMPLETED]
-  * Email activation (username as email address) [NOT STARTED]
+  * Email registration/login ([AuthCredentialEmail plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmail.php)) [COMPLETE]
+  * Email validation ([AuthCredentialEmailValidation plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmailValidation.php)) [IN PROGRESS]
 * Identity management [IN PROGRESS]
 * Identity - Role management ([IdentityRoleModel plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRoleModel.php)) [COMPLETED]
 * Role management [NOT STARTED]

@@ -1,10 +1,10 @@
 <?php
 
-namespace KapitchiIdentity\Form;
+namespace KapitchiIdentity\Form\AuthCredential;
 
 use ZfcBase\Form\Form;
 
-class AuthCredentialLogin extends Form {
+class Login extends Form {
     
     public function init() {
         $this->addElement('text', 'username', array(

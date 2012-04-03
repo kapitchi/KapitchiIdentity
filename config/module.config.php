@@ -42,10 +42,18 @@ return array(
                 'RegistrationAuthCredential' => array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
                 ),
-                //extends RegistrationAuthCredential for email/password registration with email activation
-                'RegistrationAuthCredentialEmail' => array(
-                    //'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredentialEmail',
+                
+                //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
+                //extends RegistrationAuthCredential for email/password registration with email activation and auth credential strategy
+                'AuthCredentialEmail' => array(
+                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmail',
                 ),
+                
+                //DEPENDS ON: AuthCredentialEmail - implements email validation
+                'AuthCredentialEmailValidation' => array(
+                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
+                ),
+                
                 //extends RegistrationAuthCredential for email/password registration with email activation
                 'RegistrationAuthLogin' => array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
@@ -112,6 +120,7 @@ return array(
                 'parameters' => array(
                     'registrationService' => 'KapitchiIdentity\Service\Registration',
                     'registrationForm' => 'KapitchiIdentity\Form\Registration',
+                    'registerViewModel' => 'KapitchiIdentity\View\Model\RegistrationRegister',
                 ),
             ),
             'KapitchiIdentity\Controller\ProfileController' => array(
@@ -161,7 +170,7 @@ return array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'passwordHash' => 'auth_credential_password_hash',
-                    'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredentialLogin',
+                    'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredential\Login',
                 ),
             ),
             'KapitchiIdentity\AuthStrategy\OAuth2' => array(

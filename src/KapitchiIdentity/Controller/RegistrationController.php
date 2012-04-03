@@ -7,20 +7,39 @@ use Zend\Mvc\Controller\ActionController as ZendActionController;
 class RegistrationController  extends ZendActionController {
     protected $registrationService;
     protected $registrationForm;
+    protected $registerViewModel;
     
     public function registerAction() {
         $form = $this->getRegistrationForm();
-        
         $request = $this->getRequest();
-
+        
+        $viewModel = $this->getRegisterViewModel();
+        $viewModel->registrationForm = $form;
+        
+        //TODO
         $form->populate(array(
             'requestIp' => $request->server()->get('REMOTE_ADDR')
         ));
         
+        $params = array(
+            'request' => $request,
+            'response' => $this->getResponse(),
+            'viewModel' => $viewModel,
+        );
+        
+        $res = $this->events()->trigger('register.pre', $this, $params, function($ret) {
+            return $ret instanceof Response;
+        });
+        $result = $res->last();
+        if($result instanceof Response) {
+            return $result;
+        }
+        
         if($request->isPost()) {
             $postData = $request->post()->toArray();
             if($form->isValid($postData)) {
-                $params = $this->getRegistrationService()->register($form->getValues());
+                $registerResult = $this->getRegistrationService()->register($form->getValues());
+                $params['registerResult'] = $registerResult;
                 $res = $this->events()->trigger('register.post', $this, $params, function($ret) {
                     return $ret instanceof Response;
                 });
@@ -31,13 +50,12 @@ class RegistrationController  extends ZendActionController {
             }
         }
         
+        //TODO
         $form->addElement('submit', 'submit', array(
             'label' => 'Register'
         ));
         
-        return array(
-            'registrationForm' => $form,
-        );
+        return $viewModel;
     }
     
     //listeners
@@ -66,6 +84,14 @@ class RegistrationController  extends ZendActionController {
 
     public function setRegistrationForm($registrationForm) {
         $this->registrationForm = $registrationForm;
+    }
+
+    public function getRegisterViewModel() {
+        return $this->registerViewModel;
+    }
+
+    public function setRegisterViewModel($registerViewModel) {
+        $this->registerViewModel = $registerViewModel;
     }
 
     

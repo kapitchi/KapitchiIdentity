@@ -2,7 +2,7 @@
 
 $modelServices = array(
     'KapitchiIdentity\Model\Identity' => 'KapitchiIdentity\Service\Identity',
-    'KapitchiIdentity\Model\Registration' => 'KapitchiIdentity\Service\Registration',
+    //'KapitchiIdentity\Model\Registration' => 'KapitchiIdentity\Service\Registration',
 );
 
 $ret = array();
