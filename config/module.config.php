@@ -214,6 +214,18 @@ return array(
             ),
             
             //ACL plugin
+            //role provider
+            'ZfcAcl\Service\Acl' => array(
+                'parameters' => array(
+                    'roleProvider' => 'KapitchiIdentity\Plugin\ZfcAcl\RoleProvider'
+                ),
+            ),
+            'KapitchiIdentity\Plugin\ZfcAcl\RoleProvider' => array(
+                'parameters' => array(
+                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole'
+                ),
+            ),
+            
             'ZfcAcl\Model\Mapper\AclLoaderConfig' => array(
                 'parameters' => array(
                     'config' => require 'acl.config.php'
