@@ -43,24 +43,32 @@ return array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
                 ),
                 
+                //Extends RegistrationAuthCredential for email/password registration with email activation and auth credential strategy
                 //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
-                //extends RegistrationAuthCredential for email/password registration with email activation and auth credential strategy
                 'AuthCredentialEmail' => array(
                     'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmail',
                 ),
                 
-                //DEPENDS ON: AuthCredentialEmail - implements email validation
+                //Implements email validation
+                //DEPENDS ON: AuthCredentialEmail
                 'AuthCredentialEmailValidation' => array(
                     'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
                 ),
                 
-                //extends RegistrationAuthCredential for email/password registration with email activation
+                //Forgot your password on login form
+                //DEPENDS ON: Credential auth strategy
+                'AuthCredentialForgotPassword' => array(
+                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialForgotPassword',
+                ),
+                
+                //automatically login after registration
                 'RegistrationAuthLogin' => array(
                     'class' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
                     'options' => array(
-                        'redirect_route' => 'KapitchiIdentity/Profile/Me'
+                        'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
                     )
                 ),
+                
                 //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
                 'ZfcAcl' => array(
                     'class' => 'KapitchiIdentity\Plugin\ZfcAcl',

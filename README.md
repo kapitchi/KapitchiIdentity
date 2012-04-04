@@ -25,6 +25,7 @@ Features
 * Identity management [IN PROGRESS]
 * Identity - Role management ([IdentityRoleModel plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRoleModel.php)) [COMPLETED]
 * Role management [NOT STARTED]
+* Password recovery ([AuthCredentialForgotPassword plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialForgotPassword.php)) [IN PROGRESS]
 
 
 Requirements
