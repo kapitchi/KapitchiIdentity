@@ -9,15 +9,11 @@ use Zend\Authentication\Result,
 
 class Root extends StrategyAbstract implements AuthIdentityResolver {
     protected $extName = 'Root';
+    protected $rootLoginForm;
     
     public function loginPre() {
-        //$ips = $this->getOption('request_ips');
-        
-        $form = new \Zend\Form\Form();
-        $form->addElement('checkbox', 'rootLogin', array(
-            'label' => 'Login as root',
-            'description' => 'This gives you root privileges - you are allowed to do everything on anything',
-        ));
+        $password = $this->getOption('password');
+        $form = $this->getRootLoginForm();
         $this->getLoginForm()->addExtSubForm($form, $this->extName);
     }
     
@@ -30,8 +26,20 @@ class Root extends StrategyAbstract implements AuthIdentityResolver {
             }
             
             $formData = $postData['exts'][$this->extName];
-            if(!empty($formData['rootLogin'])) {
-                return $this;
+            $form = $this->getRootLoginForm();
+            if($form->isValid($formData)) {
+                $values = $form->getValues();
+                $vals = $values[$this->extName];
+                $rootLogin = $vals['rootLogin'];
+                $password = $vals['password'];
+                if($rootLogin) {
+                    if($this->getOption('password') == md5($password)) {
+                        return $this;
+                    }
+                    else {
+                        $form->getElement('password')->addError('Incorrect password provided');
+                    }
+                }
             }
         }
     }
@@ -44,5 +52,22 @@ class Root extends StrategyAbstract implements AuthIdentityResolver {
         return new Result(Result::SUCCESS, 'root');
     }
     
-    
+    protected function getRootLoginForm() {
+        if($this->rootLoginForm === null) {
+            $form = new \Zend\Form\Form();
+            $form->addElement('checkbox', 'rootLogin', array(
+                'label' => 'Login as root',
+                'description' => 'This gives you root privileges - you are allowed to do everything on anything',
+            ));
+            $form->addElement('password', 'password', array(
+                'label' => 'Root password',
+                'required' => true,
+            ));
+            
+            $this->rootLoginForm = $form;
+        }
+        
+        return $this->rootLoginForm;
+        
+    }
 }

@@ -15,9 +15,10 @@ return array(
             'AuthStrategyRoot' => array(
                 'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Root',
                 'options' => array(
+                    //'password' => 'TODO-CHANGEME',//md5 hash of the password
                     'remote_ips' => array(//only localhost is allowed by default
                         '127.0.0.1' => true
-                     ),
+                    ),
                 ),
             ),
             'AuthStrategyCredential' => array(
@@ -89,25 +90,24 @@ return array(
         
     ),
     'di' => array(
-        'definition' => array(
-            'class' => array(
-            )
-        ),
         'instance' => array(
+            
             //DI options
-            'auth_credential_password_hash' => array(
+            'KapitchiIdentity-auth_credential_password_hash' => array(
                 'parameters' => array(
                     'sharedSalt' => 'TODO-CHANGE-ME',//this is "shared salt" used to prefix all passwords and then encrypted to add additional protection
-                    'algorithm' => 'md5',//algorithm to be used to encrypt passwords - 'md5', 'blowfish', 'sha256', 'sha512'
+                    'algorithm' => 'blowfish',//algorithm to be used to encrypt passwords - 'md5', 'blowfish', 'sha256', 'sha512'
                     'cost' => 0,//used to set rounds param for e.g. sha256, ... see http://php.net/manual/en/function.crypt.php 
                 )
             ),
+            'alias' => array(
+                //'KapitchiIdentity-db_adapter' => 'Zend\Db\Adapter\Adapter',//sets Zend\Db\Adapter\Adapter instance to be used with KapitchiIdentity module
+                
+                //DO NOT MODIFY below
+                'KapitchiIdentity-auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash',
+            ),
             
             //END - DI options
-            
-            'alias' => array(
-                'auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash'
-            ),
             
             //XXX
             'Zend\Authentication\Adapter\Http' => array(
@@ -164,7 +164,7 @@ return array(
                 'parameters' => array(
                     'mapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'modelPrototype' => 'KapitchiIdentity\Model\AuthCredential',
-                    'passwordHash' => 'auth_credential_password_hash',
+                    'passwordHash' => 'KapitchiIdentity-auth_credential_password_hash',
                 ),
             ),
             'KapitchiIdentity\Service\Registration' => array(
@@ -186,7 +186,7 @@ return array(
             'KapitchiIdentity\Plugin\AuthStrategy\Credential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
-                    'passwordHash' => 'auth_credential_password_hash',
+                    'passwordHash' => 'KapitchiIdentity-auth_credential_password_hash',
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredential\Login',
                 ),
             ),
