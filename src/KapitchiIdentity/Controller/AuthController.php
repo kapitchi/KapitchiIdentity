@@ -38,8 +38,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
     }
     
     public function loginAction() {
-        $this->registerAuthStrategies();
-        
         $form = $this->getLoginForm();
         $viewModel = $this->getLoginViewModel();
         $viewModel->setVariable('loginForm', $form);
@@ -82,19 +80,6 @@ class AuthController extends \Zend\Mvc\Controller\ActionController {
         }
 
         return $viewModel;
-    }
-    
-    protected function registerAuthStrategies() {
-        $strategies = $this->getModule()->getOption('auth_strategies');
-        foreach($strategies as $strategyKey => $strategy) {
-            if(is_array($strategy) && !empty($strategy['class'])) {
-                $strategy = $this->getLocator()->get($strategy['class']);
-                if(!$strategy instanceof AuthStrategy) {
-                    throw new NotAuthStrategy(get_class($strategy) . " is not auth strategy");
-                }
-                $this->events()->attachAggregate($strategy);
-            }
-        }
     }
     
     //listeners

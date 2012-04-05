@@ -6,6 +6,7 @@ use ZfcBase\Model\ModelAbstract;
 
 class RegistrationIdentity extends \KapitchiBase\Plugin\ModelPlugin {
     protected $modelServiceClass = 'KapitchiIdentity\Service\Registration';
+    protected $priority = 100;
     protected $extName = 'Identity';
     
     public function getModel(ModelAbstract $model) {

@@ -7,77 +7,86 @@ return array(
                     'item_count_per_page' => 10,//identity index page - number of identies to render per page
                 )
             ),
-            'auth_strategies' => array(
-                'Credential' => array(
-                    'class' => 'KapitchiIdentity\AuthStrategy\Credential'//username/password strategy
-                ),
-                'Http' => array(
-                    //'class' => 'KapitchiIdentity\AuthStrategy\Http', //NOT FINISHED
-                ),
-                'OAuth2' => array(
-                    //'class' => 'KapitchiIdentity\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
+        ),
+        
+        //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
+        'plugins' => array(
+            //WARNING: Root strategy should not be allowed unless during development on local machine
+            'AuthStrategyRoot' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Root',
+                'options' => array(
+                    'remote_ips' => array(//only localhost is allowed by default
+                        '127.0.0.1' => true
+                     ),
                 ),
             ),
-            //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
-            'plugins' => array(
-                //used to add credential (username/password) form when editing/creating identity
-                'IdentityAuthCredential' => array(
-                    'class' => 'KapitchiIdentity\Plugin\IdentityAuthCredential',
-                ),
-                //adds role management for identities - identity form
-                'IdentityRole' => array(
-                    'class' => 'KapitchiIdentity\Plugin\IdentityRole',
-                ),
-                
-                //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential
-                'RegistrationIdentity' => array(
-                    'class' => 'KapitchiIdentity\Plugin\RegistrationIdentity',
-                    'priority' => 100,
-                    'options' => array(
-                        'role' => 'user'//this role will be assigned to new identity
-                    )
-                ),
-                
-                //adds username/password form to registration form
-                'RegistrationAuthCredential' => array(
-                    'class' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
-                ),
-                
-                //Extends RegistrationAuthCredential for email/password registration with email activation and auth credential strategy
-                //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
-                'AuthCredentialEmail' => array(
-                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmail',
-                ),
-                
-                //Implements email validation
-                //DEPENDS ON: AuthCredentialEmail
-                'AuthCredentialEmailValidation' => array(
-                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
-                ),
-                
-                //Forgot your password on login form
-                //DEPENDS ON: Credential auth strategy
-                'AuthCredentialForgotPassword' => array(
-                    'class' => 'KapitchiIdentity\Plugin\AuthCredentialForgotPassword',
-                ),
-                
-                //automatically login after registration
-                'RegistrationAuthLogin' => array(
-                    'class' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
-                    'options' => array(
-                        'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
-                    )
-                ),
-                
-                //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
-                'ZfcAcl' => array(
-                    'class' => 'KapitchiIdentity\Plugin\ZfcAcl',
+            'AuthStrategyCredential' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Credential',//username/password strategy
+            ),
+//            'AuthStrategyHttp' => array(
+//                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Http', //NOT FINISHED
+//            ),
+//            'AuthStrategyOAuth2' => array(
+//                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
+//            ),
+            
+            
+            //used to add credential (username/password) form when editing/creating identity
+            'IdentityAuthCredential' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\IdentityAuthCredential',
+            ),
+            //adds role management for identities - identity form
+            'IdentityRole' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\IdentityRole',
+            ),
+
+            //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential
+            'RegistrationIdentity' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\RegistrationIdentity',
+                'options' => array(
+                    'role' => 'user'//this role will be assigned to new identity
                 )
+            ),
+
+            //adds username/password form to registration form
+            'RegistrationAuthCredential' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
+            ),
+
+            //Extends RegistrationAuthCredential for email/password registration
+            //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
+            'AuthCredentialEmail' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialEmail',
+            ),
+
+            //Implements email validation
+            //DEPENDS ON: AuthCredentialEmail
+            'AuthCredentialEmailValidation' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
+            ),
+
+            //Forgot your password on login form
+            //DEPENDS ON: Credential auth strategy
+            'AuthCredentialForgotPassword' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialForgotPassword',
+            ),
+
+            //automatically login after registration
+            'RegistrationAuthLogin' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
+                'options' => array(
+                    'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
+                )
+            ),
+
+            //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
+            'ZfcAcl' => array(
+                'diclass' => 'KapitchiIdentity\Plugin\ZfcAcl',
             )
-            
-            //SEE BELOW - "DI options" for more options
-            
-        ),
+        )
+
+        //SEE BELOW - "DI options" for more options
+        
     ),
     'di' => array(
         'definition' => array(
@@ -88,7 +97,7 @@ return array(
             //DI options
             'auth_credential_password_hash' => array(
                 'parameters' => array(
-                    'sharedSalt' => 'TODO-CHANGE ME!',//this is "shared salt" used to prefix all passwords and then encrypted to add additional protection
+                    'sharedSalt' => 'TODO-CHANGE-ME',//this is "shared salt" used to prefix all passwords and then encrypted to add additional protection
                     'algorithm' => 'md5',//algorithm to be used to encrypt passwords - 'md5', 'blowfish', 'sha256', 'sha512'
                     'cost' => 0,//used to set rounds param for e.g. sha256, ... see http://php.net/manual/en/function.crypt.php 
                 )
@@ -174,14 +183,14 @@ return array(
                 )
             ),
             //auth strategies
-            'KapitchiIdentity\AuthStrategy\Credential' => array(
+            'KapitchiIdentity\Plugin\AuthStrategy\Credential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'passwordHash' => 'auth_credential_password_hash',
                     'credentialLoginForm' => 'KapitchiIdentity\Form\AuthCredential\Login',
                 ),
             ),
-            'KapitchiIdentity\AuthStrategy\OAuth2' => array(
+            'KapitchiIdentity\Plugin\AuthStrategy\OAuth2' => array(
                 'parameters' => array(
                     'OAuth2LoginForm' => 'KapitchiIdentity\Form\OAuth2\Login',
                 ),

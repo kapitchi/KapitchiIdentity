@@ -7,7 +7,6 @@ use Zend\EventManager\StaticEventManager,
     KapitchiBase\Plugin\PluginAbstract;
 
 class AuthCredentialEmailValidation extends PluginAbstract {
-    protected $email;
     protected $stage = 'registration';
     
     protected function bootstrap(Application $application) {
@@ -51,7 +50,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
         });
         
         $events->attach('KapitchiIdentity\Controller\RegistrationController', 'register.post', function($e) use($instance, $locator) {
-            if($instance->getStage() == 'triggervalidation') {
+            if($instance->getStage() == 'triggerValidation') {
                 $viewModel = $e->getParam('viewModel');
                 $form = $viewModel->registrationForm;
                 $authForm = $form->getExtSubForm('AuthCredential');
@@ -94,7 +93,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
                 $transport = new \Zend\Mail\Transport\Sendmail();
                 $transport->send($msg);
                 
-                $instance->setStage('triggervalidation');
+                $instance->setStage('triggerValidation');
                 
                 //do not persist extension data!
                 $e->stopPropagation();
@@ -111,14 +110,4 @@ class AuthCredentialEmailValidation extends PluginAbstract {
         $this->stage = $stage;
     }
         
-    
-    public function getEmail() {
-        return $this->email;
-    }
-
-    public function setEmail($email) {
-        $this->email = $email;
-    }
-
-
 }

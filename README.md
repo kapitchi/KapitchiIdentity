@@ -5,7 +5,7 @@ Author:  Matus Zeman
 
 Introduction
 ============
-Provides authentication and identity management. When we say _identity_ we refer to ordinary human users or other 3rd party applications interacting your system.
+Provides authentication, identity and role management. When we say _identity_ we refer to ordinary human users or other 3rd party applications interacting with your system.
 
 
 Features

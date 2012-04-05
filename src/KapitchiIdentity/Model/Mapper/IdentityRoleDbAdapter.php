@@ -15,8 +15,12 @@ class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleMappe
     }
     
     public function persist(ModelAbstract $model) {
+        $ret = $this->getTableGateway('role')->select(array(
+            'roleId' => $model->getRoleId(),
+        ));
+        $row = $ret->current();
         $table = $this->getTableGateway($this->tableName, true);
-        return $table->update(array('roleId' => $model->getRoleId()), array('id' => $model->getIdentityId()));
+        return $table->update(array('roleId' => $row->id), array('id' => $model->getIdentityId()));
     }
     
     public function remove(ModelAbstract $model) {
@@ -40,6 +44,12 @@ class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleMappe
         if(!$row->roleId) {
             return null;
         }
+        
+        $ret = $this->getTableGateway('role')->select(array(
+            'id' => $row->roleId,
+        ));
+        
+        $row = $ret->current();
         
         $role = new IdentityRole();
         $role->setRoleId($row->roleId);

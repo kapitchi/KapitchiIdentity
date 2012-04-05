@@ -2,6 +2,11 @@
 
 return array(
     'roles' => array(
+        'root' => null,
+        'guest' => null,
+        'auth' => null,
+        'user' => 'auth',
+        'admin' => 'user',
         'selfregistrator' => 'guest',
     ),
     'resources' => array(
@@ -20,6 +25,9 @@ return array(
     ),
     'rules' => array(
         'allow' => array(
+            //root is allowed to do everything on anything
+            'KapitchiIdentity/Allow/Root' => array('root', null, null),
+            
             'KapitchiIdentity/Allow/Admin' => array('admin', 'KapitchiIdentity'),
             
             //models
