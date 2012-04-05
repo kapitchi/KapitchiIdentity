@@ -37,6 +37,14 @@ Requirements
 * [ZfcAcl](https://github.com/ZF-Commons/ZfcAcl) (optionally) (latest master)
 
 
+Installation
+============
+1. Put the module into /vendor folder and activate it in application.config.php.
+2. Create DB tables - deploy/mysql_install.sql
+3. Make sure you go through _Configuration_ section
+4. Go to http://yourpublicfolder/KapitchiIdentity/auth/login in order to login
+
+
 Configuration
 -------------
 
@@ -71,12 +79,6 @@ return array(
 );
 ```
 
-Installation
-============
-1. Put the module into /vendor folder and activate it in application.config.php.
-2. Create DB tables - deploy/mysql_install.sql
-3. Make sure you go through _Configuration_ section
-4. Go to http://yourpublicfolder/KapitchiIdentity/auth/login in order to login
 
 
 Use cases
@@ -87,7 +89,7 @@ This section tries to cover common use cases you might want to do or extend Kapi
 Extending registration
 ----------------------
 
-"I want to add new field into registration form and store them into my table"
+"I want to add new fields into registration form and store them into my table"
 
 ### Rationale
 You need to hook into registration form construct.post event in order to add new form fields i.e. add extension sub-form.
