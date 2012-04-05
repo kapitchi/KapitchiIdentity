@@ -12,7 +12,9 @@ class Root extends StrategyAbstract implements AuthIdentityResolver {
     protected $rootLoginForm;
     
     public function loginPre() {
-        $password = $this->getOption('password');
+        //just to make sure we've got the password set - this throw excetion if not
+        $this->getOption('password');
+        
         $form = $this->getRootLoginForm();
         $this->getLoginForm()->addExtSubForm($form, $this->extName);
     }

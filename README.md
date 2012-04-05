@@ -12,10 +12,10 @@ Features
 ========
 
 * Authentication
-  * Credential [COMPLETE]
-  * OpenID [IN PROGRESS]
+  * Credential ([AuthStrategy\Credential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategy/Credential.php)) [COMPLETE]
   * OAuth2 [IN PROGRESS]
   * HTTP Basic/Digest [IN PROGRESS]
+  * OpenID [NOT STARTED]
   * Facebook Connect [NOT STARTED]
   * LDAP [NOT STARTED]
 * Registration 
@@ -23,7 +23,7 @@ Features
   * Email registration/login ([AuthCredentialEmail plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmail.php)) [COMPLETE]
   * Email validation ([AuthCredentialEmailValidation plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmailValidation.php)) [IN PROGRESS]
 * Identity management [IN PROGRESS]
-* Identity - Role management ([IdentityRoleModel plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRoleModel.php)) [COMPLETED]
+* Identity - Role management ([IdentityRole plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRole.php)) [COMPLETED]
 * Role management [NOT STARTED]
 * Password recovery ([AuthCredentialForgotPassword plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialForgotPassword.php)) [IN PROGRESS]
 
@@ -33,8 +33,73 @@ Requirements
 
 * [Zend Framework 2](https://github.com/zendframework/zf2) (latest master)
 * [KapitchiBase](https://github.com/matuszemi/KapitchiBase) (latest master)
+* [ZfcBase](https://github.com/ZF-Commons/ZfcBase) (latest master)
 * [ZfcAcl](https://github.com/ZF-Commons/ZfcAcl) (optionally) (latest master)
 
+
+Configuration
+-------------
+
+### DB settings
+This module depends on Zend\Db\Adapter\Adapter. By default it uses tries to use 'Zend\Db\Adapter\Adapter' Di instance so make sure it is set as Di instance
+or you have been using another one you can still overwrite it by putting following code into e.g. /config/autoload/module.KapitchiIdentity.config.php.
+
+```
+return array(
+    'di' => array(
+        'alias' => array(
+            'KapitchiIdentity-db_adapter' => 'MyDbAdapter',
+        ),
+    ),
+);
+```
+
+### "Root" login
+Root login is automatically enabled so you can login and start using your application with full permissions. Root user is the only user which is created 
+
+```
+return array(
+    'KapitchiIdentity' => array(
+        'plugins' => array(
+            'AuthStrategyRoot' => array(
+                'options' => array(
+                    'password' => '21232f297a57a5a743894a0e4a801fc3'// md5 hash of 'admin'
+                )
+            ),
+        )
+    ),
+);
+```
+
+Installation
+============
+1. Put the module into /vendor folder and activate it in application.config.php.
+2. Create DB tables - deploy/mysql_install.sql
+3. Make sure you go through _Configuration_ section
+4. Go to http://yourpublicfolder/KapitchiIdentity/auth/login in order to login
+
+
+Use cases
+=========
+
+This section tries to cover common use cases you might want to do or extend KapitchiIdentity module by.
+
+"I want to add new field into registration form and store them into my table"
+-----------------------------------------------------------------------------
+
+### Rationale
+You need to hook into registration form construct.post event in order to add new form fields i.e. add extension sub-form.
+To retrieve and store form data to your persistence storage attach listener to registration service persist.post event.
+
+### Implementation
+Easiest (we also believe cleanest) way how to achieve the above is to implement RegistrationMyExtension plugin in your module. Example might be seen in [RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php) or [Contact registration plugin](https://github.com/kapitchi/KapitchiContactIdentity/blob/master/src/KapitchiContactIdentity/Plugin/Registration.php) which adds basic contact fields to the registration process.
+If you copy & paste RegistrationAuthCredential implementation make sure you rename $extName property to "[YourModuleNamespace]_[YourExtension]" e.g. "MyModule_UsefulExtension" so it will not conflict with other modules.
+Please notice $modelServiceClass and $modelFormClass properties - these define what service and form to hook up on.  
+Method getForm() should return your form implementation and persistModel(ModelAbstract $model, array $data, $extData) should be responsible for persisting your data.
+Parameter $model contains Registration model with Identity model "$identity = $model->ext('Identity')". Array of your form values should be find in $extData parameter.
+You can keep getModel() and removeModel() methods empty if you don't want your data being deleted whenever registration data/model would be. 
+
+TODO
 
 Usage
 =====
@@ -45,8 +110,8 @@ Options
 See [module config](https://github.com/kapitchi/KapitchiIdentity/blob/master/config/module.config.php#L4) for all options available.
 
 
-Authentication strategies
--------------------------
+Authentication strategy plugins
+-------------------------------
 Authentication of the user might be more complex operation then just submit a form with user name and password. That is why we introduced concept of authentication strategy.
 Good example might be authentication using OpenID where the process also includes redirecting a user to OpenID provider.  
 A strategy in general wraps all necessary functionality into one place and is responsible for:
@@ -67,11 +132,9 @@ Otherwise generic AuthIdentity with _auth_ role is created by default with no lo
 
 ### Implementing new authentication strategies
 
-Implementing [abstract authentication strategy](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/AuthStrategy/StrategyAbstract.php) is most convenient way how you can implement new strategy.
+Implementing [abstract authentication strategy plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategy/StrategyAbstract.php) is most convenient way how you can implement new strategy.
 By doing so you automatically get access to auth controller, request, response objects, login form and view model.
 
-
-TODO
 
 
 Roles
