@@ -84,8 +84,10 @@ Use cases
 
 This section tries to cover common use cases you might want to do or extend KapitchiIdentity module by.
 
+Extending registration
+----------------------
+
 "I want to add new field into registration form and store them into my table"
------------------------------------------------------------------------------
 
 ### Rationale
 You need to hook into registration form construct.post event in order to add new form fields i.e. add extension sub-form.
@@ -93,8 +95,10 @@ To retrieve and store form data to your persistence storage attach listener to r
 
 ### Implementation
 Easiest (we also believe cleanest) way how to achieve the above is to implement RegistrationMyExtension plugin in your module. Example might be seen in [RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php) or [Contact registration plugin](https://github.com/kapitchi/KapitchiContactIdentity/blob/master/src/KapitchiContactIdentity/Plugin/Registration.php) which adds basic contact fields to the registration process.
+
 If you copy & paste RegistrationAuthCredential implementation make sure you rename $extName property to "[YourModuleNamespace]_[YourExtension]" e.g. "MyModule_UsefulExtension" so it will not conflict with other modules.
 Please notice $modelServiceClass and $modelFormClass properties - these define what service and form to hook up on.  
+
 Method getForm() should return your form implementation and persistModel(ModelAbstract $model, array $data, $extData) should be responsible for persisting your data.
 Parameter $model contains Registration model with Identity model "$identity = $model->ext('Identity')". Array of your form values should be find in $extData parameter.
 You can keep getModel() and removeModel() methods empty if you don't want your data being deleted whenever registration data/model would be. 
