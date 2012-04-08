@@ -70,6 +70,7 @@ return array(
             //Implements email validation
             //DEPENDS ON: AuthCredentialEmail
             'AuthCredentialEmailValidation' => array(
+                'priority' => 100,
                 'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
             ),
 

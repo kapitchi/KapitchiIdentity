@@ -24,8 +24,10 @@ class IdentityRole extends \KapitchiBase\Plugin\ModelPlugin {
     }
     
     public function persistModel(ModelAbstract $model, array $data, $extData) {
-        $extData['identityId'] = $model->getId();
-        return $this->getLocator()->get('KapitchiIdentity\Service\IdentityRole')->persist($extData);
+        if($extData) {
+            $extData['identityId'] = $model->getId();
+            return $this->getLocator()->get('KapitchiIdentity\Service\IdentityRole')->persist($extData);
+        }
     }
     
     public function removeModel(ModelAbstract $model) {

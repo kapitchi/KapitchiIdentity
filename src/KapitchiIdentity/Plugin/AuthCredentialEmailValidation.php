@@ -8,6 +8,7 @@ use Zend\EventManager\StaticEventManager,
 
 class AuthCredentialEmailValidation extends PluginAbstract {
     protected $stage = 'registration';
+    public $credentialExtName = 'AuthCredential';
     
     protected function bootstrap(Application $application) {
         $locator = $application->getLocator();
@@ -17,12 +18,12 @@ class AuthCredentialEmailValidation extends PluginAbstract {
         
         $events->attach('KapitchiIdentity\Controller\RegistrationController', 'register.pre', function($e) use($instance, $locator) {
             $request = $e->getParam('request');
-            $regId = $request->query()->get('regid');
+            $regId = $request->query()->get($instance->getPluginName() . '_regid');
             $form = $e->getParam('viewModel')->registrationForm;
-            $authForm = $form->getExtSubForm('AuthCredential');
+            $authForm = $form->getExtSubForm($instance->credentialExtName);
                 
             if(!empty($regId)) {
-                $token = $request->query()->get('token');
+                $token = $request->query()->get($instance->getPluginName() . '_token');
             
                 $service = $locator->get('KapitchiIdentity\Service\Registration');
                 $reg = $service->get(array(
@@ -53,7 +54,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
             if($instance->getStage() == 'triggerValidation') {
                 $viewModel = $e->getParam('viewModel');
                 $form = $viewModel->registrationForm;
-                $authForm = $form->getExtSubForm('AuthCredential');
+                $authForm = $form->getExtSubForm($instance->credentialExtName);
             
                 $e->stopPropagation();
             }
@@ -68,7 +69,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
                     'token' => md5(uniqid()),
                 );
 
-                if(empty($formData['exts']['AuthCredential']['username'])) {
+                if(empty($formData['exts'][$instance->credentialExtName]['username'])) {
                     throw new \Exception("Username/email is not set???!!!");
                 }
                 $model->setData($data);
@@ -81,14 +82,19 @@ class AuthCredentialEmailValidation extends PluginAbstract {
 
                 $data = $model->getData();
                 
-                $email = $data['formData']['exts']['AuthCredential']['username'];
+                $email = $data['formData']['exts'][$instance->credentialExtName]['username'];
                 $token = $data['token'];
                 $regId = $model->getId();
 
+                //TODO finish this! move it to the service?
+                //email body should be rendered from view script etc etc.
+                $pluginName = $instance->getPluginName();
+                $validationUrl = "/KapitchiIdentity/registration/register?{$pluginName}_regid=$regId&{$pluginName}_token=$token";
+                
                 //SEND email
                 $msg = new \Zend\Mail\Message();
                 $msg->addTo($email);
-                $msg->setBody("/KapitchiIdentity/registration/register?regid=$regId&token=$token");
+                $msg->setBody($validationUrl);
                 
                 $transport = new \Zend\Mail\Transport\Sendmail();
                 $transport->send($msg);
