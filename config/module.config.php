@@ -24,12 +24,19 @@ return array(
             'AuthStrategyCredential' => array(
                 'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Credential',//username/password strategy
             ),
-//            'AuthStrategyHttp' => array(
-//                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Http', //NOT FINISHED
-//            ),
-//            'AuthStrategyOAuth2' => array(
-//                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
-//            ),
+            
+            'AuthStrategyHttp' => array(
+                'enabled' => false,
+                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Http', //NOT FINISHED
+            ),
+            'AuthStrategyOAuth2' => array(
+                'enabled' => false,
+                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
+                'options' => array(
+                    //'clientId' => 'TODO-CHANGEME',
+                    //'clientSecret' => 'TODO-CHANGEME',
+                )
+            ),
             
             
             //used to add credential (username/password) form when editing/creating identity
