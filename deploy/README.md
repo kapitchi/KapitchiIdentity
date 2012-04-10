@@ -1,0 +1,1 @@
+We keep these files in [KapitchiShowcase folder](https://github.com/kapitchi/KapitchiShowcase/tree/master/deploy) for now.

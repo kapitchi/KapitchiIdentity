@@ -116,6 +116,7 @@ You need to hook into registration controller register.pre event and change temp
 
 ### Implementation
 This might be example of what you need to do:
+
 ```
 $events = StaticEventManager::getInstance();
 $events->attach('KapitchiIdentity\Controller\RegistrationController', 'register.pre', function(Event $e) {
