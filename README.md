@@ -50,7 +50,8 @@ Configuration
 
 ### DB settings
 This module depends on Zend\Db\Adapter\Adapter. By default it uses tries to use 'Zend\Db\Adapter\Adapter' Di instance so make sure it is set as Di instance
-or you have been using another one you can still overwrite it by putting following code into e.g. /config/autoload/module.KapitchiIdentity.config.php.
+or you have been using another one you can still overwrite it by putting following code into e.g. /config/autoload/module.KapitchiIdentity.config.php.  
+See an example here: https://github.com/kapitchi/KapitchiShowcase/blob/master/config/autoload/local.config.php.dist
 
 ```
 return array(
