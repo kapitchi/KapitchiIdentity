@@ -1,7 +1,8 @@
 <?php
 
 $modelServices = array(
-    'KapitchiIdentity\Model\Identity' => 'KapitchiIdentity\Service\Identity',
+    //TODO we need to think about this properly!!!
+    //'KapitchiIdentity\Model\Identity' => 'KapitchiIdentity\Service\Identity',
     //'KapitchiIdentity\Model\Registration' => 'KapitchiIdentity\Service\Registration',
 );
 
