@@ -23,6 +23,7 @@ return array(
         'plugins' => array(
             //WARNING: Root strategy should not be allowed unless during development on local machine
             'AuthStrategyRoot' => array(
+                'enabled' => true,
                 'options' => array(
                     'password' => '21232f297a57a5a743894a0e4a801fc3',// md5 hash of the password - default 'admin'
                     'remote_ips' => array(//only localhost is allowed by default
@@ -78,7 +79,7 @@ return array(
                 )
             ),
             'alias' => array(
-                'KapitchiIdentity-db_adapter' => 'Zend\Db\Adapter\Adapter',//sets Zend\Db\Adapter\Adapter instance to be used with KapitchiIdentity module
+                'KapitchiIdentity-db_adapter' => 'Zend\Db\Adapter\Adapter',//sets Zend\Db\Adapter\Adapter instance as DB adapter with KapitchiIdentity module
             ),
         ),
     ),

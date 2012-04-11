@@ -1,7 +1,7 @@
 Zend Framework 2 - Kapitchi Identity module
 =================================================
-Version: 0.1
-Author:  Matus Zeman
+Version: 0.1  
+Author:  Matus Zeman  
 
 Introduction
 ============
@@ -13,10 +13,9 @@ Features
 
 * Authentication
   * Credential ([AuthStrategy\Credential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategy/Credential.php)) [COMPLETE]
-  * OAuth2 [IN PROGRESS]
+  * OAuth2 - Google, Facebook [IN PROGRESS]
   * HTTP Basic/Digest [IN PROGRESS]
   * OpenID [NOT STARTED]
-  * Facebook Connect [NOT STARTED]
   * LDAP [NOT STARTED]
 * Registration 
   * User name/password form ([RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php)) [COMPLETED]
@@ -48,39 +47,56 @@ Installation
 Configuration
 -------------
 
+Copy [KapitchiIdentity.global.config.php](https://github.com/kapitchi/KapitchiIdentity/blob/master/deploy/KapitchiIdentity.global.config.php) to application /config/autoload folder and modify options as required.
+
 ### DB settings
-This module depends on Zend\Db\Adapter\Adapter. By default it uses tries to use 'Zend\Db\Adapter\Adapter' Di instance so make sure it is set as Di instance
-or you have been using another one you can still overwrite it by putting following code into e.g. /config/autoload/module.KapitchiIdentity.config.php.  
-See an example here: https://github.com/kapitchi/KapitchiShowcase/blob/master/config/autoload/local.config.php.dist
+This module depends on Zend\Db\Adapter\Adapter. By default it tries to use 'Zend\Db\Adapter\Adapter' Di instance so make sure it is set as Di instance or overwrite it in KapitchiIdentity.global.config.php file.
 
 ```
+File: /config/autoload/local.config.php
+
 return array(
     'di' => array(
-        'alias' => array(
-            'KapitchiIdentity-db_adapter' => 'MyDbAdapter',
+        'instance' => array(
+            'Zend\Db\Adapter\Adapter' => array(
+                'parameters' => array(
+                    'driver' => array(
+                        'driver' => 'Pdo',
+                        'username' => 'root',
+                        'password' => '',
+                        'dsn'   => 'mysql:dbname=kapitchi;hostname=localhost',
+                    ),
+                ),
+            ),
         ),
     ),
 );
 ```
 
 ### "Root" login
-Root login is automatically enabled so you can login and start using your application with full permissions.
-Root user is the only user which is created when import mysql_install.sql.
+Root login is automatically enabled so you can login and start using your application with no restrictions (when using with ZfcAcl module).
+Root user is the only user which is created when import mysql_install.sql. You create additional users by registering or creating them manually on "Manage identities" page.  
+See [KapitchiIdentity.global.config.php](https://github.com/kapitchi/KapitchiIdentity/blob/master/deploy/KapitchiIdentity.global.config.php) for available options.
 
-```
-return array(
-    'KapitchiIdentity' => array(
-        'plugins' => array(
-            'AuthStrategyRoot' => array(
-                'options' => array(
-                    'password' => '21232f297a57a5a743894a0e4a801fc3'// md5 hash of 'admin'
-                )
-            ),
-        )
-    ),
-);
-```
+Note: (ZfcAcl) Root user has set all privileges on all resources. Although when you want to grand access to a resource this resource has to be properly registered in Acl first otherwise "isAllow" will resolve to false.
+See [ZfcAcl module](https://github.com/ZF-Commons/ZfcAcl) for more details.
 
+
+Usage
+=====
+
+Options
+-------
+See [module config](https://github.com/kapitchi/KapitchiIdentity/blob/master/config/module.config.php#L4) for all options available.
+
+
+Default routes/pages
+--------------------
+Manage identities - /KapitchiIdentity/identity/index
+Create identity - /KapitchiIdentity/identity/create
+Register - /KapitchiIdentity/registration/register
+Login - /KapitchiIdentity/auth/login
+Logout - /KapitchiIdentity/auth/logout
 
 
 Use cases
@@ -92,14 +108,17 @@ See "Options" section first for all avaliable options which are shipped with the
 See [FAQ.md](https://github.com/kapitchi/KapitchiIdentity/blob/master/FAQ.md)
 
 
-Usage
-=====
+Application services
+====================
+See [SERVICE.md](https://github.com/kapitchi/KapitchiIdentity/blob/master/SERVICE.md).
+
+Events
+======
+See [EVENT.md](https://github.com/kapitchi/KapitchiIdentity/blob/master/EVENT.md).
 
 
-Options
--------
-See [module config](https://github.com/kapitchi/KapitchiIdentity/blob/master/config/module.config.php#L4) for all options available.
-
+Design and implementation
+=========================
 
 Authentication strategy plugins
 -------------------------------
@@ -126,7 +145,7 @@ Otherwise generic AuthIdentity with _auth_ role is created by default with no lo
 Implementing [abstract authentication strategy plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategy/StrategyAbstract.php) is most convenient way how you can implement new strategy.
 By doing so you automatically get access to auth controller, request, response objects, login form and view model.
 
-
+TODO
 
 Roles
 -----
@@ -139,223 +158,4 @@ Such strategy can set 'facebook' role for the user. This can be then used to hel
 
 TODO - roles used, static/identity roles, registration - selfregistrator
 
-
-Application services
---------------------
-This module provides services dealing with authentication, identity and role management described below.
-For common operations on models (like persisting, remove, retrieve) we use ZfcBase [Model service](https://github.com/ZF-Commons/ZfcBase/blob/master/src/ZfcBase/Service/ModelServiceAbstract.php).
-In this list model services are highlighted by "(Model service)".
-Model service provides this standard API:
-
-* get(array $key) - returns model instance; service implements minimum array('priKey' => [primarykey]) key search. Some services extends this e.g. array('identityId' => [identity id])
-* persist(array $data) - model data to persist; returns array('model' => $model)
-* remove($priKey) - removes model by primary key
-* getPaginator(array $params) - returns paginator; $params are used to instruct mapper what models to select, this depends on a mapper implementation
-
-
-### KapitchiIdentity\Service\Auth
-
-This service extends from [Zend\Authentication\AuthenticationService](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/AuthenticationService.php) so it provides whole API as the parent class does.
-It's extended to provide events and creates [authentication identity object](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) to be stored into a storage instead of authentication ID only.
-
-New public methods:
-
-* getLocalIdentityId() - helper method which returns users local identity id. If user is not logged in throws an exception.
-
-
-### KapitchiIdentity\Service\IdentityRole (Model service)
-
-This service is used to manage identity role relationship. Currently one role is supported only.
-
-Public methods (plus model service methods):
-
-* getCurrentRole() - returns current identity's role object - e.g. 'identity/111' which refers to identity 111 user role; if local identity id could not be resolved this will equal to whatever getCurrentStaticRole() returns.
-* getCurrentStaticRole() - returns current identity's static role - this is what has been assigned to the identity e.g. 'user', 'admin' etc.
-
-
-### KapitchiIdentity\Service\Identity (Model service)
-
-Service for CRUD operations on Identity objects.
-
-
-### KapitchiIdentity\Service\AuthCredential (Model service)
-
-Service for CRUD operations on AuthIdentity objects. Manages username and password for identities.
-
-
-### KapitchiIdentity\Service\Registration (Model service)
-
-Registration service providing CRUD operations on Registration objects. It also provides way for (self) user registration.
-
-Public methods (plus model service methods):
-
-* register(array $data) - runs $service->persist(data) under 'selfregistrator' user role.
-
-
-### KapitchiIdentity\Service\IdentityRegistration (Model service)
-
-Service for CRUD operations on IdentityRegistration objects.
-
-
-
-Events
-------
-
-### KapitchiIdentity\Auth\RegistrationController:register.pre
-
-This event can be used to change registration page template.
-
-Parameters:
-
-* viewModel - [Register view model](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/View/Model/RegistrationRegister.php) object
-
-### KapitchiIdentity\Auth\RegistrationController:register.post
-
-It is trigger after successful registration. Hook into this event to e.g. overwrite default redirect to 'KapitchiIdentity/Auth/Login' route.
-
-Parameters:
-
-* viewModel - [Register view model](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/View/Model/RegistrationRegister.php) object
-* registerResult - [KapitchiIdentity\Service\Registration::register()](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Service/Registration.php) result
-
-
-### KapitchiIdentity\Auth\AuthController:login.pre
-
-This event can be used to change login page template or add new fields into login form which can be retrieve from AuthLogin view model - usage of 'KapitchiIdentity\Form\Login:construct.post' event can be used also.
-It can be also used by modules to lock out login e.g. to certain IP addresses on a black list.  
-Request and response objects can be obtained from controller object (event target).
-
-Parameters:
-
-* viewModel - [Login view model](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/View/Model/AuthLogin.php) object
-
-
-
-### KapitchiIdentity\Auth\AuthController:login.auth
-
-Event used to validate form fields by a strategy and recognize if it is ready to authenticate - a strategy returns itself or auth adapter itself.
-This event can also be used to redirect user (e.g. OpenID) when returning Response object or respond with Auth request response in case of Http adapter.  
-Request and response objects can be obtained from controller object (event target).
-
-Triggers until: Zend\Authentication\Adapter || Zend\Stdlib\ResponseDescription
-
-Parameters:
-
-* viewModel - [Login view model](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/View/Model/AuthLogin.php) object
-
-
-### KapitchiIdentity\Auth\AuthController:login.post
-
-Triggered after we try to authenticate - either successfully or failed. This can be also used to redirect user somewhere. By default it redirects to _KapitchiIdentity/Identity/Me_ route.  
-Request and response objects can be obtained from controller object (event target).
-
-Parameters:
-
-* result - [Authentication result](https://github.com/zendframework/zf2/blob/master/library/Zend/Authentication/Result.php)
-* adapter - Authentication adapter/strategy being used
-
-
-### KapitchiIdentity\Auth\AuthController:logout.post
-
-Triggered after we call AuthService::clearIdentity(). Can be used to redirect user somewhere. By default it redirects to _KapitchiIdentity/Auth/Login_ route.  
-Request and response objects can be obtained from controller object (event target).
-
-Parameters:
-
-* authIdentity - [Auth identity](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) object
-
-
-### KapitchiIdentity\Service\Auth:authenticate.valid
-
-Event is trigger after user has successfully authenticated but before their auth identity is stored into auth storage.
-
-Parameters:
-
-* result - authentication result
-* adapter - authentication adapter/strategy
-* authIdentity - [Auth identity](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) object
-
-
-
-### KapitchiIdentity\Service\Auth:clearIdentity.post
-
-Triggered after we clear auth storage.
-
-Parameters:
-
-* authIdentity - [Auth identity](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Model/AuthIdentity.php) object
-
-
-
-Model service events
----------------------
-
-Events below are trigger by [ModelServiceAbstract](https://github.com/ZF-Commons/ZfcBase/blob/master/src/ZfcBase/Service/ModelServiceAbstract.php) class.
-Most of KapitchiIdenity service classes extend from this "base" class.
-
-### [MODEL_SERVICE]:get.load
-
-Used to load model instance. You can attach your custom listeners to provide different ways how a model loads.
-
-Triggers until: [MODEL_PROTOTYPE]
-
-Parameters: array parameter passed to get(filter) method
-
-* priKey
-* ...
-
-Example might be (model service).
-
-```
-    protected function attachDefaultListeners() {
-        parent::attachDefaultListeners();
-        
-        $mapper = $this->getMapper();
-        $this->events()->attach('get.load', function($e) use ($mapper){
-            $filter = $e->getParam('identityId');
-            if(!$filter) {
-                return;
-            }
-            return $mapper->findByIdentityId($filter);
-        });
-    }
-```
-
-### [MODEL_SERVICE]:get.exts
-Triggered after a model has been loaded and to inform other plugins/modules to load all extensions available for this model.
-Listeners should use $model->ext($myExtensionModel, 'MyExtension').
-
-Parameters:
-
-* model - Model loaded
-
-### [MODEL_SERVICE]:get.ext.[EXTENSION_NAME]
-Triggered after a model has been loaded and to inform other plugins/modules to load [EXTENSION_NAME] model extension.
-Listeners should use $model->ext($myExtensionModel, [EXTENSION_NAME]).
-
-Parameters:
-
-* model - Model loaded
-
-### [MODEL_SERVICE]:get.post
-
-Parameters:
-
-* model - Model loaded
-
-### [MODEL_SERVICE]:persist.pre
-
-TODO
-
-### [MODEL_SERVICE]:persist.post
-
-TODO
-
-### [MODEL_SERVICE]:remove.pre
-
-TODO
-
-### [MODEL_SERVICE]:remove.post
-
-TODO
 
