@@ -16,7 +16,8 @@ class ResourceLoader {
         $acl = $e->getParam('acl');
 
         if(!$resource instanceof \ArrayAccess) {
-            throw new NotArrayAccessResource("Resource must implement ArrayAccess");
+            return;
+            //throw new NotArrayAccessResource("Resource must implement ArrayAccess");
         }
         
         $resourceClass = get_class($resource);
