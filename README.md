@@ -92,11 +92,11 @@ See [module config](https://github.com/kapitchi/KapitchiIdentity/blob/master/con
 
 Default routes/pages
 --------------------
-Manage identities - /KapitchiIdentity/identity/index
-Create identity - /KapitchiIdentity/identity/create
-Register - /KapitchiIdentity/registration/register
-Login - /KapitchiIdentity/auth/login
-Logout - /KapitchiIdentity/auth/logout
+* Manage identities - /KapitchiIdentity/identity/index
+* Create identity - /KapitchiIdentity/identity/create
+* Register - /KapitchiIdentity/registration/register
+* Login - /KapitchiIdentity/auth/login
+* Logout - /KapitchiIdentity/auth/logout
 
 
 Use cases
