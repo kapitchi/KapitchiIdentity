@@ -91,6 +91,11 @@ return array(
             //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
             'ZfcAcl' => array(
                 'diclass' => 'KapitchiIdentity\Plugin\ZfcAcl',
+                'options' => array(
+                    'resource_loader' => array(
+                        'enabled' => false
+                    )
+                )
             )
         )
 
@@ -109,7 +114,7 @@ return array(
                 )
             ),
             'alias' => array(
-                //'KapitchiIdentity-db_adapter' => 'Zend\Db\Adapter\Adapter',//sets Zend\Db\Adapter\Adapter instance to be used with KapitchiIdentity module
+               'KapitchiIdentity-db_adapter' => 'Zend\Db\Adapter\Adapter',//sets Zend\Db\Adapter\Adapter instance to be used with KapitchiIdentity module
                 
                 //DO NOT MODIFY below
                 'KapitchiIdentity-auth_credential_password_hash' => 'KapitchiBase\Crypt\Hash',
@@ -206,12 +211,12 @@ return array(
             //mappers
             'KapitchiIdentity\Model\Mapper\IdentityDbAdapter' => array(
                 'parameters' => array(
-                    'adapter' => 'Zend\Db\Adapter\Adapter',
+                    'adapter' => 'KapitchiIdentity-db_adapter',
                 ),
             ),
             'KapitchiIdentity\Model\Mapper\IdentityRoleMapper' => array(
                 'parameters' => array(
-                    'adapter' => 'Zend\Db\Adapter\Adapter',
+                    'adapter' => 'KapitchiIdentity-db_adapter',
                 ),
             ),
             //plugins

@@ -28,10 +28,12 @@ class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
             }
         });
         
-        $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
-            $application->getLocator()->get('KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader'),
-            'onLoadResource'
-        ));
+        if($this->getOption('resource_loader.enabled', true)) {
+            $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
+                $application->getLocator()->get('KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader'),
+                'onLoadResource'
+            ));
+        }
     }
     
 }

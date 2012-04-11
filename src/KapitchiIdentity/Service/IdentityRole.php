@@ -4,6 +4,7 @@ namespace KapitchiIdentity\Service;
 
 use Zend\Acl\Role\GenericRole,
     ZfcBase\Service\ModelServiceAbstract,
+    ZfcBase\Service\Exception\ModelNotFoundException,
     KapitchiIdentity\Model\AuthIdentity,
     KapitchiIdentity\Model\IdentityRole as IdentityRoleModel;
         
@@ -40,7 +41,7 @@ class IdentityRole extends ModelServiceAbstract {
                 $role = $this->get(array(
                     'identityId' => $localIdentityId
                 ));
-            } catch(\Exception $e) {
+            } catch(ModelNotFoundException $e) {
                 //throw new \Exception("I can't find current role!", 0, $e);
                 //do we still have an identity in the DB?
                 $this->getAuthService()->clearIdentity();
