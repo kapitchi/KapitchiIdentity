@@ -31,7 +31,7 @@ Requirements
 ============
 
 * [Zend Framework 2](https://github.com/zendframework/zf2) (latest master)
-* [KapitchiBase](https://github.com/matuszemi/KapitchiBase) (latest master)
+* [KapitchiBase](https://github.com/kapitchi/KapitchiBase) (latest master)
 * [ZfcBase](https://github.com/ZF-Commons/ZfcBase) (latest master)
 * [ZfcAcl](https://github.com/ZF-Commons/ZfcAcl) (optionally) (latest master)
 

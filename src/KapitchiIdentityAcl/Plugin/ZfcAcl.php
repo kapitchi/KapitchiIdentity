@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Plugin;
+namespace KapitchiIdentityAcl\Plugin;
 
 use Zend\EventManager\StaticEventManager,
     Zend\Mvc\AppContext as Application;
@@ -19,6 +19,7 @@ class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
             $aclService->invalidateCache();
         });
         
+        //adds identity role (e.g. identity/123) - set static role as user/admin being its parent
         $events->attach('ZfcAcl\Service\Acl', 'staticAclLoaded', function($e) use($identityRoleService) {
             $roleId = $e->getParam('roleId');
             $staticRole = $identityRoleService->getCurrentStaticRole();
@@ -30,7 +31,7 @@ class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
         
         if($this->getOption('resource_loader.enabled', true)) {
             $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
-                $application->getLocator()->get('KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader'),
+                $application->getLocator()->get('KapitchiIdentityAcl\Service\ResourceLoader'),
                 'onLoadResource'
             ));
         }

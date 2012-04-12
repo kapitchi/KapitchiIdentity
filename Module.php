@@ -33,6 +33,7 @@ class Module extends ModuleAbstract {
             }
         });
         
+        
     }
     
     public function getDir() {
@@ -43,4 +44,18 @@ class Module extends ModuleAbstract {
         return __NAMESPACE__;
     }
     
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\ClassMapAutoloader' => array(
+                $this->getDir() . '/autoload_classmap.php',
+            ),
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    $this->getNamespace() => $this->getDir() . '/src/' . $this->getNamespace(),
+                    'KapitchiIdentityAcl' => $this->getDir() . '/src/KapitchiIdentityAcl',
+                ),
+            ),
+        );
+    }
 }

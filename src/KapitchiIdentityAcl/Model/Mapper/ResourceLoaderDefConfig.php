@@ -1,10 +1,10 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper;
+namespace KapitchiIdentityAcl\Model\Mapper;
 
 use Zend\Stdlib\ArrayUtils,
-    KapitchiIdentity\Plugin\ZfcAcl\Model\ResourceLoaderDef,
-    KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper\ResourceLoaderDef as ResourceLoaderDefMapper,
+    KapitchiIdentityAcl\Model\ResourceLoaderDef,
+    KapitchiIdentityAcl\Model\Mapper\ResourceLoaderDef as ResourceLoaderDefMapper,
     InvalidArgumentException;
 
 class ResourceLoaderDefConfig implements ResourceLoaderDefMapper {

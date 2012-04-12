@@ -3,9 +3,9 @@
 namespace KapitchiIdentity\Model;
 
 use ZfcBase\Model\ModelAbstract,
-    Zend\Acl\Role;
+    Zend\Acl\Role\RoleInterface;
 
-class IdentityRole extends ModelAbstract implements Role {
+class IdentityRole extends ModelAbstract implements RoleInterface {
     protected $roleId;
     protected $identityId;
     

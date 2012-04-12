@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\ZfcAcl\Model;
+namespace KapitchiIdentityAcl\Model;
 
 use ZfcBase\Model\ModelAbstract;
 

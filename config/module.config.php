@@ -1,5 +1,7 @@
 <?php
-return array(
+return array_merge_recursive(
+    require 'module-acl.config.php',    
+    array(
     'KapitchiIdentity' => array(
         'options' => array(
             'identity' => array(
@@ -87,16 +89,6 @@ return array(
                     'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
                 )
             ),
-
-            //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
-            'ZfcAcl' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\ZfcAcl',
-                'options' => array(
-                    'resource_loader' => array(
-                        'enabled' => false
-                    )
-                )
-            )
         )
 
         //SEE BELOW - "DI options" for more options
@@ -182,6 +174,7 @@ return array(
             ),
             'KapitchiIdentity\Service\Registration' => array(
                 'parameters' => array(
+                    //TODO this should be moved to KapitchiIdentityAcl - we should hook into register.pre/post and switch roles that way?
                     'aclContextService' => 'ZfcAcl\Service\Context',
                     'mapper' => 'KapitchiIdentity\Model\Mapper\RegistrationDbAdapter',
                     'identityMapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
@@ -219,64 +212,7 @@ return array(
                     'adapter' => 'KapitchiIdentity-db_adapter',
                 ),
             ),
-            //plugins
-            'KapitchiIdentity\Plugin\ZfcAcl' => array(
-                'parameters' => array(
-                    //plugins should be using locators!!!
-                    'aclService' => 'ZfcAcl\Service\Acl',
-                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole',
-                ),
-            ),
-            'KapitchiIdentity\Plugin\IdentityRole' => array(
-                'parameters' => array(
-                    //'extName' => 'KapitchiIdentity_IdentityRole',
-                    //'modelService' => 'KapitchiIdentity\Service\Identity',
-                    //'modelFormClass' => 'KapitchiIdentity\Form\Identity',
-                ),
-            ),
             
-            //ACL plugin
-            //role provider
-            'ZfcAcl\Service\Acl' => array(
-                'parameters' => array(
-                    'roleProvider' => 'KapitchiIdentity\Plugin\ZfcAcl\RoleProvider'
-                ),
-            ),
-            'KapitchiIdentity\Plugin\ZfcAcl\RoleProvider' => array(
-                'parameters' => array(
-                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole'
-                ),
-            ),
-            
-            'ZfcAcl\Model\Mapper\AclLoaderConfig' => array(
-                'parameters' => array(
-                    'config' => require 'acl.config.php'
-                ),
-            ),
-            
-            'KapitchiIdentity\Plugin\ZfcAcl\ResourceLoader' => array(
-                'parameters' => array(
-                    'identityRoleService' => 'KapitchiIdentity\Service\IdentityRole',
-                    'resourceLoaderDefMapper' => 'KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper\ResourceLoaderDefConfig',
-                )
-            ),
-            'KapitchiIdentity\Plugin\ZfcAcl\Model\Mapper\ResourceLoaderDefConfig' => array(
-                'parameters' => array(
-                    'config' => require 'acl-resourceloader.config.php'
-                )
-            ),
-            
-            'ZfcAcl\Model\Mapper\RouteResourceMapConfig' => array(
-                'parameters' => array(
-                    'config' => require 'acl-routeguard.config.php'
-                ),
-            ),
-            
-            'ZfcAcl\Model\Mapper\EventGuardDefMapConfig' => array(
-                'parameters' => array(
-                    'config' => require 'acl-eventguard.config.php'
-                )
-            ),
             //View models
             'KapitchiIdentity\View\Model\AuthLogin' => array(
                 'parameters' => array(
@@ -310,4 +246,5 @@ return array(
             
         ),
     ),
+)
 );

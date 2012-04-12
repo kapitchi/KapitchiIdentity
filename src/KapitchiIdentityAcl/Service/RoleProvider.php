@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\ZfcAcl;
+namespace KapitchiIdentityAcl\Service;
 
 use ZfcAcl\Service\Acl\RoleProvider as RoleProviderInterface;
 

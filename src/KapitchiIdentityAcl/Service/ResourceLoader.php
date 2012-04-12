@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\ZfcAcl;
+namespace KapitchiIdentityAcl\Service;
 
 use ZfcAcl\Exception\UnauthorizedException,
     RuntimeException as NotArrayAccessResource;
