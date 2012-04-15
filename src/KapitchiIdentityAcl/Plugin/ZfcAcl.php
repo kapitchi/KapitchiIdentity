@@ -10,16 +10,25 @@ class ZfcAcl extends PluginAbstract {
     protected $aclService;
     protected $identityRoleService;
     
-    protected function bootstrap(Application $application) {
+    public function bootstrap(Application $application) {
         $events = StaticEventManager::getInstance();
         
         $aclService = $application->getLocator()->get('ZfcAcl\Service\Acl');
+        $contextService = $application->getLocator()->get('ZfcAcl\Service\Context');
         $identityRoleService = $application->getLocator()->get('KapitchiIdentity\Service\IdentityRole');
         
         $events->attach('KapitchiIdentity\Service\Auth', array('authenticate.valid', 'clearIdentity.post'), function($e) use($aclService) {
             $aclService->invalidateCache();
         });
+
+        $events->attach('KapitchiIdentity\Service\Registration', array('register.pre'), function($e) use($contextService) {
+            $contextService->setTempRole('self_registrator');
+        });
         
+        $events->attach('KapitchiIdentity\Service\Registration', array('register.post'), function($e) use($contextService) {
+            $contextService->rollbackTempRole();
+        });
+
         //adds identity role (e.g. identity/123) - set static role as user/admin being its parent
         $events->attach('ZfcAcl\Service\Acl', 'staticAclLoaded', function($e) use($identityRoleService) {
             $roleId = $e->getParam('roleId');
@@ -29,6 +38,7 @@ class ZfcAcl extends PluginAbstract {
                 $acl->addRole($roleId, $staticRole);
             }
         });
+        
         
         if($this->getOption('resource_loader_enabled', false)) {
             $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
