@@ -19,7 +19,6 @@ class ProfileController extends ZendActionController {
     }
     
     public function meAction() {
-        $acl = $this->getLocator()->get('ZfcAcl\Service\Acl');
         $id = $this->getLocator()->get('KapitchiIdentity\Service\Auth')->getLocalIdentityId();
         
         $identityService = $this->getIdentityService();

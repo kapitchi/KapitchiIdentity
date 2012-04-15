@@ -53,7 +53,7 @@ class Module extends ModuleAbstract {
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     $this->getNamespace() => $this->getDir() . '/src/' . $this->getNamespace(),
-                    'KapitchiIdentityAcl' => $this->getDir() . '/src/KapitchiIdentityAcl',
+                    //'KapitchiIdentityAcl' => $this->getDir() . '/src/KapitchiIdentityAcl',
                 ),
             ),
         );

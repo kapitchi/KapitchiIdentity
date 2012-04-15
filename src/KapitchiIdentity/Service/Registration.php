@@ -21,10 +21,12 @@ class Registration extends ModelServiceAbstract {
         );
         
         $params = $this->triggerParamsMergeEvent('register.pre', $params);
+        $this->persist($data);
         
+        //need to be moved to ZfcAclPlugin!!!!!
         //run persist in selfregistrator role context
-        $aclContext = $this->getAclContextService();
-        $params = $aclContext->runAs('selfregistrator', array($this, 'persist'), array($data));
+        /*$aclContext = $this->getAclContextService();
+        $params = $aclContext->runAs('selfregistrator', array($this, 'persist'), array($data));*/
 
         $params = $this->triggerParamsMergeEvent('register.post', $params);
             
