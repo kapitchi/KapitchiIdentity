@@ -16,14 +16,14 @@ class RegistrationCaptcha extends PluginAbstract {
         
         $events->attach('KapitchiIdentity\Form\Registration', 'construct.post', function($e) use ($instance, $locator) {
             $form = $e->getTarget();
-            
-            //TODO we really need some plugin manager
-            $emailPlugin = $locator->get('KapitchiIdentity\Plugin\AuthCredentialEmailValidation');
-            
-            if($emailPlugin->getStage() != 'validated') {
-                $form->addElement('Captcha', 'captcha', $instance->getOption('captcha_element_options'));
+            $broker = $instance->getModule()->getBroker();
+            if($broker->isPluginBootstraped('AuthCredentialEmailValidation')) {
+                $emailPlugin = $broker->load('AuthCredentialEmailValidation');
+                $stage = $emailPlugin->getStage();
+                if($stage != 'validated' && $stage != 'registration') {
+                    $form->addElement('Captcha', 'captcha', $instance->getOption('captcha_element_options'));
+                }
             }
         });
-        
     }
 }

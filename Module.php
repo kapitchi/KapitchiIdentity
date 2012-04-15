@@ -44,6 +44,14 @@ class Module extends ModuleAbstract {
         return __NAMESPACE__;
     }
     
+    public function getBroker() 
+    {
+        $broker = parent::getBroker();
+        $broker->getClassLoader()->addPrefixPath('KapitchiIdentityAcl\Plugin', $this->getDir() . '/src/KapitchiIdentityAcl/Plugin');
+        
+        return $this->broker;
+    }
+    
     public function getAutoloaderConfig()
     {
         return array(
