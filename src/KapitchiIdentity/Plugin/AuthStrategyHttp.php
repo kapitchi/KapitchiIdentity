@@ -1,10 +1,10 @@
 <?php
 
-namespace KapitchiIdentity\AuthStrategy;
+namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\EventCollection;
 
-class Http extends StrategyAbstract {
+class AuthStrategyHttp extends AuthStrategy\StrategyAbstract {
     private $adapter;
     
     protected function loginPre() {

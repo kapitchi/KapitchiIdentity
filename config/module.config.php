@@ -12,82 +12,103 @@ return array_merge_recursive(
         ),
         
         //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
-        'plugins' => array(
-            //WARNING: Root strategy should not be allowed unless during development on local machine
-            'AuthStrategyRoot' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Root',
-                'options' => array(
-                    //'password' => 'TODO-CHANGEME',//md5 hash of the password
-                    'remote_ips' => array(//only localhost is allowed by default
-                        '127.0.0.1' => true
+        'plugin_broker' => array(
+            'bootstrap_plugins' => array(
+                'AuthStrategyRoot' => true,
+                'AuthStrategyCredential' => true,
+                'AuthStrategyHttp' => false,
+                'AuthStrategyOAuth2' => false,
+                'IdentityAuthCredential' => true,
+                'IdentityRole' => true,
+                'RegistrationIdentity' => true,
+                'RegistrationCaptcha' => true,
+                'RegistrationAuthCredential' => true,
+                'AuthCredentialEmail' => true,
+                'AuthCredentialEmailValidation' => true,
+                'AuthCredentialForgotPassword' => false,
+                'RegistrationAuthLogin' => true,
+            ),
+            
+            'specs' => array(
+                //WARNING: Root strategy should not be allowed unless during development on local machine
+                'AuthStrategyRoot' => array(
+                    'options' => array(
+                        //'password' => 'TODO-CHANGEME',//md5 hash of the password
+                        'remote_ips' => array(//only localhost is allowed by default
+                            '127.0.0.1' => true
+                        ),
                     ),
                 ),
-            ),
-            'AuthStrategyCredential' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Credential',//username/password strategy
-            ),
-            
-            'AuthStrategyHttp' => array(
-                'enabled' => false,
-                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\Http', //NOT FINISHED
-            ),
-            'AuthStrategyOAuth2' => array(
-                'enabled' => false,
-                'diclass' => 'KapitchiIdentity\Plugin\AuthStrategy\OAuth2',//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
-                'options' => array(
-                    //'clientId' => 'TODO-CHANGEME',
-                    //'clientSecret' => 'TODO-CHANGEME',
-                )
-            ),
-            
-            
-            //used to add credential (username/password) form when editing/creating identity
-            'IdentityAuthCredential' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\IdentityAuthCredential',
-            ),
-            //adds role management for identities - identity form
-            'IdentityRole' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\IdentityRole',
-            ),
+                'AuthStrategyCredential' => array(//username/password strategy
+                ),
 
-            //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential
-            'RegistrationIdentity' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\RegistrationIdentity',
-                'options' => array(
-                    'role' => 'user'//this role will be assigned to new identity
-                )
-            ),
+                'AuthStrategyHttp' => array(//not finished
+                    
+                ),
+                
+                'AuthStrategyOAuth2' => array(//NOT FINISHED - outh2 experimental strategy - using Spabby OAuth2 service - https://github.com/Spabby/ZendService-OAuth2
+                    'options' => array(
+                        //'clientId' => 'TODO-CHANGEME',
+                        //'clientSecret' => 'TODO-CHANGEME',
+                    )
+                ),
 
-            //adds username/password form to registration form
-            'RegistrationAuthCredential' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\RegistrationAuthCredential',
-            ),
 
-            //Extends RegistrationAuthCredential for email/password registration
-            //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
-            'AuthCredentialEmail' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialEmail',
-            ),
+                //used to add credential (username/password) form when editing/creating identity
+                'IdentityAuthCredential' => array(
+                ),
+                //adds role management for identities - identity form
+                'IdentityRole' => array(
+                ),
 
-            //Implements email validation
-            //DEPENDS ON: AuthCredentialEmail
-            'AuthCredentialEmailValidation' => array(
-                'priority' => 100,
-                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialEmailValidation',
-            ),
+                //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential
+                'RegistrationIdentity' => array(
+                    'options' => array(
+                        'role' => 'user'//this role will be assigned to new identity
+                    )
+                ),
 
-            //Forgot your password on login form
-            //DEPENDS ON: Credential auth strategy
-            'AuthCredentialForgotPassword' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\AuthCredentialForgotPassword',
-            ),
+                'RegistrationCaptcha' => array(
+                    'options' => array(
+                        'captcha_element_options' => array(
+                            'label' => "Please verify you're a human",
+                            'order' => 100,
+                            'required' => true,
+                            'captcha' => 'Figlet',
+                            'captchaOptions' => array(
+                                'captcha' => 'Figlet',
+                                'wordLen' => 6,
+                                'timeout' => 300,
+                            ),
+                        )
+                    )
+                ),
 
-            //automatically login after registration
-            'RegistrationAuthLogin' => array(
-                'diclass' => 'KapitchiIdentity\Plugin\RegistrationAuthLogin',
-                'options' => array(
-                    'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
-                )
+                //adds username/password form to registration form
+                'RegistrationAuthCredential' => array(
+                ),
+
+                //Extends RegistrationAuthCredential for email/password registration
+                //DEPENDS ON: RegistrationAuthCredential and Credential auth strategy
+                'AuthCredentialEmail' => array(
+                ),
+
+                //Implements email validation
+                //DEPENDS ON: AuthCredentialEmail
+                'AuthCredentialEmailValidation' => array(
+                ),
+
+                //Forgot your password on login form
+                //DEPENDS ON: Credential auth strategy
+                'AuthCredentialForgotPassword' => array(
+                ),
+
+                //automatically login after registration
+                'RegistrationAuthLogin' => array(
+                    'options' => array(
+                        'redirect_route' => 'KapitchiIdentity/Profile/Me'//where to redirect user to
+                    )
+                ),
             ),
         )
 
@@ -189,7 +210,7 @@ return array_merge_recursive(
                 )
             ),
             //auth strategies
-            'KapitchiIdentity\Plugin\AuthStrategy\Credential' => array(
+            'KapitchiIdentity\Plugin\AuthStrategyCredential' => array(
                 'parameters' => array(
                     'credentialMapper' => 'KapitchiIdentity\Model\Mapper\AuthCredentialDbAdapter',
                     'passwordHash' => 'KapitchiIdentity-auth_credential_password_hash',

@@ -1,13 +1,13 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\AuthStrategy;
+namespace KapitchiIdentity\Plugin;
 
 use Zend\Authentication\Result,
     Zend\Form\Form,
     KapitchiIdentity\Service\AuthIdentityResolver,
     KapitchiIdentity\Model\AuthIdentity;
 
-class Root extends StrategyAbstract implements AuthIdentityResolver {
+class AuthStrategyRoot extends AuthStrategy\StrategyAbstract implements AuthIdentityResolver {
     protected $extName = 'Root';
     protected $rootLoginForm;
     

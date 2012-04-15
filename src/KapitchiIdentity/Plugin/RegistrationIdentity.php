@@ -2,9 +2,10 @@
 
 namespace KapitchiIdentity\Plugin;
 
-use ZfcBase\Model\ModelAbstract;
+use ZfcBase\Model\ModelAbstract,
+    KapitchiBase\Module\Plugin\ModelPlugin;
 
-class RegistrationIdentity extends \KapitchiBase\Plugin\ModelPlugin {
+class RegistrationIdentity extends ModelPlugin {
     protected $modelServiceClass = 'KapitchiIdentity\Service\Registration';
     protected $priority = 100;
     protected $extName = 'Identity';

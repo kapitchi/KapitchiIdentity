@@ -5,11 +5,11 @@ namespace KapitchiIdentity\Plugin;
 use Zend\Mvc\AppContext as Application,
     Zend\EventManager\StaticEventManager,
     ZfcBase\Model\ModelAbstract,
-    KapitchiBase\Plugin\PluginAbstract,
+    KapitchiBase\Module\Plugin\PluginAbstract,
     KapitchiIdentity\Model\AuthIdentity;
 
 class RegistrationAuthLogin extends PluginAbstract {
-    protected function bootstrap(Application $application) {
+    public function bootstrap(Application $application) {
         $events = StaticEventManager::getInstance();
         $locator = $application->getLocator();
         $instance = $this;

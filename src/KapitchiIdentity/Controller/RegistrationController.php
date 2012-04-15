@@ -52,7 +52,8 @@ class RegistrationController  extends ZendActionController {
         
         //TODO
         $form->addElement('submit', 'submit', array(
-            'label' => 'Register'
+            'label' => 'Register',
+            'order' => 1000
         ));
         
         return $viewModel;

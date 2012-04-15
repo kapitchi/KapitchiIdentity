@@ -4,7 +4,7 @@ namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\StaticEventManager,
     Zend\Mvc\AppContext as Application,
-    KapitchiBase\Plugin\PluginAbstract;
+    KapitchiBase\Module\Plugin\PluginAbstract;
 
 class AuthCredentialForgotPassword extends PluginAbstract {
     
