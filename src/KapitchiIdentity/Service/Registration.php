@@ -10,10 +10,8 @@ use ZfcBase\Service\ModelServiceAbstract,
 
 class Registration extends ModelServiceAbstract {
 
-    protected $aclContextService;
     protected $identityMapper;
     protected $identityRoleMapper;
-    protected $defaultRoleId = 'user';
     
     public function register(array $data) {
         $params = array(
@@ -21,12 +19,8 @@ class Registration extends ModelServiceAbstract {
         );
         
         $params = $this->triggerParamsMergeEvent('register.pre', $params);
-        $this->persist($data);
         
-        //need to be moved to ZfcAclPlugin!!!!!
-        //run persist in selfregistrator role context
-        /*$aclContext = $this->getAclContextService();
-        $params = $aclContext->runAs('selfregistrator', array($this, 'persist'), array($data));*/
+        $this->persist($data);
 
         $params = $this->triggerParamsMergeEvent('register.post', $params);
             
@@ -68,12 +62,4 @@ class Registration extends ModelServiceAbstract {
         $this->defaultRoleId = $defaultRoleId;
     }
     
-    public function getAclContextService() {
-        return $this->aclContextService;
-    }
-
-    public function setAclContextService($aclContextService) {
-        $this->aclContextService = $aclContextService;
-    }
-
 }

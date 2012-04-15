@@ -11,7 +11,7 @@ return array_merge_recursive(
             ),
         ),
         
-        //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
+        //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredential' => false
         'plugin_broker' => array(
             'bootstrap_plugins' => array(
                 'AuthStrategyRoot' => true,
@@ -195,8 +195,6 @@ return array_merge_recursive(
             ),
             'KapitchiIdentity\Service\Registration' => array(
                 'parameters' => array(
-                    //TODO this should be moved to KapitchiIdentityAcl - we should hook into register.pre/post and switch roles that way?
-                    'aclContextService' => 'ZfcAcl\Service\Context',
                     'mapper' => 'KapitchiIdentity\Model\Mapper\RegistrationDbAdapter',
                     'identityMapper' => 'KapitchiIdentity\Model\Mapper\IdentityDbAdapter',
                     'identityRoleMapper' => 'KapitchiIdentity\Model\Mapper\IdentityRoleDbAdapter',
