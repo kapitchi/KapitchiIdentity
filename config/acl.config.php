@@ -7,7 +7,7 @@ return array(
         'auth' => null,
         'user' => 'auth',
         'admin' => 'user',
-        'selfregistrator' => 'guest',
+        'self_registrator' => 'guest',
     ),
     'resources' => array(
         'KapitchiIdentity' => array(
@@ -31,8 +31,8 @@ return array(
             'KapitchiIdentity/Allow/Admin' => array('admin', 'KapitchiIdentity'),
             
             //models
-            'KapitchiIdentity/Allow/Model/1' => array('selfregistrator', 'KapitchiIdentity\Model\Identity', 'persist'),
-            'KapitchiIdentity/Allow/Model/2' => array('selfregistrator', 'KapitchiIdentity\Model\Registration', 'persist'),
+            'KapitchiIdentity/Allow/Model/1' => array('self_registrator', 'KapitchiIdentity\Model\Identity', 'persist'),
+            'KapitchiIdentity/Allow/Model/2' => array('self_registrator', 'KapitchiIdentity\Model\Registration', 'persist'),
             
             //routes
             'KapitchiIdentity/Allow/Route/2' => array('user', 'KapitchiIdentity/Route/Profile'),
