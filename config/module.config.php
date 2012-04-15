@@ -27,7 +27,7 @@ return array_merge_recursive(
                 'AuthCredentialEmailValidation' => false,
                 'AuthCredentialForgotPassword' => false,
                 'RegistrationAuthLogin' => true,
-                'ZfcAcl' => true,
+                'ZfcAcl' => false,
             ),
             
             'specs' => array(
