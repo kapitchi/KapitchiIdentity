@@ -10,7 +10,7 @@ class ZfcAcl extends PluginAbstract {
     protected $aclService;
     protected $identityRoleService;
     
-    protected function bootstrap(Application $application) {
+    public function bootstrap(Application $application) {
         $events = StaticEventManager::getInstance();
         
         $aclService = $application->getLocator()->get('ZfcAcl\Service\Acl');

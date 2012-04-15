@@ -23,10 +23,11 @@ return array_merge_recursive(
                 'RegistrationIdentity' => true,
                 'RegistrationCaptcha' => true,
                 'RegistrationAuthCredential' => true,
-                'AuthCredentialEmail' => true,
-                'AuthCredentialEmailValidation' => true,
+                'AuthCredentialEmail' => false,
+                'AuthCredentialEmailValidation' => false,
                 'AuthCredentialForgotPassword' => false,
                 'RegistrationAuthLogin' => true,
+                'ZfcAcl' => true,
             ),
             
             'specs' => array(
