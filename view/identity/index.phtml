@@ -8,20 +8,21 @@ $columns = array(
 ?>
 <table border="1">
     <thead>
-        <tr>
-            <td></td>
+        <tr>            
         <?php foreach($columns as $columnId => $columnLabel):?>
             <td><?php echo $columnLabel?></td>
         <?php endforeach;?>
+            <td colspan=2>Actions</td>
         </tr>
     </thead>
     <tbody>
         <?php foreach($paginator as $item):?>
-            <tr>
-                <td><a href="<?php echo $this->url('KapitchiIdentity/Identity/Update', array('id' => $item['id']))?>">Edit</a></td>
+            <tr>                
                 <?php foreach($columns as $columnId => $columnLabel):?>
                 <td><?php echo $item[$columnId]?></td>
                 <?php endforeach?>
+                <td><a href="<?php echo $this->url('KapitchiIdentity/Identity/Update', array('id' => $item['id']))?>">Edit</a></td>
+                <td><a href="<?php echo $this->url('KapitchiIdentity/Identity/Remove', array('id' => $item['id']))?>">Delete</a></td>
             </tr>
         <?php endforeach;?>
     </tbody>

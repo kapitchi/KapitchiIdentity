@@ -20,6 +20,7 @@ return array_merge_recursive(
                 'AuthStrategyOAuth2' => false,
                 'IdentityAuthCredential' => true,
                 'IdentityRole' => true,
+                'IdentityRegistration' => true,
                 'RegistrationIdentity' => true,
                 'RegistrationCaptcha' => true,
                 'RegistrationAuthCredential' => true,
@@ -60,6 +61,9 @@ return array_merge_recursive(
                 ),
                 //adds role management for identities - identity form
                 'IdentityRole' => array(
+                ),
+                //used to remove related registration when identity is deleted
+                'IdentityRegistration' => array(
                 ),
 
                 //this creates identity for registration, it is set on 100 priority so identity created can be then used other plugins e.g. RegistrationAuthCredential

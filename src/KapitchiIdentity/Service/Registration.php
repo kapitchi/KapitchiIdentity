@@ -4,7 +4,7 @@ namespace KapitchiIdentity\Service;
 
 use ZfcBase\Service\ModelServiceAbstract,
     ZfcBase\Mapper\Transactional,
-    KapitchiIdentity\Model\Identity,
+    KapitchiIdentity\Model\Identity as IdentityModel,
     KapitchiIdentity\Model\IdentityRole as IdentityRoleModel,
     KapitchiIdentity\Model\Registration as RegistrationModel;
 
@@ -34,6 +34,15 @@ class Registration extends ModelServiceAbstract {
         $events->attach('persist.pre', function($e) {
             $now = new \DateTime();
             $e->getParam('model')->setCreated($now);
+        });
+        
+        $mapper = $this->getMapper();
+        $events->attach('get.load', function($e) use ($mapper){
+            $filter = $e->getParam('identityId');
+            if(!$filter) {
+                return;
+            }
+            return $mapper->findByIdentityId($filter);
         });
     }
     

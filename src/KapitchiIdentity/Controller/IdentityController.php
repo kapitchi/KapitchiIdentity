@@ -87,9 +87,15 @@ class IdentityController extends ZendActionController {
         return $viewModel;
     }
     
-    public function deleteAction() {
-        $id = $this->getQueryIdentityId();
+    public function removeAction() {
+        $id = $this->getIdentityId(); 
+        if(empty($id)) {
+            throw new NoIdException("No id");
+        }        
         
+        $ret = $this->getIdentityService()->remove($id);
+        
+        return $this->redirect()->toRoute('KapitchiIdentity/Identity/Index');        
     }
     
     //helper methods
@@ -97,16 +103,21 @@ class IdentityController extends ZendActionController {
         $routeMatch = $this->getEvent()->getRouteMatch();
         $id = $routeMatch->getParam('id');
         return $id;
-    }
+    }    
     
     //listeners
     protected function attachDefaultListeners()
     {
         parent::attachDefaultListeners();
         $events = $this->events();
-        //$events->attach('logout.post', array($this, 'logoutPost'));
+        $events->attach('remove.post', array($this, 'removePost'));
         //$events->attach('authenticate.post', array($this, 'loginPost'));
     }
+    
+    public function removePost($e) {
+        return $this->redirect()->toRoute('KapitchiIdentity/Identity/Index');
+    }
+    
     
     //getters/setters
     public function getModule() {

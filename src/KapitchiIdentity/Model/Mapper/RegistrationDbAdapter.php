@@ -43,8 +43,24 @@ class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMappe
     }
     
     public function remove(ModelAbstract $model) {
-        var_dump($model);
-        exit;
+        $table = $this->getTableGateway($this->tableName, true);
+        $ret = $table->delete(array('id' => $model->getId()));
+        
+        return $ret;
+    }
+    
+    public function findByIdentityId($id) {
+        $ret = $this->getTableGateway($this->tableName)->select(array(
+            'identityId' => $id
+        ));
+        
+        $row = $ret->current();
+        if(!$row) {
+            return null;
+        }
+        
+        $model = Registration::fromArray($row->getArrayCopy());
+        return $model;
     }
     
     /**

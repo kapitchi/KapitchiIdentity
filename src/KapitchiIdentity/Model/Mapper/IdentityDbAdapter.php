@@ -42,8 +42,10 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
     }
     
     public function remove(ModelAbstract $model) {
-        var_dump($model);
-        exit;
+        $identityTable = $this->getIdentityTable();
+        $ret = $identityTable->delete(array('id' => $model->getId()));
+        
+        return $ret;
     }
     
     /**

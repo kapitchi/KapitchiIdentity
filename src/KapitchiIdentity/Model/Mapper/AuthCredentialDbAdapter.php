@@ -11,7 +11,16 @@ class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialM
     protected $tableName = 'identity_auth_credential';
     
     public function findByPriKey($key) {
+        $table = $this->getTableGateway($this->tableName);
+        $result = $table->select(array(
+            'id' => $key
+        ));
+        $row = $result->current();
+        if(!$row) {
+            return null;
+        }
         
+        return AuthCredential::fromArray($row->getArrayCopy());
     }
     
     public function persist(ModelAbstract $model) {
@@ -29,8 +38,11 @@ class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialM
         return $ret;
     }
     
-    public function remove(ModelAbstract $model) {
+    public function remove(ModelAbstract $model) {       
+        $table = $this->getTableGateway($this->tableName, true);
+        $ret = $table->delete(array('id' => $model->getId()));
         
+        return $ret;      
     }
     
     public function getPaginatorAdapter(array $params) {

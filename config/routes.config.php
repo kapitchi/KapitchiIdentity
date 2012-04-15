@@ -64,6 +64,16 @@ return array(
                             ),
                         ),
                     ),
+                    'Remove' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/remove/:id',
+                            'defaults' => array(
+                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
+                                'action'     => 'remove',
+                            ),
+                        ),
+                    ),
                     'Index' => array(
                         'type' => 'Segment',
                         'options' => array(
@@ -74,7 +84,6 @@ return array(
                             ),
                         ),
                     ),
-
                 ),
             ),
             'Auth' => array(

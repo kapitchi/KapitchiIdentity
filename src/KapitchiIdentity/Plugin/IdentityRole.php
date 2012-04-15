@@ -32,8 +32,8 @@ class IdentityRole extends ModelPlugin {
     }
     
     public function removeModel(ModelAbstract $model) {
-        var_dump($model);
-        exit;
+        /*var_dump($model);
+        exit;*/
     }
     
 }
