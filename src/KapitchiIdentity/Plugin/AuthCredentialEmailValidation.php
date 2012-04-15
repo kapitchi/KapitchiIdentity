@@ -4,13 +4,13 @@ namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\StaticEventManager,
     Zend\Mvc\AppContext as Application,
-    KapitchiBase\Plugin\PluginAbstract;
+    KapitchiBase\Module\Plugin\PluginAbstract;
 
 class AuthCredentialEmailValidation extends PluginAbstract {
     protected $stage = 'registration';
     public $credentialExtName = 'AuthCredential';
     
-    protected function bootstrap(Application $application) {
+    public function bootstrap(Application $application) {
         $locator = $application->getLocator();
         $instance = $this;
         

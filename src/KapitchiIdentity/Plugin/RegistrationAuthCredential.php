@@ -5,9 +5,9 @@ namespace KapitchiIdentity\Plugin;
 use Zend\EventManager\StaticEventManager,
     Zend\Mvc\AppContext as Application,
     ZfcBase\Model\ModelAbstract,
-    KapitchiBase\Plugin\ModelPlugin as PluginAbstract;
+    KapitchiBase\Module\Plugin\ModelPlugin;
 
-class RegistrationAuthCredential extends PluginAbstract {
+class RegistrationAuthCredential extends ModelPlugin {
     protected $modelServiceClass = 'KapitchiIdentity\Service\Registration';
     protected $modelFormClass = 'KapitchiIdentity\Form\Registration';
     protected $extName = 'AuthCredential';

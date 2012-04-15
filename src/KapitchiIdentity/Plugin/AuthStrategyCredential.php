@@ -1,12 +1,12 @@
 <?php
 
-namespace KapitchiIdentity\Plugin\AuthStrategy;
+namespace KapitchiIdentity\Plugin;
 
 use Zend\Authentication\Result,
     KapitchiIdentity\Service\AuthIdentityResolver,
     KapitchiIdentity\Model\AuthIdentity;
 
-class Credential extends StrategyAbstract implements AuthIdentityResolver {
+class AuthStrategyCredential extends AuthStrategy\StrategyAbstract implements AuthIdentityResolver {
     protected $credentialMapper;
     protected $passwordHash;
     protected $credentialLoginForm;

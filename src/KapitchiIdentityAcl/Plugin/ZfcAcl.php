@@ -3,9 +3,10 @@
 namespace KapitchiIdentityAcl\Plugin;
 
 use Zend\EventManager\StaticEventManager,
-    Zend\Mvc\AppContext as Application;
+    Zend\Mvc\AppContext as Application,
+    KapitchiBase\Module\Plugin\PluginAbstract;
 
-class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
+class ZfcAcl extends PluginAbstract {
     protected $aclService;
     protected $identityRoleService;
     
@@ -29,7 +30,7 @@ class ZfcAcl extends \KapitchiBase\Plugin\PluginAbstract {
             }
         });
         
-        if($this->getOption('resource_loader.enabled', true)) {
+        if($this->getOption('resource_loader_enabled', false)) {
             $events->attach('ZfcAcl\Service\Acl', 'loadResource', array(
                 $application->getLocator()->get('KapitchiIdentityAcl\Service\ResourceLoader'),
                 'onLoadResource'
