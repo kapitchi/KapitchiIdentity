@@ -5,10 +5,11 @@ namespace KapitchiIdentity\Model\Mapper;
 use ZfcBase\Mapper\DbAdapterMapper,
     KapitchiIdentity\Model\AuthCredential,
     ZfcBase\Model\ModelAbstract,
-    KapitchiIdentity\Model\Mapper\AuthCredential as AuthCredentialMapper;
+    KapitchiIdentity\Model\Mapper\AuthCredentialInterface;
 
-class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialMapper {
+class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialInterface {
     protected $tableName = 'identity_auth_credential';
+    protected $modelPrototype;
     
     public function findByPriKey($key) {
         $table = $this->getTableGateway($this->tableName);
@@ -76,4 +77,13 @@ class AuthCredentialDbAdapter extends DbAdapterMapper implements AuthCredentialM
         $model = AuthCredential::fromArray($row->getArrayCopy());
         return $model;
     }
+    
+    public function getModelPrototype() {
+        return clone $this->modelPrototype;
+    }
+
+    public function setModelPrototype(ModelAbstract $modelPrototype) {
+        $this->modelPrototype = $modelPrototype;
+    }
+    
 }

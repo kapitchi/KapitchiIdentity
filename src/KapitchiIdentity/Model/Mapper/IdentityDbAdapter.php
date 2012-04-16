@@ -2,16 +2,17 @@
 
 namespace KapitchiIdentity\Model\Mapper;
 
-use KapitchiIdentity\Model\Mapper\Identity as IdentityMapper,
+use KapitchiIdentity\Model\Mapper\IdentityInterface,
     ZfcBase\Mapper\DbAdapterMapper,
     ZfcBase\Model\ModelAbstract,
     KapitchiIdentity\Model\Identity;
     //Zend\Paginator\Adapter as PaginatorAdapter;
     //Zend\Paginator\AdapterAggregate;
 
-class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
+class IdentityDbAdapter extends DbAdapterMapper implements IdentityInterface {
     protected $tableName = 'identity';
     private $identityTable;
+    protected $modelPrototype;
     
     public function findByPriKey($id) {
         $identityTable = $this->getIdentityTable();
@@ -23,7 +24,9 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
             return null;
         }
         
-        return Identity::fromArray($row->getArrayCopy());
+        $model = $this->getModelPrototype();
+        $model->exchangeArray($row->getArrayCopy());
+        return $model;
     }
     
     public function persist(ModelAbstract $model) {
@@ -54,7 +57,7 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
      * @return \Zend\Paginator\Adapter\Iterator 
      */
     public function getPaginatorAdapter(array $params) {
-        $this->getIdentityTable()->setSelectResultPrototype(new \Zend\Db\ResultSet\ResultSet(new Identity));
+        $this->getIdentityTable()->setSelectResultPrototype(new \Zend\Db\ResultSet\ResultSet($this->getModelPrototype()));
         $iterator = $this->getIdentityTable()->select();
         $array = array();
         foreach($iterator as $item) {
@@ -69,4 +72,14 @@ class IdentityDbAdapter extends DbAdapterMapper implements IdentityMapper {
         }
         return $this->identityTable;
     }
+    
+    public function getModelPrototype() {
+        return clone $this->modelPrototype;
+    }
+
+    public function setModelPrototype(ModelAbstract $modelPrototype) {
+        $this->modelPrototype = $modelPrototype;
+    }
+
+
 }

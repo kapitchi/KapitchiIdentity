@@ -4,6 +4,6 @@ namespace KapitchiIdentity\Model\Mapper;
 
 use ZfcBase\Mapper\ModelMapperInterface;
 
-interface IdentityRegistration extends ModelMapperInterface {
+interface IdentityRoleInterface extends ModelMapperInterface {
     public function findByIdentityId($id);
 }

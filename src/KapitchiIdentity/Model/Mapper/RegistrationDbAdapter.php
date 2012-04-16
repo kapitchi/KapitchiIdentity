@@ -2,13 +2,14 @@
 
 namespace KapitchiIdentity\Model\Mapper;
 
-use KapitchiIdentity\Model\Mapper\Registration as RegistrationMapper,
+use KapitchiIdentity\Model\Mapper\RegistrationInterface,
     ZfcBase\Mapper\DbAdapterMapper,
     ZfcBase\Model\ModelAbstract,
     KapitchiIdentity\Model\Registration;
 
-class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMapper {
+class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationInterface {
     protected $tableName = 'identity_registration';
+    protected $modelPrototype;
     
     public function findByPriKey($id) {
         $table = $this->getTableGateway($this->tableName);
@@ -77,6 +78,14 @@ class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMappe
         }
         
         return Registration::fromArray($data);
+    }
+    
+    public function getModelPrototype() {
+        return clone $this->modelPrototype;
+    }
+
+    public function setModelPrototype(ModelAbstract $modelPrototype) {
+        $this->modelPrototype = $modelPrototype;
     }
     
 }

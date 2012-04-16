@@ -4,11 +4,12 @@ namespace KapitchiIdentity\Model\Mapper;
 
 use ZfcBase\Model\ModelAbstract,
     ZfcBase\Mapper\DbAdapterMapper,
-    KapitchiIdentity\Model\Mapper\IdentityRole as IdentityRoleMapper,
+    KapitchiIdentity\Model\Mapper\IdentityRoleInterface,
     KapitchiIdentity\Model\IdentityRole;
 
-class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleMapper {
+class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleInterface {
     protected $tableName = 'identity';
+    protected $modelPrototype;
     
     public function findByPriKey($key) {
         throw new \Exception('TODO');
@@ -57,4 +58,13 @@ class IdentityRoleDbAdapter extends DbAdapterMapper implements IdentityRoleMappe
         
         return $role;
     }
+    
+    public function getModelPrototype() {
+        return clone $this->modelPrototype;
+    }
+
+    public function setModelPrototype(ModelAbstract $modelPrototype) {
+        $this->modelPrototype = $modelPrototype;
+    }
+
 }
