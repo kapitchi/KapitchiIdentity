@@ -68,8 +68,7 @@ class RegistrationDbAdapter extends DbAdapterMapper implements RegistrationMappe
      * @return \Zend\Paginator\Adapter\Iterator 
      */
     public function getPaginatorAdapter(array $params) {
-        var_dump($params);
-        exit;
+        throw new \Exception('N/I');
     }
     
     protected function createModelFromArray(array $data) {

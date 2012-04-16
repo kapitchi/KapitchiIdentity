@@ -18,8 +18,7 @@ class RegistrationAuthCredential extends ModelPlugin {
     }
 
     public function getModel(ModelAbstract $model) {
-        var_dump($model);
-        exit;
+        throw new \Exception('N/I');
     }
 
     public function persistModel(ModelAbstract $model, array $data, $extData) {

@@ -22,6 +22,9 @@ class OAuth2 extends StrategyAbstract implements AuthIdentityResolver {
     }
     
     protected function loginAuth() {
+        
+        throw new \Exception('N/I');
+        
         $request = $this->getRequest();
         if($request->isPost()) {
             $postData = $request->post()->toArray();
