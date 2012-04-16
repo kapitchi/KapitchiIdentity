@@ -12,20 +12,22 @@ Features
 ========
 
 * Authentication
-  * Credential ([AuthStrategy\Credential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategy/Credential.php)) [COMPLETE]
-  * OAuth2 - Google, Facebook [IN PROGRESS]
-  * HTTP Basic/Digest [IN PROGRESS]
+  * Credential ([AuthStrategyCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategyCredential.php)) [COMPLETE]
+  * OAuth2 - Google, Facebook ([AuthStrategyOAuth2 plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategyOAuth2.php)) [IN PROGRESS]
+  * HTTP Basic/Digest ([AuthStrategyHttp plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthStrategyHttp.php)) [IN PROGRESS]
   * OpenID [NOT STARTED]
   * LDAP [NOT STARTED]
 * Registration 
   * User name/password form ([RegistrationAuthCredential plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationAuthCredential.php)) [COMPLETED]
   * Email registration/login ([AuthCredentialEmail plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmail.php)) [COMPLETE]
   * Email validation ([AuthCredentialEmailValidation plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialEmailValidation.php)) [IN PROGRESS]
+  * Captcha ([RegistrationCaptcha plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/RegistrationCaptcha.php)) [COMPLETED]
 * Identity management [IN PROGRESS]
 * Identity - Role management ([IdentityRole plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/IdentityRole.php)) [COMPLETED]
 * Role management [NOT STARTED]
 * Password recovery ([AuthCredentialForgotPassword plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentity/Plugin/AuthCredentialForgotPassword.php)) [IN PROGRESS]
 
+* ZfcAcl "ready" - ([ZfcAcl plugin](https://github.com/kapitchi/KapitchiIdentity/blob/master/src/KapitchiIdentityAcl/Plugin/ZfcAcl.php))
 
 Requirements
 ============
@@ -39,7 +41,7 @@ Requirements
 Installation
 ============
 1. Put the module into /vendor folder and activate it in application.config.php.
-2. Create DB tables - deploy/mysql_install.sql
+2. Create DB tables - deploy/mysql_create.sql
 3. Make sure you go through _Configuration_ section
 4. Go to http://yourpublicfolder/KapitchiIdentity/auth/login in order to login
 
@@ -156,6 +158,6 @@ A role should be known from local identity id (if authentication strategy is abl
 A strategy is not required to resolve local identity id. Example might be Facebook Connect strategy which is used to authenticate Facebook users to the site only.
 Such strategy can set 'facebook' role for the user. This can be then used to help an application to decide (usign ZfcAcl module) if an user can see certain (social/facebook) blocks on the page.
 
-TODO - roles used, static/identity roles, registration - selfregistrator
+TODO - roles used, static/identity roles, registration - self_registrator
 
 

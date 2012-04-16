@@ -47,7 +47,7 @@ Registration service providing CRUD operations on Registration objects. It also 
 
 Public methods (plus model service methods):
 
-* register(array $data) - runs $service->persist(data) under 'selfregistrator' user role.
+* register(array $data) - runs $service->persist(data) under 'self_registrator' user role (only with ZfcAcl plugin enabled)
 
 
 ### KapitchiIdentity\Service\IdentityRegistration (Model service)

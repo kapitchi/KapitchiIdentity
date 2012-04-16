@@ -5,14 +5,11 @@ return array(
         ),
         
         //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredentialModel' => false
-        'plugins' => array(
+        'plugin_broker' => array(
             //ZfcAcl module does not manage roles itself - it relies on other modules to provide it - this plugin does exactly this
             'ZfcAcl' => array(
-                'diclass' => 'KapitchiIdentityAcl\Plugin\ZfcAcl',
                 'options' => array(
-                    'resource_loader' => array(
-                        'enabled' => false
-                    )
+                    'resource_loader_enabled' => true
                 )
             )
         )
