@@ -1,9 +1,10 @@
 Zend Framework 2 - Kapitchi Identity module
 =================================================
-Version: 0.1  
+Version: 0.1    
 Author:  Matus Zeman  
 
-Please DO subscribe to the following RSS/Atom feed in order to get development updates e.g. new features, changes in API ... 
+Please join the following group in order to get development updates e.g. new features, changes in API ...     
+https://groups.google.com/d/forum/kapitchi-modules-updates
 
 RSS 2.0: https://groups.google.com/group/kapitchi-modules-updates/feed/rss_v2_0_topics.xml  
 Atom 1.0: https://groups.google.com/group/kapitchi-modules-updates/feed/atom_v1_0_topics.xml  
