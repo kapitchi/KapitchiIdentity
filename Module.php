@@ -33,6 +33,13 @@ class Module extends ModuleAbstract {
             }
         });
         
+        $app->events()->attach('route', function($e) use ($locator) {
+            if(strpos($e->getRouteMatch()->getMatchedRouteName(), 'KapitchiIdentity/Api') === 0) {
+                $view         = $locator->get('Zend\View\View');
+                $jsonStrategy = $locator->get('Zend\View\Strategy\JsonStrategy');
+                $view->events()->attach($jsonStrategy, 100);
+            }
+        });
         
     }
     

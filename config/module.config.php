@@ -177,6 +177,23 @@ return array_merge_recursive(
                 ),
             ),
             
+            //API controllers
+            'KapitchiIdentity\Api\Controller\IdentityController' => array(
+                'parameters' => array(
+                    'modelService' => 'KapitchiIdentity\Service\Identity',
+                ),
+            ),
+            'KapitchiIdentity\Api\Controller\IdentityRoleController' => array(
+                'parameters' => array(
+                    'modelService' => 'KapitchiIdentity\Service\IdentityRole',
+                ),
+            ),
+            'KapitchiIdentity\Api\Controller\AuthCredentialController' => array(
+                'parameters' => array(
+                    'modelService' => 'KapitchiIdentity\Service\AuthCredential',
+                ),
+            ),
+            
             //SERVICES
             'KapitchiIdentity\Service\Identity' => array(
                 'parameters' => array(

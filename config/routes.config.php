@@ -8,6 +8,7 @@ return array(
         ),
         'may_terminate' => false,
         'child_routes' => array(
+            'Api' => require 'routes-api.config.php',
             'Profile' => array(
                 'type' => 'Literal',
                 'options' => array(
