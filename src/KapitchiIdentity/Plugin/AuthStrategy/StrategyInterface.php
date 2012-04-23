@@ -2,8 +2,8 @@
 
 namespace KapitchiIdentity\Plugin\AuthStrategy;
 
-use Zend\Authentication\Adapter;
+use Zend\Authentication\Adapter\AdapterInterface;
 
-interface StrategyInterface extends Adapter {
+interface StrategyInterface extends AdapterInterface {
     
 }
