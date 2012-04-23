@@ -45,6 +45,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
             else {
                 $el = $authForm->getElement('password');
                 $el->setAttrib('readonly', true);
+                $el->setRequired(false);
                 $el->setDescription('You will be asked for password once you validate an email address provided');
                 $authForm->removeElement('passwordConfirm');
             }
