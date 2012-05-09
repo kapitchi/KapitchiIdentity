@@ -46,8 +46,7 @@ class RegistrationIdentity extends ModelPlugin {
     }
     
     public function removeModel(ModelAbstract $model) {
-        /*var_dump($model);
-        exit;*/
+        //TODO do nothing?
     }
     
 }

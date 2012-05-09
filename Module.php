@@ -3,7 +3,7 @@
 namespace KapitchiIdentity;
 
 use Zend\Module\Manager,
-    Zend\Mvc\AppContext as Application,
+    Zend\Mvc\ApplicationInterface,
     Zend\EventManager\StaticEventManager,
     Zend\EventManager\EventDescription as Event,
     Zend\Mvc\MvcEvent as MvcEvent,
@@ -11,7 +11,7 @@ use Zend\Module\Manager,
 
 class Module extends ModuleAbstract {
     
-    public function bootstrap(Manager $moduleManager, Application $app) {
+    public function bootstrap(Manager $moduleManager, ApplicationInterface $app) {
         $locator      = $app->getLocator();
         
         $events = StaticEventManager::getInstance();

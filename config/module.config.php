@@ -262,7 +262,7 @@ return array_merge_recursive(
             ),
             
             //ROUTER
-            'Zend\Mvc\Router\RouteStack' => array(
+            'Zend\Mvc\Router\RouteStackInterface' => array(
                 'parameters' => array(
                     'routes' => require 'routes.config.php'
                 ),

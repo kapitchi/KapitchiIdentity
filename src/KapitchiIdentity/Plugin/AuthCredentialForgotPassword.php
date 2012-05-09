@@ -3,12 +3,12 @@
 namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\StaticEventManager,
-    Zend\Mvc\AppContext as Application,
+    Zend\Mvc\ApplicationInterface,
     KapitchiBase\Module\Plugin\PluginAbstract;
 
 class AuthCredentialForgotPassword extends PluginAbstract {
     
-    protected function bootstrap(Application $application) {
+    protected function bootstrap(ApplicationInterface $application) {
         $locator = $application->getLocator();
         $instance = $this;
         
