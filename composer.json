@@ -4,7 +4,9 @@
     "keywords": [
         "kapitchi",
         "zf2",
-        "authentication"
+        "user",
+        "authentication",
+        "registration"
     ],
     "homepage": "http://kapitchi.com",
     "authors": [
