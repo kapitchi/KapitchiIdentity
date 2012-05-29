@@ -2,8 +2,7 @@
 
 namespace KapitchiIdentity\Plugin;
 
-use Zend\EventManager\StaticEventManager,
-    Zend\Mvc\ApplicationInterface,
+use Zend\Mvc\ApplicationInterface,
     KapitchiBase\Module\Plugin\PluginAbstract;
 
 class AuthCredentialEmailValidation extends PluginAbstract {
@@ -14,8 +13,7 @@ class AuthCredentialEmailValidation extends PluginAbstract {
         $locator = $application->getLocator();
         $instance = $this;
         
-        $events = StaticEventManager::getInstance();
-        
+        $events = $this->getSharedManager();
         $events->attach('KapitchiIdentity\Controller\RegistrationController', 'register.pre', function($e) use($instance, $locator) {
             $request = $e->getParam('request');
             $regId = $request->query()->get($instance->getPluginName() . '_regid');

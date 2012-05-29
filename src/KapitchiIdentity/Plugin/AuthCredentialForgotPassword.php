@@ -2,8 +2,7 @@
 
 namespace KapitchiIdentity\Plugin;
 
-use Zend\EventManager\StaticEventManager,
-    Zend\Mvc\ApplicationInterface,
+use Zend\Mvc\ApplicationInterface,
     KapitchiBase\Module\Plugin\PluginAbstract;
 
 class AuthCredentialForgotPassword extends PluginAbstract {
@@ -12,8 +11,7 @@ class AuthCredentialForgotPassword extends PluginAbstract {
         $locator = $application->getLocator();
         $instance = $this;
         
-        $events = StaticEventManager::getInstance();
-        
+        $events = $this->getSharedManager();
         $events->attach('KapitchiIdentity\Controller\AuthController', 'authenticate.post', function($e) use($instance, $locator) {
             $adapter = $e->getParam('adapter');
             if($adapter instanceof \KapitchiIdentity\AuthStrategy\Credential) {

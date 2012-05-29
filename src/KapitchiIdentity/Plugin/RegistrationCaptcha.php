@@ -2,13 +2,12 @@
 
 namespace KapitchiIdentity\Plugin;
 
-use Zend\Mvc\AppContext as Application,
-    Zend\EventManager\StaticEventManager,
+use Zend\Mvc\ApplicationInterface,
     KapitchiBase\Module\Plugin\PluginAbstract;
 
 class RegistrationCaptcha extends PluginAbstract {
-    public function bootstrap(Application $application) {
-        $events = StaticEventManager::getInstance();
+    public function bootstrap(ApplicationInterface $application) {
+        $events = $application->events()->getSharedManager();
         $locator = $application->getLocator();
         $instance = $this;
         

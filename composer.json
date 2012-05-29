@@ -1,0 +1,31 @@
+{
+    "name": "kapitchi/identity",
+    "description": "Provides authentication, identity and role management.",
+    "keywords": [
+        "kapitchi",
+        "zf2",
+        "authentication",
+    ],
+    "homepage": "http://kapitchi.com",
+    "authors": [
+        {
+            "name": "Matus Zeman",
+            "email": "mz@kapitchi.com",
+            "homepage": "http://kapitchi.com",
+            "role": "Lead developer"
+        }
+    ],
+    "support": {
+        "email": "dev@kapitchi.com"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "kapitchi/base": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "KapitchiIdentity": "src/"
+        }
+    }
+}

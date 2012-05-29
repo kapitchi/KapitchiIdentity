@@ -50,8 +50,7 @@ You need to hook into registration controller register.pre event and change temp
 This might be example of what you need to do:
 
 ```
-$events = StaticEventManager::getInstance();
-$events->attach('KapitchiIdentity\Controller\RegistrationController', 'register.pre', function(Event $e) {
+$sharedEventManager->attach('KapitchiIdentity\Controller\RegistrationController', 'register.pre', function(Event $e) {
     $e->getParam('viewModel')->setTemplate('mymodule/customregistration');
 });
 ```

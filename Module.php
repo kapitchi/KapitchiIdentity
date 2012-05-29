@@ -4,7 +4,6 @@ namespace KapitchiIdentity;
 
 use Zend\Module\Manager,
     Zend\Mvc\ApplicationInterface,
-    Zend\EventManager\StaticEventManager,
     Zend\EventManager\EventDescription as Event,
     Zend\Mvc\MvcEvent as MvcEvent,
     KapitchiBase\Module\ModuleAbstract;
@@ -14,7 +13,7 @@ class Module extends ModuleAbstract {
     public function bootstrap(Manager $moduleManager, ApplicationInterface $app) {
         $locator      = $app->getLocator();
         
-        $events = StaticEventManager::getInstance();
+        $events = $app->events()->getSharedManager();
         $instance = $this;
         
         //auth-identity

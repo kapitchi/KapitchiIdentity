@@ -2,9 +2,7 @@
 
 namespace KapitchiIdentity\Plugin;
 
-use Zend\EventManager\StaticEventManager,
-    Zend\Mvc\AppContext as Application,
-    ZfcBase\Model\ModelAbstract,
+use ZfcBase\Model\ModelAbstract,
     KapitchiBase\Module\Plugin\ModelPlugin;
 
 class RegistrationAuthCredential extends ModelPlugin {

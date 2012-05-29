@@ -2,8 +2,7 @@
 
 namespace KapitchiIdentity\Plugin\AuthStrategy;
 
-use Zend\Mvc\AppContext as Application,
-    Zend\EventManager\StaticEventManager,
+use Zend\Mvc\ApplicationInterface,
     KapitchiBase\Module\Plugin\PluginAbstract,
     KapitchiIdentity\Model\AuthIdentity;
 
@@ -14,9 +13,9 @@ abstract class StrategyAbstract extends PluginAbstract implements StrategyInterf
     abstract protected function loginPre();
     abstract protected function loginAuth();
     
-    public function bootstrap(Application $app) {
+    public function bootstrap(ApplicationInterface $app) {
         if($this->isIpAllowed($_SERVER['REMOTE_ADDR'])) {
-            $events = StaticEventManager::getInstance();
+            $events = $app->events()->getSharedManager();
             $events->attach('KapitchiIdentity\Controller\AuthController', 'login.pre', array($this, 'onLoginPre'));
             $events->attach('KapitchiIdentity\Controller\AuthController', 'login.auth', array($this, 'onLoginAuth'));
         }
