@@ -2,7 +2,7 @@
 
 namespace KapitchiIdentity;
 
-use Zend\Module\Manager,
+use Zend\ModuleManager\ModuleManager,
     Zend\Mvc\ApplicationInterface,
     Zend\EventManager\EventDescription as Event,
     Zend\Mvc\MvcEvent as MvcEvent,
@@ -10,15 +10,15 @@ use Zend\Module\Manager,
 
 class Module extends ModuleAbstract {
     
-    public function bootstrap(Manager $moduleManager, ApplicationInterface $app) {
-        $locator      = $app->getLocator();
+    public function bootstrap(ModuleManager $moduleManager, ApplicationInterface $app) {
+        $sm      = $app->getServiceManager();
         
         $events = $app->events()->getSharedManager();
         $instance = $this;
         
         //auth-identity
-        $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function($e) use($locator) {
-            $service = $locator->get('KapitchiIdentity\Service\Auth');
+        $events->attach('KapitchiIdentity\Service\Identity', 'persist.pre', function($e) use($sm) {
+            $service = $sm->get('KapitchiIdentity\Service\Auth');
             $identity = $e->getParam('model');
             
             try {
