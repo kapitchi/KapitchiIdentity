@@ -1,7 +1,5 @@
 <?php
-return array_merge_recursive(
-    require 'module-acl.config.php',    
-    array(
+return array(
     'KapitchiIdentity' => array(
         'options' => array(
             'identity' => array(
@@ -10,7 +8,6 @@ return array_merge_recursive(
                 )
             ),
         ),
-        
         //these plugins can be disabled by setting them to false - e.g. 'IdentityAuthCredential' => false
         'plugin_broker' => array(
             'bootstrap_plugins' => array(
@@ -120,9 +117,34 @@ return array_merge_recursive(
         //SEE BELOW - "DI options" for more options
         
     ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            'kapitchiidentity' => __DIR__ . '/../view',
+        ),
+        'helper_map' => array(
+            //'Zend\Form\View\HelperLoader',
+            //'zfcUserIdentity'        => 'ZfcUser\View\Helper\ZfcUserIdentity',
+            //'zfcUserLoginWidget'     => 'ZfcUser\View\Helper\ZfcUserLoginWidget',
+        ),
+    ),
+    'controller' => array(
+        'classes' => array(
+            //'KapitchiIdentity\Controller\IdentityController' => ''
+        ),
+        'map' => array(
+            //'zfcuserauthentication' => 'ZfcUser\Controller\Plugin\ZfcUserAuthentication',
+        ),
+    ),
+    'service_manager' => array(
+        'aliases' => array(
+            //'zfcuser_zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
+        ),
+    ),
+    'router' => array(
+        'routes' => require 'routes.config.php'
+    ),
     'di' => array(
         'instance' => array(
-            
             //DI options
             'KapitchiIdentity-auth_credential_password_hash' => array(
                 'parameters' => array(
@@ -260,15 +282,6 @@ return array_merge_recursive(
                     ),
                 ),
             ),
-            
-            //ROUTER
-            'Zend\Mvc\Router\RouteStackInterface' => array(
-                'parameters' => array(
-                    'routes' => require 'routes.config.php'
-                ),
-            ),
-            
         ),
     ),
-)
 );
