@@ -2,12 +2,12 @@
 
 namespace KapitchiIdentity;
 
-use Zend\EventManager\Event,
+use Zend\EventManager\EventInterface,
     KapitchiBase\ModuleManager\AbstractModule;
 
 class Module extends AbstractModule {
     
-    public function onBootstrap(Event $e) {
+    public function onBootstrap(EventInterface $e) {
 //        $sm      = $app->getServiceManager();
 //        $events = $app->events()->getSharedManager();
 //        $instance = $this;
