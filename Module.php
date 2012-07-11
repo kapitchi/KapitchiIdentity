@@ -3,9 +3,9 @@
 namespace KapitchiIdentity;
 
 use Zend\EventManager\Event,
-    KapitchiBase\Module\ModuleAbstract;
+    KapitchiBase\ModuleManager\AbstractModule;
 
-class Module extends ModuleAbstract {
+class Module extends AbstractModule {
     
     public function onBootstrap(Event $e) {
 //        $sm      = $app->getServiceManager();
