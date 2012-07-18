@@ -1,10 +1,7 @@
 <?php
+namespace KapitchiIdentity\Entity;
 
-namespace KapitchiIdentity\Model;
-
-use ZfcBase\Model\ModelAbstract;
-
-class Registration extends ModelAbstract {
+class Registration {
     protected $id;
     protected $identityId;
     protected $requestIp;
@@ -50,6 +47,5 @@ class Registration extends ModelAbstract {
     public function setData($data) {
         $this->data = $data;
     }
-
 
 }

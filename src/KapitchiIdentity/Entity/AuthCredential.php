@@ -1,9 +1,8 @@
 <?php
-namespace KapitchiIdentity\Model;
+namespace KapitchiIdentity\Entity;
 
-use ZfcBase\Model\ModelAbstract;
-
-class AuthCredential extends ModelAbstract {
+class AuthCredential
+{
     protected $id;
     protected $identityId;
     protected $username;

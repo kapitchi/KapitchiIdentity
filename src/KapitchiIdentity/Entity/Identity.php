@@ -1,10 +1,9 @@
 <?php
 
-namespace KapitchiIdentity\Model;
+namespace KapitchiIdentity\Entity;
 
-use ZfcBase\Model\ModelAbstract;
-
-class Identity extends ModelAbstract {
+class Identity 
+{
     protected $id;
     protected $created;
     protected $ownerId;

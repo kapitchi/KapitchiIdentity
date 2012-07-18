@@ -1,11 +1,10 @@
 <?php
 
-namespace KapitchiIdentity\Model;
+namespace KapitchiIdentity\Entity;
 
-use ZfcBase\Model\ModelAbstract,
-    Zend\Acl\Role\RoleInterface;
+use Zend\Acl\Role\RoleInterface;
 
-class IdentityRole extends ModelAbstract implements RoleInterface {
+class IdentityRole implements RoleInterface {
     protected $roleId;
     protected $identityId;
     
