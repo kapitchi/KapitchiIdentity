@@ -1,92 +1,48 @@
 <?php
 
 return array(
-    'KapitchiIdentity' => array(
+    'kapitchi-identity' => array(
         'type' => 'Literal',
         'options' => array(
-            'route'    => '/KapitchiIdentity',
+            'route'    => '/identity',
+            'defaults' => array(
+                '__NAMESPACE__' => 'KapitchiIdentity\Controller',
+            ),
         ),
         'may_terminate' => false,
         'child_routes' => array(
-            'Profile' => array(
+            'profile' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route'    => '/profile',
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
-                    'Me' => array(
+                    'me' => array(
                         'type' => 'Literal',
                         'options' => array(
                             'route' => '/me',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\ProfileController',
+                                'controller' => 'Profile',
                                 'action'     => 'me',
                             ),
                         ),
                     ),
                 ),
             ),
-            'Identity' => array(
-                'type' => 'Literal',
+            'identity' => array(
+                'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/identity',
-                ),
-                'may_terminate' => false,
-                'child_routes' => array(
-                    'Register' => array(
-                        'type' => 'Literal',
-                        'options' => array(
-                            'route' => '/register',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                'action'     => 'register',
-                            ),
-                        ),
+                    'route'    => '/identity[/:action[/:id]]',
+                    'constraints' => array(
+                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
-                    'Create' => array(
-                        'type' => 'Literal',
-                        'options' => array(
-                            'route' => '/create',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                'action'     => 'create',
-                            ),
-                        ),
-                    ),
-                    'Update' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/update/:id',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                'action'     => 'update',
-                            ),
-                        ),
-                    ),
-                    'Remove' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/remove/:id',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                'action'     => 'remove',
-                            ),
-                        ),
-                    ),
-                    'Index' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/index[/page/:page]',
-                            'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\IdentityController',
-                                'action'     => 'index',
-                            ),
-                        ),
+                    'defaults' => array(
+                        'controller' => 'Identity',
                     ),
                 ),
             ),
-            'Auth' => array(
+            'auth' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route'    => '/auth',
@@ -98,7 +54,7 @@ return array(
                         'options' => array(
                             'route' => '/login',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\AuthController',
+                                'controller' => 'Auth',
                                 'action'     => 'login',
                             ),
                         ),
@@ -108,14 +64,14 @@ return array(
                         'options' => array(
                             'route' => '/logout',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\AuthController',
+                                'controller' => 'Auth',
                                 'action'     => 'logout',
                             ),
                         ),
                     ),
                 ),
             ),
-            'Registration' => array(
+            'registration' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route'    => '/registration',
@@ -127,7 +83,7 @@ return array(
                         'options' => array(
                             'route' => '/register',
                             'defaults' => array(
-                                'controller' => 'KapitchiIdentity\Controller\RegistrationController',
+                                'controller' => 'Registration',
                                 'action'     => 'register',
                             ),
                         ),

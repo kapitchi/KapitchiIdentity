@@ -2,19 +2,19 @@
 
 namespace KapitchiIdentity\Service;
 
-use     Zend\Authentication\AuthenticationService as ZendAuthenticationService,
-        Zend\Di\Locator,
-        Zend\Authentication\Adapter,
-        Zend\EventManager\EventManagerInterface,
-        Zend\EventManager\EventManager,
-        Zend\Acl\Role\GenericRole,
-        KapitchiIdentity\Model\AuthIdentity,
-        Exception as NoLocalIdException,
-        Exception as NoLoggedInException;
+use Zend\EventManager\EventManagerAwareInterface,
+    Zend\Authentication\AuthenticationService,
+    Zend\EventManager\EventManagerInterface,
+    Zend\EventManager\EventManager,
+    Exception as NoLocalIdException,
+    Exception as NoLoggedInException;
         
-class Auth extends ZendAuthenticationService {
+class Auth extends AuthenticationService implements EventManagerAwareInterface {
     
-    protected $events;
+    /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
 
     public function authenticate(Adapter $adapter) {
         $result = $adapter->authenticate();
@@ -80,19 +80,13 @@ class Auth extends ZendAuthenticationService {
         return $localId;
     }
     
-    /**
-     * Set the event manager instance used by this context
-     * 
-     * @param  EventManagerInterface $events 
-     * @return mixed
-     */
     public function setEventManager(EventManagerInterface $events)
     {
-        $this->events = $events;
+        $this->eventManager = $events;
         $this->attachDefaultListeners();
         return $this;
     }
-    
+
     /**
      * Retrieve the event manager
      *
@@ -100,12 +94,12 @@ class Auth extends ZendAuthenticationService {
      * 
      * @return EventManagerInterface
      */
-    public function events()
+    public function getEventManager()
     {
-        if (!$this->events instanceof EventManagerInterface) {
-            $this->setEventManager(new EventManager(array(__CLASS__, get_class($this))));
+        if (!$this->eventManager instanceof EventManagerInterface) {
+            $this->setEventManager(new EventManager(array(__CLASS__, get_called_class())));
         }
-        return $this->events;
+        return $this->eventManager;
     }
     
     protected function attachDefaultListeners() {

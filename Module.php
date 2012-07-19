@@ -14,13 +14,22 @@ class Module extends AbstractModule implements
     public function getControllerConfiguration()
     {
         return array(
+            'invokables' => array(
+                //'KapitchiIdentity\Controller\Identity' => 'KapitchiIdentity\Controller\IdentityController',
+            ),
             'factories' => array(
-//                'KapitchiIdentity\Controller\Item' => function($sm) {
-//                    $cont = new Controller\ItemController();
-//                    $cont->setEntityService($sm->get('KapitchiIdentity\Service\Item'));
-//                    $cont->setEntityForm($sm->get('KapitchiIdentity\Form\Item'));
-//                    return $cont;
-//                },
+                'KapitchiIdentity\Controller\Identity' => function($sm) {
+                    $cont = new Controller\IdentityController();
+                    $cont->setEntityService($sm->get('KapitchiIdentity\Service\Identity'));
+                    $cont->setEntityForm($sm->get('KapitchiIdentity\Form\Identity'));
+                    return $cont;
+                },
+                'KapitchiIdentity\Controller\Auth' => function($sm) {
+                    $cont = new Controller\AuthController();
+                    $cont->setAuthService($sm->get('KapitchiIdentity\Service\Auth'));
+                    $cont->setLoginForm($sm->get('KapitchiIdentity\Form\Login'));
+                    return $cont;
+                },
             )
         );
     }
@@ -29,9 +38,18 @@ class Module extends AbstractModule implements
     {
         return array(
             'invokables' => array(
+                //entities
+                'KapitchiIdentity\Entity\Identity' => 'KapitchiIdentity\Entity\Identity',
                 'KapitchiIdentity\Entity\AuthCredential' => 'KapitchiIdentity\Entity\AuthCredential',
+                'KapitchiIdentity\Entity\Registration' => 'KapitchiIdentity\Entity\Registration',
+                //forms
+                'KapitchiIdentity\Form\Login' => 'KapitchiIdentity\Form\Login',
             ),
             'factories' => array(
+                'KapitchiIdentity\Service\Auth' => function ($sm) {
+                    $s = new Service\Auth();
+                    return $s;
+                },
                 //AuthCredential
                 'KapitchiIdentity\Service\AuthCredential' => function ($sm) {
                     $s = new Service\AuthCredential(
@@ -80,6 +98,9 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Entity\IdentityHydrator' => function ($sm) {
                     //needed here because hydrator tranforms camelcase to underscore
                     return new \Zend\Stdlib\Hydrator\ClassMethods(false);
+                },
+                'KapitchiIdentity\Form\Identity' => function ($sm) {
+                    return new Form\Identity();
                 },
                 //Registration
                 'KapitchiIdentity\Service\Registration' => function ($sm) {

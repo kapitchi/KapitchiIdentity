@@ -2,10 +2,14 @@
 
 namespace KapitchiIdentity\Form;
 
-use ZfcBase\Form\Form;
+use KapitchiBase\Form\EventManagerAwareForm;
 
-class Login extends Form {
-    public function init() {
+class Login extends EventManagerAwareForm {
+    
+    public function __construct()
+    {
         
+        $this->triggerInitEvent();
     }
+    
 }
