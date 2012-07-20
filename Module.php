@@ -11,7 +11,7 @@ class Module extends AbstractModule implements
     ControllerProviderInterface, ServiceProviderInterface
 {
     
-    public function getControllerConfiguration()
+    public function getControllerConfig()
     {
         return array(
             'invokables' => array(
@@ -34,7 +34,7 @@ class Module extends AbstractModule implements
         );
     }
     
-    public function getServiceConfiguration()
+    public function getServiceConfig()
     {
         return array(
             'invokables' => array(
