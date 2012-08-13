@@ -14,7 +14,7 @@
             "name": "Matus Zeman",
             "email": "mz@kapitchi.com",
             "homepage": "http://kapitchi.com",
-            "role": "Lead developer"
+            "role": "Developer"
         }
     ],
     "support": {
@@ -23,7 +23,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
-        "kapitchi/base": "dev-master"
+        "kapitchi/base": "dev-master",
+        "kapitchi/entity": "dev-master"
     },
     "autoload": {
         "classmap": [

@@ -2,9 +2,10 @@
 
 namespace KapitchiIdentity\Form;
 
-use Zend\Form\Form;
+use KapitchiBase\Form\EventManagerAwareForm;
 
-class Identity extends Form {
+class Identity extends EventManagerAwareForm {
+    
     public function __construct()
     {
         parent::__construct();
@@ -12,10 +13,10 @@ class Identity extends Form {
         $this->add(array(
             'name' => 'created',
             'options' => array(
-                'label' => 'Vytvorena',
+                'label' => 'Vytvoreny',
             ),
             'attributes' => array(
-                'type' => 'text'
+                'type' => 'datetime'
             ),
         ));
     }

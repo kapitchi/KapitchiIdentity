@@ -20,14 +20,14 @@ class Module extends AbstractModule implements
             'factories' => array(
                 'KapitchiIdentity\Controller\Identity' => function($sm) {
                     $cont = new Controller\IdentityController();
-                    $cont->setEntityService($sm->get('KapitchiIdentity\Service\Identity'));
-                    $cont->setEntityForm($sm->get('KapitchiIdentity\Form\Identity'));
+                    $cont->setEntityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
+                    $cont->setEntityForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Identity'));
                     return $cont;
                 },
                 'KapitchiIdentity\Controller\Auth' => function($sm) {
                     $cont = new Controller\AuthController();
-                    $cont->setAuthService($sm->get('KapitchiIdentity\Service\Auth'));
-                    $cont->setLoginForm($sm->get('KapitchiIdentity\Form\Login'));
+                    $cont->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
+                    $cont->setLoginForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Login'));
                     return $cont;
                 },
             )

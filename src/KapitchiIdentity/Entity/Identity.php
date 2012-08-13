@@ -6,6 +6,7 @@ class Identity
 {
     protected $id;
     protected $created;
+    protected $displayName;
     protected $ownerId;
     
     public function getId() {
@@ -22,6 +23,16 @@ class Identity
 
     public function setCreated($created) {
         $this->created = $created;
+    }
+    
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName($displayName)
+    {
+        $this->displayName = $displayName;
     }
 
     public function getOwnerId() {
