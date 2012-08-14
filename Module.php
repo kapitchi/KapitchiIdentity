@@ -2,7 +2,8 @@
 
 namespace KapitchiIdentity;
 
-use Zend\ModuleManager\Feature\ControllerProviderInterface,
+use Zend\EventManager\EventInterface,
+    Zend\ModuleManager\Feature\ControllerProviderInterface,
     Zend\ModuleManager\Feature\ServiceProviderInterface,
     KapitchiBase\ModuleManager\AbstractModule,
     KapitchiEntity\Mapper\EntityDbAdapterMapperOptions;
@@ -10,6 +11,17 @@ use Zend\ModuleManager\Feature\ControllerProviderInterface,
 class Module extends AbstractModule implements
     ControllerProviderInterface, ServiceProviderInterface
 {
+    
+    public function onBootstrap(EventInterface $e)
+    {
+        $em = $e->getApplication()->getEventManager();
+        $sm = $e->getApplication()->getServiceManager();
+
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
+            $form = $e->getTarget();
+            $form->add($sm->get('KapitchiIdentity\Form\AuthCredential'));
+        });
+    }
     
     public function getControllerConfig()
     {
@@ -76,6 +88,11 @@ class Module extends AbstractModule implements
                     //needed here because hydrator tranforms camelcase to underscore
                     return new \Zend\Stdlib\Hydrator\ClassMethods(false);
                 },
+                'KapitchiIdentity\Form\AuthCredential' => function ($sm) {
+                    $s = new Form\AuthCredential('auth-credential');
+                    return $s;
+                },
+                        
                 //Identity
                 'KapitchiIdentity\Service\Identity' => function ($sm) {
                     $s = new Service\Identity(
