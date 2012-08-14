@@ -11,6 +11,16 @@ class Identity extends EventManagerAwareForm {
         parent::__construct();
         
         $this->add(array(
+            'name' => 'displayName',
+            'options' => array(
+                'label' => 'Display name',
+            ),
+            'attributes' => array(
+                'type' => 'text'
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'created',
             'options' => array(
                 'label' => 'Vytvoreny',

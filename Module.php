@@ -44,6 +44,7 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Entity\Registration' => 'KapitchiIdentity\Entity\Registration',
                 //forms
                 'KapitchiIdentity\Form\Login' => 'KapitchiIdentity\Form\Login',
+                'KapitchiIdentity\Form\IdentityInputFilter' => 'KapitchiIdentity\Form\IdentityInputFilter',
             ),
             'factories' => array(
                 'KapitchiIdentity\Service\Auth' => function ($sm) {
@@ -97,10 +98,12 @@ class Module extends AbstractModule implements
                 },
                 'KapitchiIdentity\Entity\IdentityHydrator' => function ($sm) {
                     //needed here because hydrator tranforms camelcase to underscore
-                    return new \Zend\Stdlib\Hydrator\ClassMethods(false);
+                    return new Entity\IdentityHydrator(false);
                 },
                 'KapitchiIdentity\Form\Identity' => function ($sm) {
-                    return new Form\Identity();
+                    $ins = new Form\Identity();
+                    $ins->setInputFilter($sm->get('KapitchiIdentity\Form\IdentityInputFilter'));
+                    return $ins;
                 },
                 //Registration
                 'KapitchiIdentity\Service\Registration' => function ($sm) {
