@@ -27,8 +27,11 @@
         "kapitchi/entity": "dev-master"
     },
     "autoload": {
+        "psr-0": {
+            "KapitchiIdentity": "src/"
+        },
         "classmap": [
-            "./"
+            "./Module.php"
         ]
     }
 }
