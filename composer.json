@@ -21,6 +21,9 @@
         "email": "dev@kapitchi.com"
     },
     "minimum-stability": "dev",
+    "suggest": {
+        "kapitchi/app": "KapitchiApp for plugin management"
+    },
     "require": {
         "php": ">=5.3.3",
         "kapitchi/base": "dev-master",
