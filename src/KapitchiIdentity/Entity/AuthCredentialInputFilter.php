@@ -12,6 +12,10 @@ class AuthCredentialInputFilter extends EventManagerAwareInputFilter
     public function __construct()
     {
         $this->add(array(
+            'name'       => 'id',
+            'required'   => false,
+        ));
+        $this->add(array(
             'name'       => 'username',
             'required'   => true,
             'validators' => array(

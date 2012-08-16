@@ -57,9 +57,13 @@ class AuthCredential implements PluginInterface
             $form->setData(array(
                 'auth-credential' => $ser->createArrayFromEntity($authEntity)
             ));
-//            $form->prepare();
-//            var_dump($form->get('auth-credential'));
-//            exit;
+        });
+        $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'persist', function($e) use ($sm) {
+            $data = $e->getParam('data');
+            $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
+            $entity = $ser->createEntityFromArray($data['auth-credential']);
+            $entity->setIdentityId($e->getParam('entity')->getId());
+            $ser->persist($entity, $data['auth-credential']);
         });
         
         //Login stuff

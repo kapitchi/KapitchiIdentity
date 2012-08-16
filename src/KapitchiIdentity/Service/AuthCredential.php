@@ -6,48 +6,39 @@ use KapitchiEntity\Service\EntityService;
 
 class AuthCredential extends EntityService
 {
-    //protected $passwordHash;
+    protected $passwordGenerator;
     
-//    protected function attachDefaultListeners() {
-//        parent::attachDefaultListeners();
-//        
-//        $instance = $this;
-//        $events = $this->events();
-//        $mapper = $this->getMapper();
-//        
-//        //get
-//        $events->attach('get.load', function($e) use ($mapper) {
-//            if($e->getParam('identityId')) {
-//                return $mapper->findByIdentityId($e->getParam('identityId'));
-//            }
-//            if($e->getParam('username')) {
-//                return $mapper->findByUsername($e->getParam('username'));
-//            }
-//        });
-//        
-//        
-//        //persist
-//        $events->attach('persist.pre', function($e) use ($mapper, $instance) {
-//            $model = $e->getParam('model');
-//            $data = $e->getParam('data');
-//            if(isset($data['password']) && isset($data['passwordConfirm'])) {
-//                //we don't want to do the same mistake as form migth do!
-//                if($data['password'] != $data['passwordConfirm']) {
-//                    throw new PasswordNoMatch("Passwords provided do not match");
-//                }
-//                
-//                $hash = $instance->getPasswordHash()->encrypt($data['password']);
-//                $model->setPasswordHash($hash);
-//            }
-//        });
-//    }
+    protected function attachDefaultListeners() {
+        parent::attachDefaultListeners();
+        
+        $instance = $this;
+        $events = $this->getEventManager();
+        $mapper = $this->getMapper();
+        
+        //persist
+        $events->attach('persist', function($e) use ($mapper, $instance) {
+            $entity = $e->getParam('entity');
+            $data = $e->getParam('data');
+            if(isset($data['password']) && isset($data['passwordConfirm'])) {
+                //we don't want to do the same mistake as form migth do!
+                if($data['password'] != $data['passwordConfirm']) {
+                    throw new \Exception("Passwords provided do not match");
+                }
+                
+                $hash = $instance->getPasswordGenerator()->create($data['password']);
+                $entity->setPasswordHash($hash);
+            }
+        }, 10);
+    }
     
-//    public function getPasswordHash() {
-//        return $this->passwordHash;
-//    }
-//
-//    public function setPasswordHash($passwordHash) {
-//        $this->passwordHash = $passwordHash;
-//    }
+    public function getPasswordGenerator()
+    {
+        return $this->passwordGenerator;
+    }
+
+    public function setPasswordGenerator($passwordGenerator)
+    {
+        $this->passwordGenerator = $passwordGenerator;
+    }
 
 }

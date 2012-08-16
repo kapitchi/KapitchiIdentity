@@ -18,10 +18,6 @@ class Module extends AbstractModule implements
         $em = $e->getApplication()->getEventManager();
         $sm = $e->getApplication()->getServiceManager();
 
-        $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
-            $form = $e->getTarget();
-            $form->add($sm->get('KapitchiIdentity\Form\AuthCredential'));
-        });
     }
     
     public function getControllerConfig()
@@ -93,7 +89,7 @@ class Module extends AbstractModule implements
                         $sm->get('KapitchiIdentity\Entity\AuthCredential'),
                         $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator')
                     );
-                    //$s->setInputFilter($sm->get('KapitchiIdentity\Entity\AuctionInputFilter'));
+                    $s->setPasswordGenerator($sm->get('KapitchiIdentity\PasswordGenerator'));
                     return $s;
                 },
                 'KapitchiIdentity\Mapper\AuthCredentialDbAdapter' => function ($sm) {
