@@ -5,11 +5,12 @@ namespace KapitchiIdentity;
 use Zend\EventManager\EventInterface,
     Zend\ModuleManager\Feature\ControllerProviderInterface,
     Zend\ModuleManager\Feature\ServiceProviderInterface,
+    Zend\ModuleManager\Feature\ViewHelperProviderInterface,
     KapitchiBase\ModuleManager\AbstractModule,
     KapitchiEntity\Mapper\EntityDbAdapterMapperOptions;
 
 class Module extends AbstractModule implements
-    ControllerProviderInterface, ServiceProviderInterface
+    ControllerProviderInterface, ServiceProviderInterface, ViewHelperProviderInterface
 {
     
     public function onBootstrap(EventInterface $e)
@@ -46,6 +47,23 @@ class Module extends AbstractModule implements
         );
     }
     
+    public function getViewHelperConfig()
+    {
+        return array(
+            'invokables' => array(
+                //'KapitchiIdentity\Controller\Identity' => 'KapitchiIdentity\Controller\IdentityController',
+            ),
+            'factories' => array(
+                'identity' => function($sm) {
+                    $ins = new View\Helper\Identity();
+                    $ins->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
+                    $ins->setIdentityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
+                    return $ins;
+                },
+            )
+        );
+    }
+    
     public function getServiceConfig()
     {
         return array(
@@ -55,10 +73,15 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Entity\AuthCredential' => 'KapitchiIdentity\Entity\AuthCredential',
                 'KapitchiIdentity\Entity\Registration' => 'KapitchiIdentity\Entity\Registration',
                 //forms
-                'KapitchiIdentity\Form\Login' => 'KapitchiIdentity\Form\Login',
                 'KapitchiIdentity\Form\IdentityInputFilter' => 'KapitchiIdentity\Form\IdentityInputFilter',
             ),
             'factories' => array(
+                'KapitchiIdentity\PasswordGenerator' => function ($sm) {
+                    $ins = new \Zend\Crypt\Password\Bcrypt(array(
+                        'salt' => 'TODO-FROM-CONFIG-XXXXXXXXXXXXXXXXXXX',
+                    ));
+                    return $ins;
+                },
                 'KapitchiIdentity\Service\Auth' => function ($sm) {
                     $s = new Service\Auth();
                     return $s;
@@ -91,6 +114,19 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Form\AuthCredential' => function ($sm) {
                     $s = new Form\AuthCredential('auth-credential');
                     return $s;
+                },
+                'KapitchiIdentity\Form\AuthCredentialInputFilter' => function($sm) {
+                    $ins = new Form\AuthCredentialInputFilter();
+                    return $ins;
+                },
+                'KapitchiIdentity\Form\AuthCredentialLogin' => function ($sm) {
+                    $ins = new Form\AuthCredentialLogin('auth-credential-login');
+                    $ins->setInputFilter($sm->get('KapitchiIdentity\Form\AuthCredentialLoginInputFilter'));
+                    return $ins;
+                },
+                'KapitchiIdentity\Form\AuthCredentialLoginInputFilter' => function($sm) {
+                    $ins = new Form\AuthCredentialLoginInputFilter();
+                    return $ins;
                 },
                         
                 //Identity
@@ -146,6 +182,16 @@ class Module extends AbstractModule implements
                     //needed here because hydrator tranforms camelcase to underscore
                     return new \Zend\Stdlib\Hydrator\ClassMethods(false);
                 },
+                //Login        
+                'KapitchiIdentity\Form\Login' => function($sm) {
+                    $ins = new Form\Login();
+                    $ins->setInputFilter($sm->get('KapitchiIdentity\Form\LoginInputFilter'));
+                    return $ins;
+                },
+                'KapitchiIdentity\Form\LoginInputFilter' => function($sm) {
+                    $ins = new Form\LoginInputFilter();
+                    return $ins;
+                },
             )
         );
     }
@@ -157,4 +203,5 @@ class Module extends AbstractModule implements
     public function getNamespace() {
         return __NAMESPACE__;
     }
+
 }

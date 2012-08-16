@@ -1,6 +1,6 @@
 <?php
 
-namespace KapitchiIdentity\Form\AuthCredential;
+namespace KapitchiIdentity\Form;
 
 use ZfcBase\Form\Form;
 

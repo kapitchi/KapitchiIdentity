@@ -2,12 +2,13 @@
 
 namespace KapitchiIdentity\Service;
 
-use Zend\EventManager\EventManagerAwareInterface,
+use Zend\Authentication\Adapter\AdapterInterface,
+    Zend\EventManager\EventManagerAwareInterface,
     Zend\Authentication\AuthenticationService,
     Zend\EventManager\EventManagerInterface,
     Zend\EventManager\EventManager,
-    Exception as NoLocalIdException,
-    Exception as NoLoggedInException;
+    KapitchiIdentity\Model\AuthIdentity,
+    KapitchiIdentity\Authentication\AuthIdentityResolverInterface;
         
 class Auth extends AuthenticationService implements EventManagerAwareInterface {
     
@@ -16,18 +17,18 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
      */
     protected $eventManager;
 
-    public function authenticate(Adapter $adapter) {
+    public function authenticate(AdapterInterface $adapter) {
         $result = $adapter->authenticate();
 
         if($result->isValid()) {
-            if($adapter instanceof AuthIdentityResolver) {
+            if($adapter instanceof AuthIdentityResolverInterface) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
             }
             else {
                 $authIdentity = new AuthIdentity($result->getIdentity());
             }
             
-            $this->events()->trigger('authenticate.valid', array(
+            $this->getEventManager()->trigger('authenticate.valid', array(
                 'result' => $result,
                 'adapter' => $adapter,
                 'authIdentity' => $authIdentity,
@@ -58,7 +59,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         
         $this->getStorage()->clear();
         
-        $this->events()->trigger('clearIdentity.post', $this, array(
+        $this->getEventManager()->trigger('clearIdentity.post', $this, array(
            'authIdentity' => $id 
         ));
     }
@@ -68,7 +69,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
      */
     public function getLocalIdentityId() {
         if(!$this->hasIdentity()) {
-            throw new NoLoggedInException("User is not logged in");
+            throw new \Exception("User is not logged in");
         }
         
         $authIdentity = $this->getIdentity();

@@ -2,11 +2,66 @@
 
 namespace KapitchiIdentity\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Authentication\Adapter\AdapterInterface,
+    Zend\Mvc\Controller\AbstractActionController,
+    Zend\Http\Response;
 
 class AuthController extends AbstractActionController {
     protected $authService;
     protected $loginForm;
+    protected $loginViewModel;
+    
+    public function loginAction() {
+        $form = $this->getLoginForm();
+        
+        $params = array(
+            'loginForm' => $form,
+        );
+        
+        $this->getEventManager()->trigger('login.pre', $this, $params);
+        
+        $form->setData($this->getRequest()->getPost()->toArray());
+        $form->isValid();
+        
+        $res = $this->getEventManager()->trigger('login.auth', $this, $params, function($ret) {
+            return ($ret instanceof AuthAdapter || $ret instanceof Response);
+        });
+        $adapter = $res->last();
+        if($adapter instanceof Response) {
+            return $adapter;
+        }
+
+        //auth event returns AuthAdapter -- we are ready to authenticate!
+        if($adapter instanceof AdapterInterface) {
+            $authService = $this->getAuthService();
+
+            $result = $authService->authenticate($adapter);
+
+            //do we need to redirect again? example: http auth!
+            if($result instanceof Response) {
+                return $result;
+            }
+
+            $params['adapter'] = $adapter;
+            $params['result'] = $result;
+            $res = $this->getEventManager()->trigger('login.auth.post', $this, $params, function($ret) {
+                return $ret instanceof Response;
+            });
+            $result = $res->last();
+            if($result instanceof Response) {
+                return $result;
+            }
+        }
+        
+        $viewModel = $this->getLoginViewModel();
+        $viewModel->loginForm = $form;
+        
+        $params['viewModel'] = $viewModel;
+        
+        $this->getEventManager()->trigger('login.post', $this, $params);
+        
+        return $viewModel;
+    }
     
     public function logoutAction() {
         $authService = $this->getAuthService();
@@ -25,63 +80,20 @@ class AuthController extends AbstractActionController {
         }
     }
     
-    public function loginAction() {
-        $form = $this->getLoginForm();
-        $viewModel = $this->getLoginViewModel();
-        $viewModel->setVariable('loginForm', $form);
-        
-        $params = array(
-            'viewModel' => $viewModel,
-        );
-        
-        $this->getEventManager()->trigger('login.pre', $this, $params);
-        
-        $res = $this->getEventManager()->trigger('login.auth', $this, $params, function($ret) {
-            return ($ret instanceof AuthAdapter || $ret instanceof Response);
-        });
-        $adapter = $res->last();
-        if($adapter instanceof Response) {
-            return $adapter;
-        }
-        
-        //init event returns AuthAdapter -- we are ready to authenticate!
-        if($adapter instanceof AuthAdapter) {
-            $authService = $this->getAuthService();
-
-            $result = $authService->authenticate($adapter);
-            
-            //do we need to redirect again? example: http auth!
-            if($result instanceof Response) {
-                return $result;
-            }
-            
-            $params['adapter'] = $adapter;
-            $params['result'] = $result;
-            $res = $this->getEventManager()->trigger('authenticate.post', $this, $params, function($ret) {
-                return $ret instanceof Response;
-            });
-            
-            $result = $res->last();
-            if($result instanceof Response) {
-                return $result;
-            }
-        }
-
-        return $viewModel;
-    }
-    
     //listeners
     protected function attachDefaultListeners()
     {
         parent::attachDefaultListeners();
         $events = $this->getEventManager();
-        $events->attach('logout.post', function($e) {
-            return $this->redirect()->toRoute('kapitchi-identity/auth/login');
+        
+        $instance = $this;
+        $events->attach('logout.post', function($e) use ($instance) {
+            return $instance->redirect()->toRoute('kapitchi-identity/auth/login');
         });
         
-        $events->attach('authenticate.post', function($e) {
+        $events->attach('login.auth.post', function($e) use ($instance) {
             if($e->getParam('result')->isValid()) {
-                return $this->redirect()->toRoute('kapitchi-identity/profile/me');
+                return $instance->redirect()->toRoute('kapitchi-identity/profile/me');
             }
         });
     }
@@ -103,6 +115,18 @@ class AuthController extends AbstractActionController {
     {
         $this->loginForm = $loginForm;
     }
+    
+    public function getLoginViewModel()
+    {
+        if($this->loginViewModel === null) {
+            $this->loginViewModel = new \Zend\View\Model\ViewModel();
+        }
+        return $this->loginViewModel;
+    }
 
+    public function setLoginViewModel($loginViewModel)
+    {
+        $this->loginViewModel = $loginViewModel;
+    }
 
 }

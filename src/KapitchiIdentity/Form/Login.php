@@ -4,12 +4,12 @@ namespace KapitchiIdentity\Form;
 
 use KapitchiBase\Form\EventManagerAwareForm;
 
-class Login extends EventManagerAwareForm {
-    
-    public function __construct()
+class Login extends EventManagerAwareForm
+{
+    public function __construct($name = null)
     {
+        parent::__construct($name);
         
-        $this->triggerInitEvent();
+        $this->setValidationGroup(array());
     }
-    
 }

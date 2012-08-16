@@ -49,7 +49,7 @@ return array(
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
-                    'Login' => array(
+                    'login' => array(
                         'type' => 'Literal',
                         'options' => array(
                             'route' => '/login',
@@ -59,7 +59,7 @@ return array(
                             ),
                         ),
                     ),
-                    'Logout' => array(
+                    'logout' => array(
                         'type' => 'Literal',
                         'options' => array(
                             'route' => '/logout',
