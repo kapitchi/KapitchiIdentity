@@ -37,6 +37,32 @@ class AuthCredential implements PluginInterface
         $sm = $e->getApplication()->getServiceManager();
         $instance = $this;
         
+        //identity management stuff
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
+            $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredential'), array(
+                'name' => 'auth-credential'
+            ));
+        });
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\IdentityInputFilter', 'init', function($e) use ($sm) {
+            $ins = $e->getTarget();
+            $ins->add($sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter'), 'auth-credential');
+        });
+        $em->getSharedManager()->attach('KapitchiIdentity\Controller\IdentityController', 'update.post', function($e) use ($sm) {
+            $ins = $e->getTarget();
+            $form = $e->getParam('form');
+            $model = $e->getParam('model');
+            
+            $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
+            $authEntity = $ser->findOneBy(array('identityId' => $model->getEntity()->getId()));
+            $form->setData(array(
+                'auth-credential' => $ser->createArrayFromEntity($authEntity)
+            ));
+//            $form->prepare();
+//            var_dump($form->get('auth-credential'));
+//            exit;
+        });
+        
+        //Login stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Login', 'init', function($e) use ($sm) {
             $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredentialLogin'), array(
                 'name' => 'credential'
@@ -50,8 +76,10 @@ class AuthCredential implements PluginInterface
         
         $em->getSharedManager()->attach('KapitchiIdentity\Controller\AuthController', 'login.auth', function($e) use ($sm) {
             $form = $e->getParam('loginForm');
-            if($form->isValid()) {
+            if($e->getTarget()->getRequest()->isPost() && $form->isValid()) {
                 $data = $form->getData();
+                
+                //TODO mz: to service manager
                 $adapter = new \KapitchiIdentity\Authentication\Adapter\Credential($sm->get('KapitchiIdentity\Mapper\AuthCredentialDbAdapter'));
                 $adapter->setPasswordGenerator($sm->get('KapitchiIdentity\PasswordGenerator'));
                 $adapter->setIdentity($data['credential']['username']);

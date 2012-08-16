@@ -31,5 +31,9 @@ class AuthCredentialInputFilter extends EventManagerAwareInputFilter
             'name'       => 'password',
             'required'   => false,
         ));
+        $this->add(array(
+            'name'       => 'passwordConfirm',
+            'required'   => false,
+        ));
     }
 }
