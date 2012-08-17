@@ -1,13 +1,7 @@
 <?php
 return array(
     'KapitchiIdentity' => array(
-        'options' => array(
-            'identity' => array(
-                'view' => array(
-                    'item_count_per_page' => 10,//identity index page - number of identies to render per page
-                )
-            ),
-        ),
+        'password_generator_salt' => 'this-should-be-at-least-16-char-long-salt'
     ),
     'plugin_manager' => array(
         'invokables' => array(

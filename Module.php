@@ -73,8 +73,13 @@ class Module extends AbstractModule implements
             ),
             'factories' => array(
                 'KapitchiIdentity\PasswordGenerator' => function ($sm) {
+                    $config = $sm->get('Config');
+                    $salt = 'TODO-SHOULD-COME-FROM-CONFIG';
+                    if(isset($config['KapitchiIdentity']['password_generator_salt'])) {
+                        $salt = $config['KapitchiIdentity']['password_generator_salt'];
+                    }
                     $ins = new \Zend\Crypt\Password\Bcrypt(array(
-                        'salt' => 'TODO-FROM-CONFIG-XXXXXXXXXXXXXXXXXXX',
+                        'salt' => $salt,
                     ));
                     return $ins;
                 },
