@@ -37,6 +37,19 @@ class AuthCredential implements PluginInterface
         $sm = $e->getApplication()->getServiceManager();
         $instance = $this;
         
+        $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'loadModel', function($e) use ($sm) {
+            $model = $e->getParam('model');
+            $id = $model->getEntity()->getId();
+            $service = $sm->get('KapitchiIdentity/Service/AuthCredential');
+            $entity = $service->findOneBy(array(
+                'identityId' => $id
+            ));
+            if($entity) {
+                $contactModel = $service->loadModel($entity);
+                $model->setExt('auth-credential-model', $contactModel);
+            }
+        });
+        
         //identity management stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
             $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredential'), array(
@@ -54,9 +67,11 @@ class AuthCredential implements PluginInterface
             
             $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
             $authEntity = $ser->findOneBy(array('identityId' => $model->getEntity()->getId()));
-            $form->setData(array(
-                'auth-credential' => $ser->createArrayFromEntity($authEntity)
-            ));
+            if($authEntity) {
+                $form->setData(array(
+                    'auth-credential' => $ser->createArrayFromEntity($authEntity)
+                ));
+            }
         });
         $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'persist', function($e) use ($sm) {
             $data = $e->getParam('data');
