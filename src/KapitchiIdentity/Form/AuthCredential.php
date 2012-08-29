@@ -13,41 +13,41 @@ class AuthCredential extends EventManagerAwareForm {
         
         $this->add(array(
             'name' => 'id',
+            'type' => 'Zend\Form\Element\Hidden',
             'options' => array(
                 'label' => 'ID',
             ),
             'attributes' => array(
-                'type' => 'hidden'
             ),
         ));
         
         $this->add(array(
             'name' => 'username',
+            'type' => 'Zend\Form\Element\Text',
             'options' => array(
                 'label' => 'Username',
             ),
             'attributes' => array(
-                'type' => 'text'
             ),
         ));
         
         $this->add(array(
             'name' => 'password',
+            'type' => 'Zend\Form\Element\Password',
             'options' => array(
                 'label' => 'Password',
             ),
             'attributes' => array(
-                'type' => 'password'
             ),
         ));
         
         $this->add(array(
             'name' => 'passwordConfirm',
+            'type' => 'Zend\Form\Element\Password',
             'options' => array(
                 'label' => 'Confirm password',
             ),
             'attributes' => array(
-                'type' => 'password'
             ),
         ));
     }

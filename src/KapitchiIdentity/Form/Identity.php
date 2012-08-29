@@ -12,21 +12,21 @@ class Identity extends EventManagerAwareForm {
         
         $this->add(array(
             'name' => 'displayName',
+            'type' => 'Zend\Form\Element\Text',
             'options' => array(
                 'label' => 'Display name',
             ),
             'attributes' => array(
-                'type' => 'text'
             ),
         ));
         
         $this->add(array(
             'name' => 'created',
+            'type' => 'Zend\Form\Element\Datetime',
             'options' => array(
                 'label' => 'Vytvoreny',
             ),
             'attributes' => array(
-                'type' => 'datetime'
             ),
         ));
     }
