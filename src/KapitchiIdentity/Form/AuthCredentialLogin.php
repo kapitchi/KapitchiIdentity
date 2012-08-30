@@ -14,21 +14,21 @@ class AuthCredentialLogin extends EventManagerAwareForm {
         
         $this->add(array(
             'name' => 'username',
+            'type' => 'Zend\Form\Element\Text',
             'options' => array(
                 'label' => 'Username',
             ),
             'attributes' => array(
-                'type' => 'text'
             ),
         ));
         
         $this->add(array(
             'name' => 'password',
+            'type' => 'Zend\Form\Element\Password',
             'options' => array(
                 'label' => 'Password',
             ),
             'attributes' => array(
-                'type' => 'password'
             ),
         ));
         
