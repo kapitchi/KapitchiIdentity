@@ -18,7 +18,7 @@ class Identity extends AbstractHelper
         $authService = $this->getAuthService();
         if($authService->hasIdentity()) {
             $localId = $authService->getLocalIdentityId();
-            $model = $this->getIdentityModelById($localId);
+            $model = $this->getModelById($localId);
             $entity = $model->getEntity();
             return $entity->getDisplayName();
         }
@@ -31,7 +31,7 @@ class Identity extends AbstractHelper
         return $authService->hasIdentity();
     }
     
-    protected function getIdentityModelById($id) {
+    public function getModelById($id) {
         $identity = $this->getIdentityService()->find($id);
         if(!$identity) {
             throw new \Exception("No identity [$id]");
