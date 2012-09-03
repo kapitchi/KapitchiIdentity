@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'kapitchi-identity' => array(
+    'identity' => array(
         'type' => 'Literal',
         'options' => array(
             'route'    => '/identity',

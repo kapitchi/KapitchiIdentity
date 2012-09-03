@@ -31,11 +31,16 @@ class Identity extends AbstractHelper
         return $authService->hasIdentity();
     }
     
-    public function getModelById($id) {
+    public function getIdentityById($id) {
         $identity = $this->getIdentityService()->find($id);
         if(!$identity) {
             throw new \Exception("No identity [$id]");
         }
+        return $identity;
+    }
+    
+    public function getModelById($id) {
+        $identity = $this->getIdentityById($id);
         return $this->getIdentityService()->loadModel($identity);
     }
     
