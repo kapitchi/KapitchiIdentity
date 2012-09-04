@@ -88,12 +88,12 @@ class AuthController extends AbstractActionController {
         
         $instance = $this;
         $events->attach('logout.post', function($e) use ($instance) {
-            return $instance->redirect()->toRoute('kapitchi-identity/auth/login');
+            return $instance->redirect()->toRoute('identity/auth/login');
         });
         
         $events->attach('login.auth.post', function($e) use ($instance) {
             if($e->getParam('result')->isValid()) {
-                return $instance->redirect()->toRoute('kapitchi-identity/profile/me');
+                return $instance->redirect()->toRoute('identity/profile/me');
             }
         });
     }
