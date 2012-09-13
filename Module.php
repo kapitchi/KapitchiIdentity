@@ -50,9 +50,14 @@ class Module extends AbstractModule implements
                 //'KapitchiIdentity\Controller\Identity' => 'KapitchiIdentity\Controller\IdentityController',
             ),
             'factories' => array(
+                'authIdentity' => function($sm) {
+                    $ins = new View\Helper\AuthIdentity();
+                    $ins->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
+                    $ins->setIdentityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
+                    return $ins;
+                },
                 'identity' => function($sm) {
                     $ins = new View\Helper\Identity();
-                    $ins->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
                     $ins->setIdentityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
                     return $ins;
                 },
