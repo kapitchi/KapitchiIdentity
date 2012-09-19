@@ -57,8 +57,7 @@ class Module extends AbstractModule implements
                     return $ins;
                 },
                 'identity' => function($sm) {
-                    $ins = new View\Helper\Identity();
-                    $ins->setIdentityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
+                    $ins = new View\Helper\Identity($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
                     return $ins;
                 },
             )

@@ -1,42 +1,16 @@
 <?php
-
 namespace KapitchiIdentity\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use KapitchiEntity\View\Helper\AbstractEntityHelper;
 
-class Identity extends AbstractHelper
+class Identity extends AbstractEntityHelper
 {
-    protected $identityService;
-    
     public function getDisplayName($id) {
-        $identity = $this->getIdentityService()->find($id);
+        $identity = $this->getEntityService()->find($id);
         if(!$identity) {
-            throw new \Exception("No identity [$id]");
+            return $this->getView()->translate('N/A');
         }
         return $identity->getDisplayName();
     }
     
-    public function find($id) {
-        $identity = $this->getIdentityService()->find($id);
-        return $identity;
-    }
-    
-    public function loadModel($id) {
-        $identity = $this->find($id);
-        if(!$identity) {
-            throw new \Exception("No identity [$id]");
-        }
-        return $this->getIdentityService()->loadModel($identity);
-    }
-    
-    public function getIdentityService()
-    {
-        return $this->identityService;
-    }
-
-    public function setIdentityService($identityService)
-    {
-        $this->identityService = $identityService;
-    }
-
 }
