@@ -14,7 +14,8 @@ class IdentityRestfulController extends EntityRestfulController
     {
         $service = $this->getEntityService();
         
-        $value = $this->getRequest()->getQuery()->get('value');
+        $query = $this->getRequest()->getQuery();
+        $value = $query->get('value');
         if($value) {
             $entity = $service->find($value);
             return new JsonModel(array(
@@ -25,7 +26,7 @@ class IdentityRestfulController extends EntityRestfulController
         }
         
         $items = $service->getPaginator(array(
-            //'displayName' => new 
+            'fulltext' => $query->get('term')
         ));
         
         $ret = array();
