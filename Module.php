@@ -39,6 +39,11 @@ class Module extends AbstractModule implements
                     $cont->setLoginForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Login'));
                     return $cont;
                 },
+                //API
+                'KapitchiIdentity\Controller\Api\Identity' => function($sm) {
+                    $cont = new Controller\Api\IdentityRestfulController($sm->getServiceLocator()->get('KapitchiIdentity\Service\Identity'));
+                    return $cont;
+                },
             )
         );
     }

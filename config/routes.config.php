@@ -90,6 +90,30 @@ return array(
                     ),
                 ),
             ),
+            'api' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/api',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'KapitchiIdentity\Controller\Api',
+                    ),
+                ),
+                'may_terminate' => false,
+                'child_routes' => array(
+                    'plugin' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/identity[/:action][/:id]',
+                            'constraints' => array(
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Identity',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ),
     ),
 );
