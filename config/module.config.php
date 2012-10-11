@@ -5,7 +5,7 @@ return array(
     ),
     'plugin_manager' => array(
         'invokables' => array(
-            //'Identity/AuthCredential' => 'KapitchiIdentity\Plugin\AuthCredential',
+            'Identity/AuthAccessOnly' => 'KapitchiIdentity\Plugin\AuthAccessOnly',
         ),
         'factories' => array(
             'Identity/AuthCredential' => function($sm) {
