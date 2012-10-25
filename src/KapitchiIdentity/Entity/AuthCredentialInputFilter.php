@@ -33,11 +33,19 @@ class AuthCredentialInputFilter extends EventManagerAwareInputFilter
         
         $this->add(array(
             'name'       => 'password',
-            'required'   => false,
+            'required'   => true,
         ));
         $this->add(array(
             'name'       => 'passwordConfirm',
-            'required'   => false,
+            'required'   => true,
+            'validators' => array(
+                array(
+                    'name' => 'Identical',
+                    'options' => array(
+                        'token' => 'password'
+                    )
+                )
+            ),
         ));
     }
 }

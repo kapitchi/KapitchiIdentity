@@ -37,19 +37,6 @@ class AuthCredential implements PluginInterface
         $sm = $e->getApplication()->getServiceManager();
         $instance = $this;
         
-        $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'loadModel', function($e) use ($sm) {
-            $model = $e->getParam('model');
-            $id = $model->getEntity()->getId();
-            $service = $sm->get('KapitchiIdentity/Service/AuthCredential');
-            $entity = $service->findOneBy(array(
-                'identityId' => $id
-            ));
-            if($entity) {
-                $contactModel = $service->loadModel($entity);
-                $model->setExt('auth-credential-model', $contactModel);
-            }
-        });
-        
         //identity management stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
             $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredential'), array(
@@ -58,27 +45,42 @@ class AuthCredential implements PluginInterface
         });
         $em->getSharedManager()->attach('KapitchiIdentity\Form\IdentityInputFilter', 'init', function($e) use ($sm) {
             $ins = $e->getTarget();
-            $ins->add($sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter'), 'auth-credential');
+            $authCredentialInputFilter = $sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter');
+            $ins->add($authCredentialInputFilter, 'auth-credential');
         });
-        $em->getSharedManager()->attach('KapitchiIdentity\Controller\IdentityController', 'update.post', function($e) use ($sm) {
-            $ins = $e->getTarget();
-            $form = $e->getParam('form');
-            $model = $e->getParam('model');
+        
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'setData', function($e) use ($sm) {
+            $form = $e->getTarget();
+            $data = $e->getParam('data');
+            $id = $form->get('id')->getValue();
             
-            $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
-            $authEntity = $ser->findOneBy(array('identityId' => $model->getEntity()->getId()));
-            if($authEntity) {
-                $form->setData(array(
-                    'auth-credential' => $ser->createArrayFromEntity($authEntity)
-                ));
+            if($id && empty($data['auth-credential'])) {
+                $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
+                $authEntity = $ser->findOneBy(array('identityId' => $id));
+                if($authEntity) {
+                    $form->setData(array(
+                        'auth-credential' => $ser->createArrayFromEntity($authEntity)
+                    ));
+                }
             }
         });
+        
+        $em->getSharedManager()->attach('KapitchiIdentity\Controller\IdentityController', 'update.pre', function($e) use ($sm) {
+            $form = $e->getParam('form');
+            $inputFilter = $form->getInputFilter();
+            $cred = $inputFilter->get('auth-credential');
+            $cred->get('password')->setRequired(false);
+            $cred->get('passwordConfirm')->setRequired(false);
+        });
+        
         $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'persist', function($e) use ($sm) {
             $data = $e->getParam('data');
-            $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
-            $entity = $ser->createEntityFromArray($data['auth-credential']);
-            $entity->setIdentityId($e->getParam('entity')->getId());
-            $ser->persist($entity, $data['auth-credential']);
+            if(!empty($data['auth-credential'])) {
+                $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
+                $entity = $ser->createEntityFromArray($data['auth-credential']);
+                $entity->setIdentityId($e->getParam('entity')->getId());
+                $ser->persist($entity, $data['auth-credential']);
+            }
         });
         
         //Login stuff

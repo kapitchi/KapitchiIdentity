@@ -11,6 +11,16 @@ class Identity extends EventManagerAwareForm {
         parent::__construct();
         
         $this->add(array(
+            'name' => 'id',
+            'type' => 'Zend\Form\Element\Hidden',
+            'options' => array(
+                'label' => 'ID',
+            ),
+            'attributes' => array(
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'displayName',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(
