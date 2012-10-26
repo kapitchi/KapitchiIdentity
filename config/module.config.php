@@ -11,6 +11,10 @@ return array(
             'Identity/AuthCredential' => function($sm) {
                 $ins = new \KapitchiIdentity\Plugin\AuthCredential();
                 return $ins;
+            },
+            'Identity/KapitchiEntityRevision' => function($sm) {
+                $ins = new \KapitchiIdentity\Plugin\KapitchiEntityRevision();
+                return $ins;
             }
         )
     ),
