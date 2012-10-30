@@ -19,4 +19,11 @@ class IdentityController extends AbstractEntityController
         ));
     }
     
+    public function lookupAction()
+    {
+        return array(
+            'iframeCallerId' => $this->getRequest()->getQuery()->get('iframeCallerId')
+        );
+    }
+    
 }
