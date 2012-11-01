@@ -9,13 +9,11 @@ class AuthCredential extends EventManagerAwareForm {
     {
         parent::__construct($name);
         
-        $this->setLabel('Username/password');
-        
         $this->add(array(
             'name' => 'id',
             'type' => 'Zend\Form\Element\Hidden',
             'options' => array(
-                'label' => 'ID',
+                'label' => $this->translate('ID'),
             ),
             'attributes' => array(
             ),
@@ -25,7 +23,7 @@ class AuthCredential extends EventManagerAwareForm {
             'name' => 'username',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(
-                'label' => 'Username',
+                'label' => $this->translate('Username'),
             ),
             'attributes' => array(
             ),
@@ -35,7 +33,7 @@ class AuthCredential extends EventManagerAwareForm {
             'name' => 'password',
             'type' => 'Zend\Form\Element\Password',
             'options' => array(
-                'label' => 'Password',
+                'label' => $this->translate('Password'),
             ),
             'attributes' => array(
             ),
@@ -45,7 +43,7 @@ class AuthCredential extends EventManagerAwareForm {
             'name' => 'passwordConfirm',
             'type' => 'Zend\Form\Element\Password',
             'options' => array(
-                'label' => 'Confirm password',
+                'label' => $this->translate('Confirm password'),
             ),
             'attributes' => array(
             ),

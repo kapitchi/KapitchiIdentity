@@ -14,7 +14,7 @@ class Identity extends EventManagerAwareForm {
             'name' => 'id',
             'type' => 'Zend\Form\Element\Hidden',
             'options' => array(
-                'label' => 'ID',
+                'label' => $this->translate('ID'),
             ),
             'attributes' => array(
             ),
@@ -24,7 +24,7 @@ class Identity extends EventManagerAwareForm {
             'name' => 'displayName',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(
-                'label' => 'Display name',
+                'label' => $this->translate('Display name'),
             ),
             'attributes' => array(
             ),
@@ -34,7 +34,7 @@ class Identity extends EventManagerAwareForm {
             'name' => 'created',
             'type' => 'Zend\Form\Element\Datetime',
             'options' => array(
-                'label' => 'Vytvoreny',
+                'label' => $this->translate('Created'),
             ),
             'attributes' => array(
             ),

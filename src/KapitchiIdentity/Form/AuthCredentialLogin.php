@@ -16,7 +16,7 @@ class AuthCredentialLogin extends EventManagerAwareForm {
             'name' => 'username',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(
-                'label' => 'Username',
+                'label' => $this->translate('Username'),
             ),
             'attributes' => array(
             ),
@@ -26,7 +26,7 @@ class AuthCredentialLogin extends EventManagerAwareForm {
             'name' => 'password',
             'type' => 'Zend\Form\Element\Password',
             'options' => array(
-                'label' => 'Password',
+                'label' => $this->translate('Password'),
             ),
             'attributes' => array(
             ),

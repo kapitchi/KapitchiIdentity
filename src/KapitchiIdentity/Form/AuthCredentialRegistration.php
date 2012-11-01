@@ -2,21 +2,24 @@
 
 namespace KapitchiIdentity\Form;
 
-use ZfcBase\Form\Form;
+use KapitchiBase\Form\EventManagerAwareForm;
 
-class Registration extends Form {
+class Registration extends EventManagerAwareForm {
     
-    public function init() {
+    public function __construct($name = null, $options = array())
+    {
+        parent::__construct($name, $options);
+        
         $this->addElement('text', 'username', array(
-            'label' => 'Username',
+            'label' => $this->translate('Username'),
             'required' => true,
         ));
         $this->addElement('password', 'password', array(
-            'label' => 'Password',
+            'label' => $this->translate('Password'),
             'required' => true,
         ));
         $this->addElement('password', 'passwordConfirm', array(
-            'label' => 'Confirm password',
+            'label' => $this->translate('Confirm password'),
             'required' => true,
         ));
     }
