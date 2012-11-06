@@ -30,7 +30,9 @@ class AuthAccessOnly implements PluginInterface
         return '0.1';
     }
     
-    protected $loginRoute = 'identity/auth/login';
+    protected $loginRouteOptions = array(
+        'name' => 'identity/auth/login'
+    );
     
     public function onBootstrap(EventInterface $e)
     {
@@ -40,27 +42,46 @@ class AuthAccessOnly implements PluginInterface
         $sm = $app->getServiceManager();
         $instance = $this;
         
-        $sharedEm->attach('Zend\Stdlib\DispatchableInterface', \Zend\Mvc\MvcEvent::EVENT_DISPATCH, function($e) use ($sm, $instance) {
-            if($e->getRouteMatch()->getMatchedRouteName() == $instance->getLoginRoute()) {
+        $app->getEventManager()->attach(\Zend\Mvc\MvcEvent::EVENT_ROUTE, function($e) use ($sm, $instance) {
+            if($e->getRouteMatch()->getMatchedRouteName() == $instance->getLoginRouteName()) {
                 return;
             }
             
             $authService = $sm->get('KapitchiIdentity\Service\Auth');
             if(!$authService->hasIdentity()) {
-                return $e->getTarget()->plugin('redirect')->toRoute($instance->getLoginRoute());
+                $router = $e->getRouter();
+                $options = $instance->getLoginRouteOptions();
+                
+                $url = $router->assemble(array(), $options);
+                
+                $response = $e->getResponse();
+                $response->setStatusCode(\Zend\Http\Response::STATUS_CODE_307);
+                $response->getHeaders()->addHeaderLine('Location', $url);
+                
+                return $response;
             }
-        }, 100);
+        }, -1);
         
     }
 
-    public function getLoginRoute()
+    public function getLoginRouteOptions()
     {
-        return $this->loginRoute;
+        return $this->loginRouteOptions;
     }
 
-    public function setLoginRoute($loginRoute)
+    public function setLoginRouteOptions($loginRouteOptions)
     {
-        $this->loginRoute = $loginRoute;
+        $this->loginRouteOptions = $loginRouteOptions;
+    }
+
+    public function getLoginRouteName()
+    {
+        $spec = $this->getLoginRouteOptions();
+        if(!isset($spec['name'])) {
+            throw new \RuntimeException("Route spec does not define 'name'");
+        }
+        
+        return $spec['name'];
     }
 
 }
