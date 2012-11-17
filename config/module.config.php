@@ -6,6 +6,7 @@ return array(
     'plugin_manager' => array(
         'invokables' => array(
             'Identity/AuthAccessOnly' => 'KapitchiIdentity\Plugin\AuthAccessOnly',
+            'Identity/KapitchiLog' => 'KapitchiIdentity\Plugin\KapitchiLog',
         ),
         'factories' => array(
             'Identity/AuthCredential' => function($sm) {

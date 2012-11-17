@@ -20,14 +20,14 @@ class Credential implements \Zend\Authentication\Adapter\AdapterInterface, \Kapi
         $mapper = $this->getMapper();
         $user = $mapper->findByUsername($this->getIdentity());
         if(!$user) {
-            return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, null, array(
+            return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $this->getIdentity(), array(
                 'username' => 'Identity not found'
             ));
         }
         
         $hash = $user->getPasswordHash();
         if(!$this->getPasswordGenerator()->verify($this->getCredential(), $hash)) {
-            return new Result(Result::FAILURE_CREDENTIAL_INVALID, null, array(
+            return new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->getIdentity(), array(
                 'password' => 'Password is invalid'
             ));
         }

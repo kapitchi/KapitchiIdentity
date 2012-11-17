@@ -28,13 +28,18 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
                 $authIdentity = new AuthIdentity($result->getIdentity());
             }
             
-            $this->getEventManager()->trigger('authenticate.valid', array(
+            $this->setIdentity($authIdentity);
+            $this->getEventManager()->trigger('authenticate.valid', $this, array(
                 'result' => $result,
                 'adapter' => $adapter,
                 'authIdentity' => $authIdentity,
             ));
-            
-            $this->setIdentity($authIdentity);
+        }
+        else {
+            $this->getEventManager()->trigger('authenticate.invalid', $this, array(
+                'result' => $result,
+                'adapter' => $adapter,
+            ));
         }
         
         return $result;
