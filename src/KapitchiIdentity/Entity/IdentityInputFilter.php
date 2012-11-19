@@ -12,6 +12,10 @@ class IdentityInputFilter extends EventManagerAwareInputFilter
     public function __construct()
     {
         $this->add(array(
+            'name'       => 'id',
+            'required'   => false,
+        ));
+        $this->add(array(
             'name'       => 'displayName',
             'required'   => true,
             'validators' => array(
@@ -28,6 +32,10 @@ class IdentityInputFilter extends EventManagerAwareInputFilter
         ));
         $this->add(array(
             'name'       => 'created',
+            'required'   => false,
+        ));
+        $this->add(array(
+            'name'       => 'authEnabled',
             'required'   => false,
         ));
     }

@@ -16,6 +16,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
      * @var EventManagerInterface
      */
     protected $eventManager;
+    protected $identityMapper;
 
     public function authenticate(AdapterInterface $adapter) {
         $result = $adapter->authenticate();
@@ -23,6 +24,13 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         if($result->isValid()) {
             if($adapter instanceof AuthIdentityResolverInterface) {
                 $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
+                $id = $authIdentity->getLocalIdentityId();
+                $idEntity = $this->getIdentityMapper()->find($id);
+                if(!$idEntity->getAuthEnabled()) {
+                    return new \Zend\Authentication\Result(\Zend\Authentication\Result::FAILURE, $result->getIdentity(), array(
+                        'identity' => 'Identity authetication disabled'
+                    ));
+                }
             }
             else {
                 $authIdentity = new AuthIdentity($result->getIdentity());
@@ -112,4 +120,14 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         
     }
     
+    public function getIdentityMapper()
+    {
+        return $this->identityMapper;
+    }
+
+    public function setIdentityMapper($identityMapper)
+    {
+        $this->identityMapper = $identityMapper;
+    }
+
 }

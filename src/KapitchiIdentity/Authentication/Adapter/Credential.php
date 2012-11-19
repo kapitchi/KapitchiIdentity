@@ -25,6 +25,12 @@ class Credential implements \Zend\Authentication\Adapter\AdapterInterface, \Kapi
             ));
         }
         
+        if(!$user->getEnabled()) {
+            return new Result(Result::FAILURE_UNCATEGORIZED, $this->getIdentity(), array(
+                'username' => 'Credential authetication is not enabled'
+            ));
+        }
+        
         $hash = $user->getPasswordHash();
         if(!$this->getPasswordGenerator()->verify($this->getCredential(), $hash)) {
             return new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->getIdentity(), array(

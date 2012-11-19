@@ -19,16 +19,16 @@ class AuthCredential extends EntityService
         $events->attach('persist', function($e) use ($mapper, $instance) {
             $entity = $e->getParam('entity');
             $data = $e->getParam('data');
-            if(isset($data['password']) && isset($data['passwordConfirm'])) {
-                //we don't want to do the same mistake as form migth do!
+            if(!empty($data['password']) && !empty($data['passwordConfirm'])) {
+                //mz: we don't want to do the same mistake as form migth do!
                 if($data['password'] != $data['passwordConfirm']) {
                     throw new \Exception("Passwords provided do not match");
                 }
                 
                 $hash = $instance->getPasswordGenerator()->create($data['password']);
-                $entity->setPasswordHash($hash);
+                $mapper->updatePasswordHash($entity->getId(), $hash);
             }
-        }, 10);
+        });
     }
     
     public function getPasswordGenerator()

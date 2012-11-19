@@ -19,5 +19,22 @@ class AuthCredentialDbAdapter extends EntityDbAdapterMapper implements AuthCrede
         ))->getItems(0, 1);
         return current($items);
     }
+    
+    protected function updateArray(array $data)
+    {
+        //mz: we just want to make sure passwordHash is not set
+        //it has to be set using persistPasswordHash()
+        unset($data['passwordHash']);
+        return parent::updateArray($data);
+    }
+
+    public function updatePasswordHash($id, $passwordHash)
+    {
+        $data = array(
+            'id' => $id,
+            'passwordHash' => $passwordHash
+        );
+        return parent::updateArray($data);
+    }
 
 }

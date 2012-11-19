@@ -20,6 +20,16 @@ class AuthCredential extends EventManagerAwareForm {
         ));
         
         $this->add(array(
+            'name' => 'enabled',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'options' => array(
+                'label' => $this->translate('Credential auth. enabled'),
+            ),
+        ));
+        //default is enabled
+        $this->get('enabled')->setValue(true);
+        
+        $this->add(array(
             'name' => 'username',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(

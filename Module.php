@@ -72,6 +72,9 @@ class Module extends AbstractModule implements
     public function getServiceConfig()
     {
         return array(
+            'aliases' => array(
+                'KapitchiIdentity\Mapper\Identity' => 'KapitchiIdentity\Mapper\IdentityDbAdapter',
+            ),
             'invokables' => array(
                 //entities
                 'KapitchiIdentity\Entity\Identity' => 'KapitchiIdentity\Entity\Identity',
@@ -94,6 +97,7 @@ class Module extends AbstractModule implements
                 },
                 'KapitchiIdentity\Service\Auth' => function ($sm) {
                     $s = new Service\Auth();
+                    $s->setIdentityMapper($sm->get('KapitchiIdentity\Mapper\Identity'));
                     return $s;
                 },
                 //AuthCredential
@@ -142,7 +146,7 @@ class Module extends AbstractModule implements
                 //Identity
                 'KapitchiIdentity\Service\Identity' => function ($sm) {
                     $s = new Service\Identity(
-                        $sm->get('KapitchiIdentity\Mapper\IdentityDbAdapter'),
+                        $sm->get('KapitchiIdentity\Mapper\Identity'),
                         $sm->get('KapitchiIdentity\Entity\Identity'),
                         $sm->get('KapitchiIdentity\Entity\IdentityHydrator')
                     );

@@ -39,5 +39,13 @@ class Identity extends EventManagerAwareForm {
             'attributes' => array(
             ),
         ));
+        
+        $this->add(array(
+            'name' => 'authEnabled',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'options' => array(
+                'label' => $this->translate('Authetication enabled'),
+            ),
+        ));
     }
 }

@@ -6,6 +6,7 @@ class Identity
 {
     protected $id;
     protected $created;
+    protected $authEnabled;
     protected $displayName;
     protected $ownerId;
     
@@ -25,6 +26,16 @@ class Identity
         $this->created = $created;
     }
     
+    public function getAuthEnabled()
+    {
+        return $this->authEnabled;
+    }
+
+    public function setAuthEnabled($authEnabled)
+    {
+        $this->authEnabled = $authEnabled;
+    }
+
     public function getDisplayName()
     {
         return $this->displayName;

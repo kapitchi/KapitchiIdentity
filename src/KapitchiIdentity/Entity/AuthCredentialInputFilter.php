@@ -15,6 +15,12 @@ class AuthCredentialInputFilter extends EventManagerAwareInputFilter
             'name'       => 'id',
             'required'   => false,
         ));
+        
+        $this->add(array(
+            'name'       => 'enabled',
+            'required'   => false,
+        ));
+        
         $this->add(array(
             'name'       => 'username',
             'required'   => true,

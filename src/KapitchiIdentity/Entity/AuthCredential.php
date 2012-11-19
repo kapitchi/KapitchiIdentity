@@ -5,6 +5,7 @@ class AuthCredential
 {
     protected $id;
     protected $identityId;
+    protected $enabled;
     protected $username;
     protected $passwordHash;
     
@@ -15,21 +16,23 @@ class AuthCredential
     public function setId($id) {
         $this->id = $id;
     }
+    
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
 
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    }
+    
     public function getUsername() {
         return $this->username;
     }
 
     public function setUsername($username) {
         $this->username = $username;
-    }
-    
-    public function getPasswordHash() {
-        return $this->passwordHash;
-    }
-
-    public function setPasswordHash($passwordHash) {
-        $this->passwordHash = $passwordHash;
     }
     
     public function getIdentityId() {
@@ -39,4 +42,15 @@ class AuthCredential
     public function setIdentityId($identityId) {
         $this->identityId = $identityId;
     }
+    
+    public function getPasswordHash()
+    {
+        return $this->passwordHash;
+    }
+
+    public function setPasswordHash($passwordHash)
+    {
+        $this->passwordHash = $passwordHash;
+    }
+    
 }
