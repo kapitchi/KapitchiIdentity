@@ -40,13 +40,13 @@ class AuthCredential implements PluginInterface
         //identity management stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
             $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredential'), array(
-                'name' => 'auth-credential'
+                'name' => 'auth_credential'
             ));
         });
         $em->getSharedManager()->attach('KapitchiIdentity\Form\IdentityInputFilter', 'init', function($e) use ($sm) {
             $ins = $e->getTarget();
             $authCredentialInputFilter = $sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter');
-            $ins->add($authCredentialInputFilter, 'auth-credential');
+            $ins->add($authCredentialInputFilter, 'auth_credential');
         });
         
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'setData', function($e) use ($sm) {
@@ -54,12 +54,12 @@ class AuthCredential implements PluginInterface
             $data = $e->getParam('data');
             $id = $form->get('id')->getValue();
             
-            if($id && empty($data['auth-credential'])) {
+            if($id && empty($data['auth_credential'])) {
                 $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
                 $authEntity = $ser->findOneBy(array('identityId' => $id));
                 if($authEntity) {
                     $form->setData(array(
-                        'auth-credential' => $ser->createArrayFromEntity($authEntity)
+                        'auth_credential' => $ser->createArrayFromEntity($authEntity)
                     ));
                 }
             }
@@ -68,18 +68,18 @@ class AuthCredential implements PluginInterface
         $em->getSharedManager()->attach('KapitchiIdentity\Controller\IdentityController', 'update.pre', function($e) use ($sm) {
             $form = $e->getParam('form');
             $inputFilter = $form->getInputFilter();
-            $cred = $inputFilter->get('auth-credential');
+            $cred = $inputFilter->get('auth_credential');
             $cred->get('password')->setRequired(false);
             $cred->get('passwordConfirm')->setRequired(false);
         });
         
         $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'persist', function($e) use ($sm) {
             $data = $e->getParam('data');
-            if(!empty($data['auth-credential'])) {
+            if(!empty($data['auth_credential'])) {
                 $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
-                $entity = $ser->createEntityFromArray($data['auth-credential']);
+                $entity = $ser->createEntityFromArray($data['auth_credential']);
                 $entity->setIdentityId($e->getParam('entity')->getId());
-                $ser->persist($entity, $data['auth-credential']);
+                $ser->persist($entity, $data['auth_credential']);
             }
         });
         

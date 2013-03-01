@@ -100,7 +100,7 @@ return array(
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
-                    'plugin' => array(
+                    'identity' => array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/identity[/:action][/:id]',
