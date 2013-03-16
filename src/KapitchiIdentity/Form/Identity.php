@@ -32,7 +32,7 @@ class Identity extends EventManagerAwareForm {
         
         $this->add(array(
             'name' => 'created',
-            'type' => 'Zend\Form\Element\Datetime',
+            'type' => 'Zend\Form\Element\DateTime',
             'options' => array(
                 'label' => $this->translate('Created'),
             ),
