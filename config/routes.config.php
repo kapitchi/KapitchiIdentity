@@ -100,6 +100,18 @@ return array(
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
+                    'auth' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/auth/:action',
+                            'constraints' => array(
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Auth',
+                            ),
+                        ),
+                    ),
                     'identity' => array(
                         'type'    => 'Segment',
                         'options' => array(
