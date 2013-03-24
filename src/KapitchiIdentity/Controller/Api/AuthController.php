@@ -40,7 +40,7 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         });
         $adapter = $res->last();
         if($adapter instanceof Response) {
-            //TODO
+            return $this->createJsonModel($responseData, $adapter);
         }
 
         //auth event returns AuthAdapter -- we are ready to authenticate!
@@ -51,12 +51,7 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
             
             //do we need to redirect again? example: http auth!
             if($result instanceof Response) {
-                $responseData['response'] = array(
-                    'statusCode' => $result->getStatusCode(),
-                    'body' => $result->getBody(),
-                );
-                $result->setStatusCode(200);
-                return new JsonModel($responseData);
+                return $this->createJsonModel($responseData, $result);
             }
             
             $responseData['result'] = array(
@@ -69,20 +64,48 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
             $res = $this->getEventManager()->trigger('login.auth.post', $this, $params, function($ret) {
                 return $ret instanceof Response;
             });
-            $result = $res->last();
-            if($result instanceof Response) {
-                $responseData['response'] = array(
-                    'statusCode' => $result->getStatusCode(),
-                    'body' => $result->getBody(),
-                );
-                $result->setStatusCode(200);
-                return new JsonModel($responseData);
+            $response = $res->last();
+            if($response instanceof Response) {
+                return $this->createJsonModel($responseData, $response);
             }
         }
         
+        $this->getEventManager()->trigger('login.post', $this, $params);
+
         $responseData['formMessages'] = $form->getMessages();
         
-        $this->getEventManager()->trigger('login.post', $this, $params);
+        return $this->createJsonModel($responseData);
+    }
+    
+    public function logoutAction() {
+        $authService = $this->getAuthService();
+        $identity = $authService->getIdentity();
+        
+        $authService->clearIdentity();
+        $responseData = array();
+        
+        $res = $this->getEventManager()->trigger('logout.post', $this, array(
+            'authIdentity' => $identity,
+        ), function($ret) {
+            return $ret instanceof Response;
+        });
+        $response = $res->last();
+        if($response instanceof Response) {
+            return $this->createJsonModel($responseData, $response);
+        }
+        
+        return $this->createJsonModel($responseData);
+    }
+    
+    protected function createJsonModel($responseData, $response = null)
+    {
+        if($response) {
+            $responseData['response'] = array(
+                'statusCode' => $response->getStatusCode(),
+                'body' => $response->getBody(),
+            );
+            $response->setStatusCode(200);
+        }
         
         return new JsonModel($responseData);
     }
