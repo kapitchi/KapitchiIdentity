@@ -39,6 +39,6 @@ class AuthIdentity implements AuthIdentityInterface
     }
     
     public function __toString() {
-        return $this->getIdentity() . ' [' . $this->getLocalIdentityId() . ']';
+        return $this->getIdentity() . ' [' . $this->getId() . ']';
     }
 }

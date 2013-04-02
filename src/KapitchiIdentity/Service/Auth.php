@@ -74,6 +74,16 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         $container = $this->loadContainer();
         return $container->getDefaultIdentity();
     }
+    
+    /**
+     * Returns true if and only if an identity is available from storage
+     *
+     * @return bool
+     */
+    public function hasIdentity()
+    {
+        return $this->getIdentity() !== null;
+    }
 
     /**
      * Clears the identity from persistent storage
@@ -105,6 +115,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         }
         
         $authIdentity = $this->getIdentity();
+        
         $localId = $authIdentity->getId();
         if(empty($localId)) {
             return null;
@@ -120,6 +131,9 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     protected function loadContainer() {
         try {
             $data = $this->getStorage()->read();
+            if(!is_array($data)) {
+                throw new \Exception("Storage data is not array");
+            }
             $container = $this->getContainerHydrator()->hydrate($data, new \KapitchiIdentity\Model\AuthIdentityContainer());
         } catch(\Exception $e) {
             //there was a problem to retrieve container - session, hydrator? - reset it!
