@@ -8,7 +8,7 @@ use Zend\Authentication\Adapter\AdapterInterface,
     Zend\EventManager\EventManagerInterface,
     Zend\EventManager\EventManager,
     KapitchiIdentity\Model\AuthIdentity,
-    KapitchiIdentity\Authentication\AuthIdentityResolverInterface;
+    KapitchiIdentity\Authentication\IdentityResolverInterface;
         
 class Auth extends AuthenticationService implements EventManagerAwareInterface {
     
@@ -17,40 +17,48 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
      */
     protected $eventManager;
     protected $identityMapper;
+    protected $containerHydrator;
 
     public function authenticate(AdapterInterface $adapter) {
         $result = $adapter->authenticate();
 
         if($result->isValid()) {
-            if($adapter instanceof AuthIdentityResolverInterface) {
-                $authIdentity = $adapter->resolveAuthIdentity($result->getIdentity());
-                $id = $authIdentity->getLocalIdentityId();
-                $idEntity = $this->getIdentityMapper()->find($id);
+            $identityId = null;
+            if($adapter instanceof IdentityResolverInterface) {
+                $identityId = $adapter->resolveIdentityId($result->getIdentity());
+                $idEntity = $this->getIdentityMapper()->find($identityId);
                 if(!$idEntity->getAuthEnabled()) {
                     return new \Zend\Authentication\Result(\Zend\Authentication\Result::FAILURE, $result->getIdentity(), array(
                         'identity' => 'Identity authetication disabled'
                     ));
                 }
             }
-            else {
-                $authIdentity = new AuthIdentity($result->getIdentity());
-            }
             
-            $this->setIdentity($authIdentity);
+            $authIdentity = new AuthIdentity($result->getIdentity(), $identityId);
+            $this->addIdentity($authIdentity);
+            
             $this->getEventManager()->trigger('authenticate.valid', $this, array(
                 'result' => $result,
                 'adapter' => $adapter,
                 'authIdentity' => $authIdentity,
             ));
-        }
-        else {
-            $this->getEventManager()->trigger('authenticate.invalid', $this, array(
-                'result' => $result,
-                'adapter' => $adapter,
-            ));
+            
+            return $result;
         }
         
+        //invalid state
+        $this->getEventManager()->trigger('authenticate.invalid', $this, array(
+            'result' => $result,
+            'adapter' => $adapter,
+        ));
+        
         return $result;
+    }
+    
+    public function addIdentity(AuthIdentity $authIdentity) {
+        $container = $this->loadContainer();
+        $container->addIdentity($authIdentity);
+        $this->storeContainer($container);
     }
     
     public function setIdentity(AuthIdentity $authIdentity) {
@@ -58,9 +66,15 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
             $this->clearIdentity();
         }
         
-        $this->getStorage()->write($authIdentity);
+        $this->addIdentity($authIdentity);
     }
     
+    public function getIdentity()
+    {
+        $container = $this->loadContainer();
+        return $container->getDefaultIdentity();
+    }
+
     /**
      * Clears the identity from persistent storage
      *
@@ -77,6 +91,11 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         ));
     }
     
+    public function getContainer()
+    {
+        return $this->loadContainer();
+    }
+    
     /**
      * @return int
      */
@@ -86,12 +105,32 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         }
         
         $authIdentity = $this->getIdentity();
-        $localId = $authIdentity->getLocalIdentityId();
+        $localId = $authIdentity->getId();
         if(empty($localId)) {
             return null;
         }
         
         return $localId;
+    }
+    
+    /**
+     * @todo this needs proper exception handling
+     * @return \KapitchiIdentity\Model\AuthIdentityContainer
+     */
+    protected function loadContainer() {
+        try {
+            $data = $this->getStorage()->read();
+            $container = $this->getContainerHydrator()->hydrate($data, new \KapitchiIdentity\Model\AuthIdentityContainer());
+        } catch(\Exception $e) {
+            //there was a problem to retrieve container - session, hydrator? - reset it!
+            $container = new \KapitchiIdentity\Model\AuthIdentityContainer();
+        }
+        return $container;
+    }
+
+    protected function storeContainer(\KapitchiIdentity\Model\AuthIdentityContainer $container) {
+        $data = $this->getContainerHydrator()->extract($container);
+        $this->getStorage()->write($data);
     }
     
     public function setEventManager(EventManagerInterface $events)
@@ -128,6 +167,20 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     public function setIdentityMapper($identityMapper)
     {
         $this->identityMapper = $identityMapper;
+    }
+    
+    /**
+     * 
+     * @return Zend\Stdlib\Hydrator\HydratorInterface
+     */
+    public function getContainerHydrator()
+    {
+        return $this->containerHydrator;
+    }
+
+    public function setContainerHydrator($hydrator)
+    {
+        $this->containerHydrator = $hydrator;
     }
 
 }

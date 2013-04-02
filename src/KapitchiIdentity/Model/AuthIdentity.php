@@ -4,12 +4,12 @@ namespace KapitchiIdentity\Model;
 class AuthIdentity implements AuthIdentityInterface
 {
     protected $identity;
-    protected $localIdentityId;
+    protected $id;
     
-    public function __construct($identity, $localIdentityId = null) {
+    public function __construct($identity, $id = null) {
         $this->setIdentity($identity);
-        if($localIdentityId !== null) {
-            $this->setLocalIdentityId($localIdentityId);
+        if($id !== null) {
+            $this->setId($id);
         }
     }
     
@@ -21,12 +21,21 @@ class AuthIdentity implements AuthIdentityInterface
         $this->identity = $identity;
     }
 
-    public function getLocalIdentityId() {
-        return $this->localIdentityId;
+    public function getId() {
+        return $this->id;
     }
 
-    public function setLocalIdentityId($localIdentityId) {
-        $this->localIdentityId = $localIdentityId;
+    public function setId($localIdentityId) {
+        $this->id = $localIdentityId;
+    }
+    
+    public function isEqual(AuthIdentityInterface $identity)
+    {
+        if($this->getId() == $identity->getId()) {
+            return true;
+        }
+        
+        return false;
     }
     
     public function __toString() {

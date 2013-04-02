@@ -4,6 +4,7 @@ namespace KapitchiIdentity\Controller\Api;
 use Zend\View\Model\JsonModel;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Http\Response;
+use Zend\Mvc\MvcEvent;
 
 /**
  *
@@ -20,7 +21,15 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         $this->setAuthService($authService);
     }
     
-    public function loginAction() {
+    public function onDispatch(MvcEvent $e)
+    {
+        \Zend\Stdlib\ErrorHandler::start(E_ALL | E_STRICT | E_USER_ERROR);
+        return parent::onDispatch($e);
+        \Zend\Stdlib\ErrorHandler::stop(true);
+    }
+    
+    public function loginAction()
+    {
         $form = $this->getLoginForm();
         
         $params = array(
@@ -77,7 +86,8 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         return $this->createJsonModel($responseData);
     }
     
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $authService = $this->getAuthService();
         $identity = $authService->getIdentity();
         
@@ -95,6 +105,12 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         }
         
         return $this->createJsonModel($responseData);
+    }
+    
+    public function containerAction()
+    {
+        $container = $this->getAuthService()->getContainer();
+        return $this->createJsonModel($this->getAuthService()->getContainerHydrator()->extract($container));
     }
     
     protected function createJsonModel($responseData, $response = null)
@@ -120,6 +136,10 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         $this->loginForm = $loginForm;
     }
 
+    /**
+     * 
+     * @return \KapitchiIdentity\Service\Auth
+     */
     public function getAuthService()
     {
         return $this->authService;

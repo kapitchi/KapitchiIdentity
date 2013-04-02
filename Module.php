@@ -92,8 +92,8 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\PasswordGenerator' => function ($sm) {
                     $config = $sm->get('Config');
                     $salt = 'TODO-SHOULD-COME-FROM-CONFIG';
-                    if(isset($config['KapitchiIdentity']['password_generator_salt'])) {
-                        $salt = $config['KapitchiIdentity']['password_generator_salt'];
+                    if(isset($config['kapitchi-identity']['password_generator_salt'])) {
+                        $salt = $config['kapitchi-identity']['password_generator_salt'];
                     }
                     $ins = new \Zend\Crypt\Password\Bcrypt(array(
                         'salt' => $salt,
@@ -102,9 +102,16 @@ class Module extends AbstractModule implements
                 },
                 'KapitchiIdentity\Service\Auth' => function ($sm) {
                     $s = new Service\Auth();
+                    $s->setContainerHydrator($sm->get('KapitchiIdentity\Model\AuthIdentityContainerHydrator'));
                     $s->setIdentityMapper($sm->get('KapitchiIdentity\Mapper\Identity'));
                     return $s;
                 },
+                'KapitchiIdentity\Model\AuthIdentityContainerHydrator' => function ($sm) {
+                    $ins = new Model\AuthIdentityContainerHydrator();
+                    $ins->setAuthIdentityHydrator(new Model\AuthIdentityHydrator());
+                    return $ins;
+                },
+                
                 //AuthCredential
                 'KapitchiIdentity\Service\AuthCredential' => function ($sm) {
                     $s = new Service\AuthCredential(

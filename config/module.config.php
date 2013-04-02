@@ -1,6 +1,6 @@
 <?php
 return array(
-    'KapitchiIdentity' => array(
+    'kapitchi-identity' => array(
         'password_generator_salt' => 'this-should-be-at-least-16-char-long-salt'
     ),
     'plugin_manager' => array(

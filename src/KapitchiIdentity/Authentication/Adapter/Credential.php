@@ -2,8 +2,10 @@
 namespace KapitchiIdentity\Authentication\Adapter;
 
 use Zend\Authentication\Result;
+use Zend\Authentication\Adapter\AdapterInterface;
+use KapitchiIdentity\Authentication\IdentityResolverInterface;
 
-class Credential implements \Zend\Authentication\Adapter\AdapterInterface, \KapitchiIdentity\Authentication\AuthIdentityResolverInterface
+class Credential implements AdapterInterface, IdentityResolverInterface
 {
     protected $identity;
     protected $credential;
@@ -81,11 +83,11 @@ class Credential implements \Zend\Authentication\Adapter\AdapterInterface, \Kapi
         $this->passwordGenerator = $passwordGenerator;
     }
 
-    public function resolveAuthIdentity($id)
+    public function resolveIdentityId($authId)
     {
         $mapper = $this->getMapper();
-        $user = $mapper->findByUsername($id);
-        return new \KapitchiIdentity\Model\AuthIdentity($id, $user->getIdentityId());
+        $user = $mapper->findByUsername($authId);
+        return $user->getIdentityId();
     }
 
 }
