@@ -4,7 +4,8 @@ namespace KapitchiIdentity\Model;
 class AuthIdentityContainer
 {
     protected $identities;
-    protected $defaultIdentity;
+    protected $defaultSessionId;
+    protected $currentSessionId;
     
     public function __construct()
     {
@@ -13,7 +14,7 @@ class AuthIdentityContainer
     
     public function reset() {
         $this->identities = array();
-        $this->defaultIdentity = null;
+        $this->defaultSessionId = null;
     }
     
     public function getIdentities()
@@ -21,44 +22,44 @@ class AuthIdentityContainer
         return $this->identities;
     }
 
-    public function setIdentities(array $identities)
-    {
-        $this->identities = $identities;
-    }
-    
     /**
+     * This method generates and set session id to AuthIdentity
+     * If no defaultSessionId/currentSessionId is set it sets it to just created one
+     * 
+     * @throws \InvalidArgumentException if same AuthIdentity is already added to the container
      * @param \KapitchiIdentity\Model\AuthIdentity $identity
      */
-    public function addIdentity(AuthIdentity $identity) {
-        if($this->hasIdentity($identity)) {
+    public function add(AuthIdentityInterface $identity) {
+        if($this->has($identity)) {
             throw new \InvalidArgumentException("Same identity exists in the container");
         }
         
+        //sets container generated session id for this idenity
+        $nextSessionId = count($this->identities);
+        $identity->setSessionId($nextSessionId);
+        
         $this->identities[] = $identity;
         
-        if($this->getDefaultIdentity() === null) {
-            $this->setDefaultIdentity($identity);
-        }
-    }
-    
-    public function getDefaultIdentity()
-    {
-        return $this->defaultIdentity;
-    }
-
-    /**
-     * @param \KapitchiIdentity\Model\AuthIdentity $defaultIdentity
-     */
-    public function setDefaultIdentity(AuthIdentityInterface $defaultIdentity)
-    {
-        if(!$this->hasIdentity($defaultIdentity)) {
-            throw new \InvalidArgumentException("Idenity has to be added in the container first in order to make it default");
+        if($this->getDefaultSessionId() === null) {
+            $this->setDefaultSessionId($nextSessionId);
         }
         
-        $this->defaultIdentity = $defaultIdentity;
+        if($this->getCurrentSessionId() === null) {
+            $this->setCurrentSessionId($nextSessionId);
+        }
     }
     
-    public function hasIdentity(AuthIdentityInterface $identity)
+    public function getBySessionId($sessionId) {
+        foreach($this->getIdentities() as $id) {
+            if($id->getSessionId() == $sessionId) {
+                return $id;
+            }
+        }
+        
+        return null;
+    }
+    
+    public function has(AuthIdentityInterface $identity)
     {
         $ids = $this->getIdentities();
         foreach($ids as $id) {
@@ -68,6 +69,26 @@ class AuthIdentityContainer
         }
         
         return false;
+    }
+
+    public function getDefaultSessionId()
+    {
+        return $this->defaultSessionId;
+    }
+
+    public function setDefaultSessionId($defaultSessionId)
+    {
+        $this->defaultSessionId = $defaultSessionId;
+    }
+    
+    public function getCurrentSessionId()
+    {
+        return $this->currentSessionId;
+    }
+
+    public function setCurrentSessionId($currentSessionId)
+    {
+        $this->currentSessionId = $currentSessionId;
     }
     
 }

@@ -18,14 +18,17 @@ class AuthIdentityContainerHydrator implements \Zend\Stdlib\Hydrator\HydratorInt
         
         if(isset($data['identities']) && is_array($data['identities'])) {
             foreach($data['identities'] as $id) {
-                $identity = new AuthIdentity();
-                $object->addIdentity($hydrator->hydrate($id, $identity));
+                $identity = new GenericAuthIdentity();
+                $object->add($hydrator->hydrate($id, $identity));
             }
         }
         
-        if(isset($data['defaultIdentity'])) {
-            $identity = new AuthIdentity();
-            $object->setDefaultIdentity($hydrator->hydrate($data['defaultIdentity'], $identity));
+        if(isset($data['defaultSessionId'])) {
+            $object->setDefaultSessionId($data['defaultSessionId']);
+        }
+        
+        if(isset($data['currentSessionId'])) {
+            $object->setCurrentSessionId($data['currentSessionId']);
         }
         
         return $object;
@@ -45,13 +48,8 @@ class AuthIdentityContainerHydrator implements \Zend\Stdlib\Hydrator\HydratorInt
             $ids[] = $hydrator->extract($identity);
         }
         $data['identities'] = $ids;
-        
-        $defaultData = null;
-        $default = $object->getDefaultIdentity();
-        if($default) {
-             $defaultData = $hydrator->extract($default);
-        }
-        $data['defaultIdentity'] = $defaultData;
+        $data['defaultSessionId'] = $object->getDefaultSessionId();
+        $data['currentSessionId'] = $object->getCurrentSessionId();
         
         return $data;
     }

@@ -6,5 +6,7 @@ interface AuthIdentityInterface {
     public function getIdentity();
     public function setId($id);
     public function getId();
+    public function setSessionId($sessionId);
+    public function getSessionId();
     public function isEqual(AuthIdentityInterface $identity);
 }

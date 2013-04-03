@@ -7,7 +7,8 @@ use Zend\Authentication\Adapter\AdapterInterface,
     Zend\Authentication\AuthenticationService,
     Zend\EventManager\EventManagerInterface,
     Zend\EventManager\EventManager,
-    KapitchiIdentity\Model\AuthIdentity,
+    KapitchiIdentity\Model\GenericAuthIdentity,
+    KapitchiIdentity\Model\AuthIdentityInterface,
     KapitchiIdentity\Authentication\IdentityResolverInterface;
         
 class Auth extends AuthenticationService implements EventManagerAwareInterface {
@@ -18,6 +19,12 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     protected $eventManager;
     protected $identityMapper;
     protected $containerHydrator;
+    
+    /**
+     * This represents current auth identity of this request
+     * @var \KapitchiIdentity\Model\AuthIdentity
+     */
+    protected $identity;
 
     public function authenticate(AdapterInterface $adapter) {
         $result = $adapter->authenticate();
@@ -34,7 +41,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
                 }
             }
             
-            $authIdentity = new AuthIdentity($result->getIdentity(), $identityId);
+            $authIdentity = new GenericAuthIdentity($result->getIdentity(), $identityId);
             $this->addIdentity($authIdentity);
             
             $this->getEventManager()->trigger('authenticate.valid', $this, array(
@@ -55,24 +62,29 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         return $result;
     }
     
-    public function addIdentity(AuthIdentity $authIdentity) {
+    public function addIdentity(AuthIdentityInterface $authIdentity) {
         $container = $this->loadContainer();
-        $container->addIdentity($authIdentity);
+        $container->add($authIdentity);
         $this->storeContainer($container);
     }
     
-    public function setIdentity(AuthIdentity $authIdentity) {
-        if($this->hasIdentity()) {
-            $this->clearIdentity();
-        }
-        
-        $this->addIdentity($authIdentity);
+    public function setIdentity(AuthIdentityInterface $authIdentity) {
+        $this->identity = $authIdentity;
     }
     
     public function getIdentity()
     {
-        $container = $this->loadContainer();
-        return $container->getDefaultIdentity();
+        if($this->identity === null) {
+            $container = $this->loadContainer();
+            $sessionId = $container->getCurrentSessionId();
+            if(!$sessionId) {
+                $sessionId = $container->getDefaultSessionId();
+            }
+            
+            $this->identity = $container->getBySessionId($sessionId);
+        }
+        
+        return $this->identity;
     }
     
     /**
@@ -92,12 +104,8 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
      */
     public function clearIdentity()
     {
-        $id = $this->getIdentity();
-        
         $this->getStorage()->clear();
-        
         $this->getEventManager()->trigger('clearIdentity.post', $this, array(
-           'authIdentity' => $id 
         ));
     }
     

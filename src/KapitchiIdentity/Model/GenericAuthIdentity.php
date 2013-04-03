@@ -1,8 +1,9 @@
 <?php
 namespace KapitchiIdentity\Model;
 
-class AuthIdentity implements AuthIdentityInterface
+class GenericAuthIdentity implements AuthIdentityInterface
 {
+    protected $sessionId;
     protected $identity;
     protected $id;
     
@@ -29,6 +30,16 @@ class AuthIdentity implements AuthIdentityInterface
         $this->id = $localIdentityId;
     }
     
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+    }
+        
     public function isEqual(AuthIdentityInterface $identity)
     {
         if($this->getId() == $identity->getId()) {
