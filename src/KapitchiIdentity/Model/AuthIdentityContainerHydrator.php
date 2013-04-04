@@ -27,10 +27,6 @@ class AuthIdentityContainerHydrator implements \Zend\Stdlib\Hydrator\HydratorInt
             $object->setDefaultSessionId($data['defaultSessionId']);
         }
         
-        if(isset($data['currentSessionId'])) {
-            $object->setCurrentSessionId($data['currentSessionId']);
-        }
-        
         return $object;
     }
     
@@ -49,7 +45,6 @@ class AuthIdentityContainerHydrator implements \Zend\Stdlib\Hydrator\HydratorInt
         }
         $data['identities'] = $ids;
         $data['defaultSessionId'] = $object->getDefaultSessionId();
-        $data['currentSessionId'] = $object->getCurrentSessionId();
         
         return $data;
     }

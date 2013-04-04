@@ -42,6 +42,35 @@ return array(
                     ),
                 ),
             ),
+            'auth-session' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/auth-session',
+                    'defaults' => array(
+                        'controller' => 'KapitchiIdentity\Controller\AuthSession',
+                    ),
+                ),
+                'child_routes' => array(
+                    'default' => array(
+                        'type'    => 'Segment',
+                        'options' => array(
+                            'route'    => '/:action[/:id]',
+                            'constraints' => array(
+                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                        ),
+                    ),
+                    'switch' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/switch/:sessionId',
+                            'defaults' => array(
+                                'action'     => 'switch',
+                            ),
+                        ),
+                    ),
+                )
+            ),
             'auth' => array(
                 'type' => 'Literal',
                 'options' => array(

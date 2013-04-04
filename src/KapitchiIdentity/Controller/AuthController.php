@@ -65,12 +65,11 @@ class AuthController extends AbstractActionController {
     
     public function logoutAction() {
         $authService = $this->getAuthService();
-        $identity = $authService->getIdentity();
         
-        $authService->clearIdentity();
+        $ids = $authService->clearIdentity();
         
         $res = $this->getEventManager()->trigger('logout.post', $this, array(
-            'authIdentity' => $identity,
+            'identities' => $ids,
         ), function($ret) {
             return $ret instanceof Response;
         });

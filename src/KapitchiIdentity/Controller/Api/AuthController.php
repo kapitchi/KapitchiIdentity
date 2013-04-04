@@ -89,13 +89,12 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
     public function logoutAction()
     {
         $authService = $this->getAuthService();
-        $identity = $authService->getIdentity();
         
-        $authService->clearIdentity();
+        $ids = $authService->clearIdentity();
         $responseData = array();
         
         $res = $this->getEventManager()->trigger('logout.post', $this, array(
-            'authIdentity' => $identity,
+            'identities' => $ids,
         ), function($ret) {
             return $ret instanceof Response;
         });
@@ -111,6 +110,18 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
     {
         $container = $this->getAuthService()->getContainer();
         return $this->createJsonModel($this->getAuthService()->getContainerHydrator()->extract($container));
+    }
+    
+    public function currentAction()
+    {
+        $identity = $this->getAuthService()->getIdentity();
+        $data = array(
+            'authIdentity' => false
+        );
+        if($identity) {
+            $data['authIdentity'] = $this->getAuthService()->getContainerHydrator()->getAuthIdentityHydrator()->extract($identity);
+        }
+        return $this->createJsonModel($data);
     }
     
     protected function createJsonModel($responseData, $response = null)

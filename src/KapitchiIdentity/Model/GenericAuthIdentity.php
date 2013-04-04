@@ -7,8 +7,10 @@ class GenericAuthIdentity implements AuthIdentityInterface
     protected $identity;
     protected $id;
     
-    public function __construct($identity, $id = null) {
-        $this->setIdentity($identity);
+    public function __construct($identity = null, $id = null) {
+        if($identity !== null) {
+            $this->setIdentity($identity);
+        }
         if($id !== null) {
             $this->setId($id);
         }

@@ -19,6 +19,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     protected $eventManager;
     protected $identityMapper;
     protected $containerHydrator;
+    protected $sessionProvider;
     
     /**
      * This represents current auth identity of this request
@@ -62,29 +63,56 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         return $result;
     }
     
-    public function addIdentity(AuthIdentityInterface $authIdentity) {
+    /**
+     * @todo should authenticate() be only way how to add identities?
+     * @param \KapitchiIdentity\Model\AuthIdentityInterface $authIdentity
+     */
+    protected function addIdentity(AuthIdentityInterface $authIdentity) {
         $container = $this->loadContainer();
         $container->add($authIdentity);
         $this->storeContainer($container);
     }
     
+    /**
+     * @todo Do we want this method here? Should not we stricly work with container only?
+     * @deprecated
+     * @param \KapitchiIdentity\Model\AuthIdentityInterface $authIdentity
+     */
     public function setIdentity(AuthIdentityInterface $authIdentity) {
         $this->identity = $authIdentity;
     }
     
+    /**
+     * 
+     * @todo Container should be stupid as possible - should we implement what getBySessionId() does here instead?
+     * @return AuthIdentityInterface
+     * @throws \RuntimeException
+     */
     public function getIdentity()
     {
         if($this->identity === null) {
             $container = $this->loadContainer();
-            $sessionId = $container->getCurrentSessionId();
+            $sessionId = $this->getCurrentSessionId();
             if(!$sessionId) {
                 $sessionId = $container->getDefaultSessionId();
             }
             
-            $this->identity = $container->getBySessionId($sessionId);
+            $identity = $container->getBySessionId($sessionId);
+            if(!$identity) {
+                //there is obviosusly something wrong with either session provider or container?
+                $this->getSessionProvider()->clear();
+                //throw new \RuntimeException("No identity registered under session ID '$sessionId'");
+            }
+            
+            $this->identity = $identity;
         }
         
         return $this->identity;
+    }
+    
+    protected function getCurrentSessionId()
+    {
+        return $this->getSessionProvider()->getCurrentSessionId();
     }
     
     /**
@@ -100,13 +128,25 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     /**
      * Clears the identity from persistent storage
      *
-     * @return void
+     * @return array AuthIdentity
      */
     public function clearIdentity()
     {
         $this->getStorage()->clear();
+
+        //all identies go - it's done that way now at least
+        $ids = $this->getContainer()->getIdentities();
+        $sessionIds = array();
+        foreach($ids as $id) {
+            $sessionIds[] = $id->getSessionId();
+        }
+        $this->getSessionProvider()->clear($sessionIds);
+        
         $this->getEventManager()->trigger('clearIdentity.post', $this, array(
+            'identities' => $ids
         ));
+        
+        return $ids;
     }
     
     public function getContainer()
@@ -191,6 +231,20 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
         $this->identityMapper = $identityMapper;
     }
     
+    /**
+     * 
+     * @return \KapitchiIdentity\Service\AuthSessionProvider\AuthSessionProviderInterface
+     */
+    public function getSessionProvider()
+    {
+        return $this->sessionProvider;
+    }
+
+    public function setSessionProvider($sessionProvider)
+    {
+        $this->sessionProvider = $sessionProvider;
+    }
+        
     /**
      * 
      * @return Zend\Stdlib\Hydrator\HydratorInterface

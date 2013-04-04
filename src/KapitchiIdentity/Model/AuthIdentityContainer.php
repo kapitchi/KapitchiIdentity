@@ -5,7 +5,6 @@ class AuthIdentityContainer
 {
     protected $identities;
     protected $defaultSessionId;
-    protected $currentSessionId;
     
     public function __construct()
     {
@@ -43,10 +42,6 @@ class AuthIdentityContainer
         if($this->getDefaultSessionId() === null) {
             $this->setDefaultSessionId($nextSessionId);
         }
-        
-        if($this->getCurrentSessionId() === null) {
-            $this->setCurrentSessionId($nextSessionId);
-        }
     }
     
     public function getBySessionId($sessionId) {
@@ -76,19 +71,13 @@ class AuthIdentityContainer
         return $this->defaultSessionId;
     }
 
+    /**
+     * @todo should check for session id first
+     * @param mixed $defaultSessionId
+     */
     public function setDefaultSessionId($defaultSessionId)
     {
         $this->defaultSessionId = $defaultSessionId;
-    }
-    
-    public function getCurrentSessionId()
-    {
-        return $this->currentSessionId;
-    }
-
-    public function setCurrentSessionId($currentSessionId)
-    {
-        $this->currentSessionId = $currentSessionId;
     }
     
 }

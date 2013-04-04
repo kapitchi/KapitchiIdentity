@@ -18,6 +18,19 @@ class Module extends AbstractModule implements
         $em = $e->getApplication()->getEventManager();
         $sm = $e->getApplication()->getServiceManager();
 
+//        $em->attach(\Zend\Mvc\MvcEvent::EVENT_ROUTE, function($e) {
+//            $r = $e->getRouter();
+//            $routes = $r->getRoutes();
+//            var_dump(__FILE__ . ' / line:' . __LINE__);
+//            var_dump($routes);
+//            exit;
+//            var_dump(__FILE__ . ' / line:' . __LINE__);
+//            var_dump($r);
+//            exit;
+//                    var_dump(__FILE__ . ' / line:' . __LINE__);
+//                    var_dump($e);
+//                    exit;
+//        });
     }
     
     public function getControllerConfig()
@@ -37,6 +50,12 @@ class Module extends AbstractModule implements
                     $cont = new Controller\AuthController();
                     $cont->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
                     $cont->setLoginForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Login'));
+                    return $cont;
+                },
+                'KapitchiIdentity\Controller\AuthSession' => function($sm) {
+                    $cont = new Controller\AuthSessionController();
+                    $cont->setSessionProvider($sm->getServiceLocator()->get('KapitchiIdentity\Service\AuthSessionProvider\Session'));
+                    $cont->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
                     return $cont;
                 },
                 //API
@@ -79,6 +98,7 @@ class Module extends AbstractModule implements
         return array(
             'aliases' => array(
                 'KapitchiIdentity\Mapper\Identity' => 'KapitchiIdentity\Mapper\IdentityDbAdapter',
+                'KapitchiIdentity\Service\AuthSessionProvider' => 'KapitchiIdentity\Service\AuthSessionProvider\Session',
             ),
             'invokables' => array(
                 //entities
@@ -103,12 +123,17 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Service\Auth' => function ($sm) {
                     $s = new Service\Auth();
                     $s->setContainerHydrator($sm->get('KapitchiIdentity\Model\AuthIdentityContainerHydrator'));
+                    $s->setSessionProvider($sm->get('KapitchiIdentity\Service\AuthSessionProvider'));
                     $s->setIdentityMapper($sm->get('KapitchiIdentity\Mapper\Identity'));
+                    return $s;
+                },
+                'KapitchiIdentity\Service\AuthSessionProvider\Session' => function ($sm) {
+                    $s = new Service\AuthSessionProvider\Session();
                     return $s;
                 },
                 'KapitchiIdentity\Model\AuthIdentityContainerHydrator' => function ($sm) {
                     $ins = new Model\AuthIdentityContainerHydrator();
-                    $ins->setAuthIdentityHydrator(new Model\AuthIdentityHydrator());
+                    $ins->setAuthIdentityHydrator(new Model\AuthIdentityHydrator(false));
                     return $ins;
                 },
                 

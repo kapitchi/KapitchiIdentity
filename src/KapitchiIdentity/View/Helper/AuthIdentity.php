@@ -44,11 +44,6 @@ class AuthIdentity extends AbstractHelper
         return $identity;
     }
     
-    protected function getModelById($id) {
-        $identity = $this->getIdentityById($id);
-        return $this->getIdentityService()->loadModel($identity);
-    }
-    
     public function getAuthService()
     {
         return $this->authService;
