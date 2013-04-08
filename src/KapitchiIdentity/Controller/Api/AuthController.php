@@ -37,7 +37,7 @@ class AuthController extends \Zend\Mvc\Controller\AbstractActionController
         );
         
         $responseData = array();
-        $data = \Zend\Json\Json::decode($this->getRequest()->getContent(), \Zend\Json\Json::TYPE_ARRAY);
+        $data = (array)\Zend\Json\Json::decode($this->getRequest()->getContent(), \Zend\Json\Json::TYPE_ARRAY);
         
         $this->getEventManager()->trigger('login.pre', $this, $params);
         
