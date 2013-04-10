@@ -1,9 +1,9 @@
 {
-    "name": "kapitchi/identity",
-    "license": "LGPL-3.0",
-    "description": "Provides authentication, identity and role management.",
-    "keywords": [
-        "kapitchi",
+     "name": "kapitchi/identity",
+     "license": "LGPL-3.0",
+     "description": "Provides authentication, identity and role management.",
+     "keywords": [
+         "kapitchi",
         "zf2",
         "user",
         "authentication",
