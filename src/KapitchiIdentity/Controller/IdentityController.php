@@ -8,9 +8,9 @@
 
 namespace KapitchiIdentity\Controller;
 
-use KapitchiEntity\Controller\AbstractEntityController;
+use KapitchiEntity\Controller\EntityContoller;
 
-class IdentityController extends AbstractEntityController
+class IdentityController extends EntityContoller
 {
     public function getIndexUrl()
     {
@@ -18,19 +18,4 @@ class IdentityController extends AbstractEntityController
             'action' => 'index'
         ));
     }
-
-    public function getUpdateUrl($entity)
-    {
-        return $this->url()->fromRoute('identity/identity', array(
-            'action' => 'update', 'id' => $entity->getId()
-        ));
-    }
-    
-    public function lookupAction()
-    {
-        return array(
-            'iframeCallerId' => $this->getRequest()->getQuery()->get('iframeCallerId')
-        );
-    }
-    
 }
