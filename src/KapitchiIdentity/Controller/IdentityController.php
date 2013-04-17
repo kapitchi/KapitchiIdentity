@@ -12,21 +12,4 @@ use KapitchiEntity\Controller\EntityContoller;
 
 class IdentityController extends EntityContoller
 {
-<<<<<<< HEAD
-    public function getIndexUrl()
-    {
-        return $this->url()->fromRoute('identity/identity', array(
-            'action' => 'index'
-        ));
-    }
-=======
-
-    public function lookupAction()
-    {
-        return array(
-            'iframeCallerId' => $this->getRequest()->getQuery()->get('iframeCallerId')
-        );
-    }
-    
->>>>>>> ce50feb53c6a8bfb2bd2769674206de616937981
 }
