@@ -13,17 +13,17 @@ use KapitchiEntity\Mapper\EntityDbAdapterMapper;
 class AuthCredentialDbAdapter extends EntityDbAdapterMapper implements AuthCredentialInterface {
     
     public function findByIdentityId($id) {
-        $items = $this->getPaginatorAdapter(array(
+        $item = $this->getPaginatorAdapter(array(
             'identityId' => $id
-        ))->getItems(0, 1);
-        return current($items);
+        ))->getItems(0, 1)->current();
+        return $item;
     }
     
     public function findByUsername($username) {
-        $items = $this->getPaginatorAdapter(array(
+        $item = $this->getPaginatorAdapter(array(
             'username' => $username
-        ))->getItems(0, 1);
-        return current($items);
+        ))->getItems(0, 1)->current();
+        return $item;
     }
     
     protected function updateArray(array $data)
