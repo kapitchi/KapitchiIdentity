@@ -161,7 +161,9 @@ class Module extends AbstractModule implements
                             'primaryKey' => 'id',
                             'hydrator' => $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator'),
                             'entityPrototype' => $sm->get('KapitchiIdentity\Entity\AuthCredential'),
-                        ))
+                        )),
+                       $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator'),
+                       $sm->get('KapitchiIdentity\Entity\AuthCredential')
                     );
                 },
                 'KapitchiIdentity\Entity\AuthCredentialHydrator' => function ($sm) {
@@ -198,12 +200,9 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Mapper\IdentityDbAdapter' => function ($sm) {
                     return new Mapper\IdentityDbAdapter(
                         $sm->get('Zend\Db\Adapter\Adapter'),
-                        new EntityDbAdapterMapperOptions(array(
-                            'tableName' => 'identity',
-                            'primaryKey' => 'id',
-                            'hydrator' => $sm->get('KapitchiIdentity\Entity\IdentityHydrator'),
-                            'entityPrototype' => $sm->get('KapitchiIdentity\Entity\Identity'),
-                        ))
+                        $sm->get('KapitchiIdentity\Entity\Identity'),
+                        $sm->get('KapitchiIdentity\Entity\IdentityHydrator'),    
+                        'identity'
                     );
                 },
                 'KapitchiIdentity\Entity\IdentityHydrator' => function ($sm) {
