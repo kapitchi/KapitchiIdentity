@@ -8,8 +8,8 @@
 
 namespace KapitchiIdentity\Controller;
 
-use KapitchiEntity\Controller\EntityContoller;
+use KapitchiEntity\Controller\EntityController;
 
-class IdentityController extends EntityContoller
+class IdentityController extends EntityController
 {
 }

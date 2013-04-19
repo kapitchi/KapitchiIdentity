@@ -156,14 +156,9 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Mapper\AuthCredentialDbAdapter' => function ($sm) {
                     return new Mapper\AuthCredentialDbAdapter(
                         $sm->get('Zend\Db\Adapter\Adapter'),
-                        new EntityDbAdapterMapperOptions(array(
-                            'tableName' => 'identity_auth_credential',
-                            'primaryKey' => 'id',
-                            'hydrator' => $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator'),
-                            'entityPrototype' => $sm->get('KapitchiIdentity\Entity\AuthCredential'),
-                        )),
-                       $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator'),
-                       $sm->get('KapitchiIdentity\Entity\AuthCredential')
+                        $sm->get('KapitchiIdentity\Entity\AuthCredential'),
+                        $sm->get('KapitchiIdentity\Entity\AuthCredentialHydrator'),
+                        'identity_auth_credential'
                     );
                 },
                 'KapitchiIdentity\Entity\AuthCredentialHydrator' => function ($sm) {
@@ -226,12 +221,9 @@ class Module extends AbstractModule implements
                 'KapitchiIdentity\Mapper\RegistrationDbAdapter' => function ($sm) {
                     return new Mapper\RegistrationDbAdapter(
                         $sm->get('Zend\Db\Adapter\Adapter'),
-                        new EntityDbAdapterMapperOptions(array(
-                            'tableName' => 'identity_registration',
-                            'primaryKey' => 'id',
-                            'hydrator' => $sm->get('KapitchiIdentity\Entity\RegistrationHydrator'),
-                            'entityPrototype' => $sm->get('KapitchiIdentity\Entity\Registration'),
-                        ))
+                        $sm->get('KapitchiIdentity\Entity\Registration'),
+                        $sm->get('KapitchiIdentity\Entity\RegistrationHydrator'),
+                        'identity_registration'
                     );
                 },
                 'KapitchiIdentity\Entity\RegistrationHydrator' => function ($sm) {
