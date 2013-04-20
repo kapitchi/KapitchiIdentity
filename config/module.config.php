@@ -21,7 +21,7 @@ return array(
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'kapitchi-identity' => __DIR__ . '/../view',
+            //'kapitchi-identity' => __DIR__ . '/../view',
         ),
         'helper_map' => array(
             //'Zend\Form\View\HelperLoader',
