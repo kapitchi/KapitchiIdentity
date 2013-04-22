@@ -12,5 +12,20 @@ use KapitchiEntity\Service\EntityService;
 
 class Identity extends EntityService
 {
-    
+    protected function attachDefaultListeners()
+    {
+        parent::attachDefaultListeners();
+        $this->getEventManager()->attach('persist', function($e) {
+            $entity = $e->getEntity();
+            if(!$entity->getId()) {
+                //new entity
+                if($entity->getCreated() === null) {
+                    $entity->setCreated(new \DateTime());
+                }
+                if($entity->getAuthEnabled() === null) {
+                    $entity->setAuthEnabled(false);
+                }
+            }
+        }, 2);
+    }
 }
