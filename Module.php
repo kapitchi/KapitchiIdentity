@@ -24,19 +24,6 @@ class Module extends AbstractModule implements
         $em = $e->getApplication()->getEventManager();
         $sm = $e->getApplication()->getServiceManager();
 
-//        $em->attach(\Zend\Mvc\MvcEvent::EVENT_ROUTE, function($e) {
-//            $r = $e->getRouter();
-//            $routes = $r->getRoutes();
-//            var_dump(__FILE__ . ' / line:' . __LINE__);
-//            var_dump($routes);
-//            exit;
-//            var_dump(__FILE__ . ' / line:' . __LINE__);
-//            var_dump($r);
-//            exit;
-//                    var_dump(__FILE__ . ' / line:' . __LINE__);
-//                    var_dump($e);
-//                    exit;
-//        });
     }
     
     public function getControllerConfig()

@@ -10,14 +10,13 @@ namespace KapitchiIdentity\Service;
 
 use Zend\Authentication\Adapter\AdapterInterface,
     Zend\EventManager\EventManagerAwareInterface,
-    Zend\Authentication\AuthenticationService,
     Zend\EventManager\EventManagerInterface,
     Zend\EventManager\EventManager,
     KapitchiIdentity\Model\GenericAuthIdentity,
     KapitchiIdentity\Model\AuthIdentityInterface,
     KapitchiIdentity\Authentication\IdentityResolverInterface;
         
-class Auth extends AuthenticationService implements EventManagerAwareInterface {
+class Auth implements EventManagerAwareInterface {
     
     /**
      * @var EventManagerInterface
