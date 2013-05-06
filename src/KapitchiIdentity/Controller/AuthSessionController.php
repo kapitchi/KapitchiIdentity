@@ -33,6 +33,14 @@ class AuthSessionController extends AbstractActionController {
         return $this->plugin('redirect')->toRoute('identity/auth-session/default', array('action' => 'index'));
     }
 
+    public function logoutAction()
+    {
+        $sessionId = $this->getEvent()->getRouteMatch()->getParam('sessionId');
+        $this->getSessionProvider()->setCurrentSessionId($sessionId);
+        
+        return $this->plugin('redirect')->toRoute('identity/auth-session/default', array('action' => 'index'));
+    }
+
     /**
      * 
      * @return \KapitchiIdentity\Service\AuthSessionProvider\Session

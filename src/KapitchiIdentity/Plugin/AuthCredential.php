@@ -46,7 +46,8 @@ class AuthCredential implements PluginInterface
         
         //identity management stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
-            $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredential'), array(
+            $form = $sm->get('KapitchiIdentity\Form\AuthCredential');
+            $e->getTarget()->add($form, array(
                 'name' => 'auth_credential'
             ));
         });
@@ -92,7 +93,8 @@ class AuthCredential implements PluginInterface
         
         //Login stuff
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Login', 'init', function($e) use ($sm) {
-            $e->getTarget()->add($sm->get('KapitchiIdentity\Form\AuthCredentialLogin'), array(
+            $form = $sm->get('KapitchiIdentity\Form\AuthCredentialLogin');
+            $e->getTarget()->add($form, array(
                 'name' => 'credential'
             ));
         });

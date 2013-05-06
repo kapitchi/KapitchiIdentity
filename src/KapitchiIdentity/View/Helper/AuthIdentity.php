@@ -15,11 +15,6 @@ class AuthIdentity extends AbstractHelper
     protected $authService;
     protected $identityService;
     
-//    public function __invoke()
-//    {
-//        throw new \Exception('N/I');
-//    }
-    
     public function getDisplayName() {
         $authService = $this->getAuthService();
         if($authService->hasIdentity()) {
@@ -28,7 +23,7 @@ class AuthIdentity extends AbstractHelper
             return $entity->getDisplayName();
         }
         
-        return '';
+        return null;
     }
     
     public function getLocalId()

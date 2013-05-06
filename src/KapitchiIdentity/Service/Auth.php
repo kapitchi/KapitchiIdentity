@@ -16,7 +16,7 @@ use Zend\Authentication\Adapter\AdapterInterface,
     KapitchiIdentity\Model\AuthIdentityInterface,
     KapitchiIdentity\Authentication\IdentityResolverInterface;
         
-class Auth implements EventManagerAwareInterface {
+class Auth extends \Zend\Authentication\AuthenticationService implements EventManagerAwareInterface {
     
     /**
      * @var EventManagerInterface
@@ -32,9 +32,14 @@ class Auth implements EventManagerAwareInterface {
      */
     protected $identity;
 
-    public function authenticate(AdapterInterface $adapter) {
+    public function authenticate(AdapterInterface $adapter = null) {
+        if (!$adapter) {
+            if (!$adapter = $this->getAdapter()) {
+                throw new \Zend\Authentication\Exception\RuntimeException('An adapter must be set or passed prior to calling authenticate()');
+            }
+        }
         $result = $adapter->authenticate();
-
+        
         if($result->isValid()) {
             $identityId = null;
             if($adapter instanceof IdentityResolverInterface) {
@@ -46,8 +51,13 @@ class Auth implements EventManagerAwareInterface {
                     ));
                 }
             }
-            
+
             $authIdentity = new GenericAuthIdentity($result->getIdentity(), $identityId);
+            if($this->getContainer()->has($authIdentity)) {
+                return new \Zend\Authentication\Result(\Zend\Authentication\Result::FAILURE, $result->getIdentity(), array(
+                    'identity' => 'Already logged in with this identity'
+                ));
+            }
             $this->addIdentity($authIdentity);
             
             $this->getEventManager()->trigger('authenticate.valid', $this, array(

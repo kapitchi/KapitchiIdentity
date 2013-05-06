@@ -19,14 +19,29 @@ class AuthController extends AbstractActionController {
     
     public function loginAction() {
         $form = $this->getLoginForm();
+        $form->setAttribute('action', $this->plugin('url')->fromRoute('identity/auth/login'));
         
+        //@todo mz: do we do this right?
+        $loginText = $this->getTranslator()->translate('Login');
+        $form->add(array(
+            'name' => 'submit',
+            'type' => 'Zend\Form\Element\Submit',
+            'options' => array(
+                'label' => $loginText,
+            ),
+            'attributes' => array(
+                'value' => $loginText,
+            )
+        ));
+
         $params = array(
             'loginForm' => $form,
         );
         
         $this->getEventManager()->trigger('login.pre', $this, $params);
         
-        $form->setData($this->getRequest()->getPost()->toArray());
+        $data = $this->getRequest()->getPost()->toArray();
+        $form->setData($data);
         $form->isValid();
         
         $res = $this->getEventManager()->trigger('login.auth', $this, $params, function($ret) {
@@ -98,9 +113,17 @@ class AuthController extends AbstractActionController {
         
         $events->attach('login.auth.post', function($e) use ($instance) {
             if($e->getParam('result')->isValid()) {
-                return $instance->redirect()->toRoute('identity/profile/me');
+                return $instance->redirect()->toRoute('home');
             }
         });
+    }
+    
+    /**
+     * @todo
+     */
+    public function getTranslator()
+    {
+        return $this->getServiceLocator()->get('Translator');
     }
     
     public function getAuthService() {
