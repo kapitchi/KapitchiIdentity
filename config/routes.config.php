@@ -33,7 +33,7 @@ return array(
             'identity' => array(
                 'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/identity[/:action[/:id]]',
+                    'route'    => '/identity/:action[/:id]',
                     'constraints' => array(
                         'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
