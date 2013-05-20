@@ -11,12 +11,19 @@ namespace KapitchiIdentity\Form;
 use KapitchiBase\Form\EventManagerAwareForm;
 
 class Registration extends EventManagerAwareForm {
+    
     public function __construct($name = null, $options = array())
     {
         parent::__construct($name, $options);
-        $this->addElement('text', 'requestIp', array(
-            'label' => $this->translate("Your IP"),
-            'readonly' => true,
+        
+        $this->add(array(
+            'name' => 'id',
+            'type' => 'Zend\Form\Element\Hidden',
+            'options' => array(
+                'label' => $this->translate('ID'),
+            ),
+            'attributes' => array(
+            ),
         ));
     }
 }

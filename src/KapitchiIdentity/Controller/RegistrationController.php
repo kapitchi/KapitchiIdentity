@@ -8,32 +8,23 @@
 
 namespace KapitchiIdentity\Controller;
 
-use Zend\Mvc\Controller\ActionController as ZendActionController;
+use Zend\View\Model\ViewModel;
+use KapitchiEntity\Controller\EntityController;
 
-class RegistrationController  extends ZendActionController {
-    protected $registrationService;
-    protected $registrationForm;
-    protected $registerViewModel;
-    
+class RegistrationController extends EntityController
+{
     public function registerAction() {
-        $form = $this->getRegistrationForm();
+        $form = $this->getEntityForm();
         $request = $this->getRequest();
         
-        $viewModel = $this->getRegisterViewModel();
-        $viewModel->registrationForm = $form;
-        
-        //TODO
-        $form->populate(array(
-            'requestIp' => $request->server()->get('REMOTE_ADDR')
-        ));
+        $viewModel = new ViewModel();
+        $viewModel->form = $form;
         
         $params = array(
-            'request' => $request,
-            'response' => $this->getResponse(),
             'viewModel' => $viewModel,
         );
         
-        $res = $this->events()->trigger('register.pre', $this, $params, function($ret) {
+        $res = $this->getEventManager()->trigger('register.pre', $this, $params, function($ret) {
             return $ret instanceof Response;
         });
         $result = $res->last();
@@ -42,11 +33,14 @@ class RegistrationController  extends ZendActionController {
         }
         
         if($request->isPost()) {
-            $postData = $request->post()->toArray();
-            if($form->isValid($postData)) {
-                $registerResult = $this->getRegistrationService()->register($form->getValues());
+            $postData = $request->getPost()->toArray();
+            $form->setData($postData);
+            if($form->isValid()) {
+                $registerResult = $this->getEntityService()->register($form->getData());
+                var_dump($registerResult);
+                exit;
                 $params['registerResult'] = $registerResult;
-                $res = $this->events()->trigger('register.post', $this, $params, function($ret) {
+                $res = $this->getEventManager()->trigger('register.post', $this, $params, function($ret) {
                     return $ret instanceof Response;
                 });
                 $result = $res->last();
@@ -57,49 +51,37 @@ class RegistrationController  extends ZendActionController {
         }
         
         //TODO
-        $form->addElement('submit', 'submit', array(
-            'label' => 'Register',
-            'order' => 1000
+        $form->add(array(
+            'name' => 'submit',
+            'type' => 'Zend\Form\Element\Submit',
+            'options' => array(
+                'label' => $this->translate('Register'),
+            ),
+            'attributes' => array(
+                'value' => $this->translate('Register')
+            ),
         ));
         
         return $viewModel;
     }
     
-    //listeners
+    /**
+     * Dummy for form labels
+     * @param string $msg
+     * @return string
+     */
+    protected function translate($msg)
+    {
+        return $msg;
+    }
+    
     protected function attachDefaultListeners()
     {
         parent::attachDefaultListeners();
-        $instance = $this;
-        $events = $this->events();
-        $events->attach('register.post', function($e) use($instance) {
-            return $instance->redirect()->toRoute('KapitchiIdentity/Auth/Login');
+        $em = $this->getEventManager();
+        $em->attach('register.post', function($e) {
+            return $e->getTarget()->redirect()->toRoute('home');
         });
     }
 
-    //getters/setters
-    public function getRegistrationService() {
-        return $this->registrationService;
-    }
-
-    public function setRegistrationService($registrationService) {
-        $this->registrationService = $registrationService;
-    }
-
-    public function getRegistrationForm() {
-        return $this->registrationForm;
-    }
-
-    public function setRegistrationForm($registrationForm) {
-        $this->registrationForm = $registrationForm;
-    }
-
-    public function getRegisterViewModel() {
-        return $this->registerViewModel;
-    }
-
-    public function setRegisterViewModel($registerViewModel) {
-        $this->registerViewModel = $registerViewModel;
-    }
-
-    
 }

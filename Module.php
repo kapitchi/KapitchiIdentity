@@ -39,6 +39,12 @@ class Module extends AbstractModule implements
                     $cont->setEntityForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Identity'));
                     return $cont;
                 },
+                'KapitchiIdentity\Controller\Registration' => function($sm) {
+                    $cont = new Controller\RegistrationController();
+                    $cont->setEntityService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Registration'));
+                    $cont->setEntityForm($sm->getServiceLocator()->get('KapitchiIdentity\Form\Registration'));
+                    return $cont;
+                },
                 'KapitchiIdentity\Controller\Auth' => function($sm) {
                     $cont = new Controller\AuthController();
                     $cont->setAuthService($sm->getServiceLocator()->get('KapitchiIdentity\Service\Auth'));
@@ -169,6 +175,15 @@ class Module extends AbstractModule implements
                     $ins = new Form\AuthCredentialLoginInputFilter();
                     return $ins;
                 },
+                'KapitchiIdentity\Form\AuthCredentialRegistration' => function ($sm) {
+                    $ins = new Form\AuthCredentialRegistration();
+                    $ins->setInputFilter($sm->get('KapitchiIdentity\Form\AuthCredentialRegistrationInputFilter'));
+                    return $ins;
+                },
+                'KapitchiIdentity\Form\AuthCredentialRegistrationInputFilter' => function($sm) {
+                    $ins = new Form\AuthCredentialRegistrationInputFilter();
+                    return $ins;
+                },
                         
                 //Identity
                 'KapitchiIdentity\Service\Identity' => function ($sm) {
@@ -203,6 +218,7 @@ class Module extends AbstractModule implements
                         $sm->get('KapitchiIdentity\Entity\Registration'),
                         $sm->get('KapitchiIdentity\Entity\RegistrationHydrator')
                     );
+                    $s->setIdentityMapper($sm->get('KapitchiIdentity\Mapper\Identity'));
                     return $s;
                 },
                 'KapitchiIdentity\Mapper\RegistrationDbAdapter' => function ($sm) {
@@ -214,8 +230,17 @@ class Module extends AbstractModule implements
                     );
                 },
                 'KapitchiIdentity\Entity\RegistrationHydrator' => function ($sm) {
-                    //needed here because hydrator tranforms camelcase to underscore
-                    return new \Zend\Stdlib\Hydrator\ClassMethods(false);
+                    return new Entity\RegistrationHydrator(false);
+                },
+                //Registration
+                'KapitchiIdentity\Form\Registration' => function($sm) {
+                    $ins = new Form\Registration();
+                    $ins->setInputFilter($sm->get('KapitchiIdentity\Form\RegistrationInputFilter'));
+                    return $ins;
+                },
+                'KapitchiIdentity\Form\RegistrationInputFilter' => function($sm) {
+                    $ins = new Form\RegistrationInputFilter();
+                    return $ins;
                 },
                 //Login        
                 'KapitchiIdentity\Form\Login' => function($sm) {

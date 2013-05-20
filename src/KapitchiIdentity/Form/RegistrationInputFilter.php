@@ -6,13 +6,13 @@
  * @license   http://opensource.org/licenses/LGPL-3.0 LGPL 3.0
  */
 
-namespace KapitchiIdentity\Model;
+namespace KapitchiIdentity\Form;
 
-/**
- * 
- * @author Matus Zeman <mz@kapitchi.com>
- */
-interface CurrentAuthIdentityProviderInterface
+use KapitchiBase\InputFilter\EventManagerAwareInputFilter;
+
+class RegistrationInputFilter extends EventManagerAwareInputFilter
 {
-    public function getIndexId();
+    public function __construct()
+    {
+    }
 }

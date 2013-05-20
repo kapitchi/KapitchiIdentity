@@ -107,7 +107,7 @@ return array(
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
-                    'Register' => array(
+                    'register' => array(
                         'type' => 'Literal',
                         'options' => array(
                             'route' => '/register',

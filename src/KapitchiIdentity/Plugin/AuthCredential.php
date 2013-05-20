@@ -40,11 +40,17 @@ class AuthCredential implements PluginInterface
     
     public function onBootstrap(EventInterface $e)
     {
+        $this->bootstrapIdentityManagement($e);
+        $this->bootstrapAuthentication($e);
+        $this->bootstrapRegistration($e);
+    }
+    
+    protected function bootstrapIdentityManagement($e)
+    {
         $em = $e->getApplication()->getEventManager();
         $sm = $e->getApplication()->getServiceManager();
         $instance = $this;
-        
-        //identity management stuff
+
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Identity', 'init', function($e) use ($sm) {
             $form = $sm->get('KapitchiIdentity\Form\AuthCredential');
             $e->getTarget()->add($form, array(
@@ -90,8 +96,14 @@ class AuthCredential implements PluginInterface
                 $ser->persist($entity, $data['auth_credential']);
             }
         });
-        
-        //Login stuff
+    }
+    
+    protected function bootstrapAuthentication($e)
+    {
+        $em = $e->getApplication()->getEventManager();
+        $sm = $e->getApplication()->getServiceManager();
+        $instance = $this;
+
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Login', 'init', function($e) use ($sm) {
             $form = $sm->get('KapitchiIdentity\Form\AuthCredentialLogin');
             $e->getTarget()->add($form, array(
@@ -135,6 +147,37 @@ class AuthCredential implements PluginInterface
                     break;
                 default:
                     $credential->get('username')->setMessages(array("Login error"));
+            }
+        });
+        
+    }
+    
+    protected function bootstrapRegistration(EventInterface $e)
+    {
+        $em = $e->getApplication()->getEventManager();
+        $sm = $e->getApplication()->getServiceManager();
+        $instance = $this;
+        
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\Registration', 'init', function($e) use ($sm) {
+            $form = $sm->get('KapitchiIdentity\Form\AuthCredentialRegistration');
+            $e->getTarget()->add($form, array(
+                'name' => 'auth_credential'
+            ));
+        });
+        
+        $em->getSharedManager()->attach('KapitchiIdentity\Form\RegistrationInputFilter', 'init', function($e) use ($sm) {
+            $ins = $e->getTarget();
+            $authCredentialInputFilter = $sm->get('KapitchiIdentity\Form\AuthCredentialRegistrationInputFilter');
+            $ins->add($authCredentialInputFilter, 'auth_credential');
+        });
+        
+        $em->getSharedManager()->attach('KapitchiIdentity\Service\Registration', 'register.post', function($e) use ($sm) {
+            $data = $e->getParam('data');
+            if(!empty($data['auth_credential'])) {
+                $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
+                $entity = $ser->createEntityFromArray($data['auth_credential']);
+                $entity->setIdentityId($e->getParam('entity')->getId());
+                $ser->persist($entity, $data['auth_credential']);
             }
         });
     }
