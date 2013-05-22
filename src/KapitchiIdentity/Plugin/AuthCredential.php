@@ -175,9 +175,10 @@ class AuthCredential implements PluginInterface
             $data = $e->getParam('data');
             if(!empty($data['auth_credential'])) {
                 $ser = $sm->get('KapitchiIdentity\Service\AuthCredential');
-                $entity = $ser->createEntityFromArray($data['auth_credential']);
-                $entity->setIdentityId($e->getParam('entity')->getId());
-                $ser->persist($entity, $data['auth_credential']);
+                $authData = $data['auth_credential'];
+                $authData['enabled'] = true;
+                $authData['identityId'] = $e->getParam('identity')->getId();
+                $ser->persist($authData);
             }
         });
     }

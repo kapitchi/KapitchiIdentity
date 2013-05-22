@@ -31,13 +31,14 @@ class Registration extends EntityService
         $params = array(
             'data' => $data,
         );
-        $this->triggerEvent('register.pre', $params);
-        $persistEvent = $this->persist($data);
-        $params['persistEvent'] = $persistEvent;
         
-        $event = new \Zend\EventManager\Event('register.post', $this, array(
-            'registerPersistEvent' => $persistEvent
-        ));
+        $event = new \Zend\EventManager\Event('register.pre', $this, $params);
+        $this->getEventManager()->trigger($event);
+        
+        $persistEvent = $this->persist($data);
+        
+        $event->setName('register.post');
+        $event->setParam('persistEvent', $persistEvent);
         $this->getEventManager()->trigger($event);
         return $event;
     }
@@ -58,7 +59,7 @@ class Registration extends EntityService
             
             $e->setParam('identity', $entity);
             
-            $registration = $e->getParam('registerPersistEvent')->getEntity();
+            $registration = $e->getParam('persistEvent')->getEntity();
             $registration->setIdentityId($entity->getId());
             $target->getMapper()->persist($registration);
         });

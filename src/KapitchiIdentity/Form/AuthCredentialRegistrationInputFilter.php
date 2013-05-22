@@ -17,7 +17,7 @@ class AuthCredentialRegistrationInputFilter extends \Zend\InputFilter\InputFilte
     public function __construct()
     {
         $this->add(array(
-            'name'       => 'identity',
+            'name'       => 'username',
             'required'   => true,
             'filters'   => array(
                 array('name' => 'StringTrim'),

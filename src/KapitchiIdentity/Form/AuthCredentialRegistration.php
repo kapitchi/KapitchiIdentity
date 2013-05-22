@@ -17,7 +17,7 @@ class AuthCredentialRegistration extends EventManagerAwareForm {
         parent::__construct($name, $options);
         
         $this->add(array(
-            'name' => 'identity',
+            'name' => 'username',
             'type' => 'Zend\Form\Element\Text',
             'options' => array(
                 'label' => $this->translate('Username'),

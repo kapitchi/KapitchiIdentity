@@ -37,9 +37,7 @@ class RegistrationController extends EntityController
             $form->setData($postData);
             if($form->isValid()) {
                 $registerResult = $this->getEntityService()->register($form->getData());
-                var_dump($registerResult);
-                exit;
-                $params['registerResult'] = $registerResult;
+                $params['registerEvent'] = $registerResult;
                 $res = $this->getEventManager()->trigger('register.post', $this, $params, function($ret) {
                     return $ret instanceof Response;
                 });
