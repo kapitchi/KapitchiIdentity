@@ -41,6 +41,7 @@ class Identity extends EventManagerAwareForm {
             'type' => 'Zend\Form\Element\DateTime',
             'options' => array(
                 'label' => $this->translate('Created'),
+                'format' => \DateTime::RFC3339,
             ),
             'attributes' => array(
             ),
