@@ -18,7 +18,7 @@ class AuthCredentialLoginInputFilter extends \Zend\InputFilter\InputFilter
     {
         $this->add(array(
             'name'       => 'username',
-            'required'   => false,
+            'required'   => true,
             'filters'   => array(
                 array('name' => 'StringTrim'),
             ),
@@ -26,7 +26,7 @@ class AuthCredentialLoginInputFilter extends \Zend\InputFilter\InputFilter
         
         $this->add(array(
             'name'       => 'password',
-            'required'   => false,
+            'required'   => true,
         ));
     }
 }

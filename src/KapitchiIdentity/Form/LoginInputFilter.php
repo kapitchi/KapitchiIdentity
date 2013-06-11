@@ -14,6 +14,20 @@ class LoginInputFilter extends EventManagerAwareInputFilter
 {
     public function __construct()
     {
+        $this->add(array(
+            'name'       => 'method',
+            'required'   => true,
+        ));
         $this->setValidationGroup(array());
+    }
+    
+    public function isValid()
+    {
+        $method = $this->getValue('method');
+        if(!empty($method)) {
+            $this->setValidationGroup($method);
+        }
+        
+        return parent::isValid();
     }
 }

@@ -26,14 +26,14 @@ class Registration extends EventManagerAwareForm {
             ),
         ));
         
-        $this->add(array(
-            'name' => 'displayName',
-            'type' => 'Zend\Form\Element\Text',
-            'options' => array(
-                'label' => $this->translate('Display name'),
-            ),
-            'attributes' => array(
-            ),
-        ));
+//        $this->add(array(
+//            'name' => 'displayName',
+//            'type' => 'Zend\Form\Element\Text',
+//            'options' => array(
+//                'label' => $this->translate('Display name'),
+//            ),
+//            'attributes' => array(
+//            ),
+//        ));
     }
 }

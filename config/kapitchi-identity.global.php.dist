@@ -3,5 +3,12 @@
 return array(
     'kapitchi-identity' => array(
         'password-generator-salt' => 'this-should-be-at-least-16-char-long-salt'
-    )
+    ),
+    //KapitchiIdentity\Plugin\AuthRoot
+    'identity_auth_root' => array(
+        'adapter' => array(
+            'allowed_ips' => array('127.0.0.1'),
+            'password' => null
+        )
+    ),
 );

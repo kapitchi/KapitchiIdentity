@@ -59,7 +59,7 @@ class AuthCredential implements PluginInterface
         });
         $em->getSharedManager()->attach('KapitchiIdentity\Form\IdentityInputFilter', 'init', function($e) use ($sm) {
             $ins = $e->getTarget();
-            $authCredentialInputFilter = $sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter');
+            $authCredentialInputFilter = clone $sm->get('KapitchiIdentity\Form\AuthCredentialInputFilter');
             $ins->add($authCredentialInputFilter, 'auth_credential');
         });
         
@@ -105,8 +105,16 @@ class AuthCredential implements PluginInterface
         $instance = $this;
 
         $em->getSharedManager()->attach('KapitchiIdentity\Form\Login', 'init', function($e) use ($sm) {
+            $parentForm = $e->getTarget();
+            $method = $parentForm->get('method');
+            
+            //add auth option
+            $method->setValueOptions(array_merge($method->getValueOptions(), array(
+                'credential' => 'Credential'
+            )));
+            
             $form = $sm->get('KapitchiIdentity\Form\AuthCredentialLogin');
-            $e->getTarget()->add($form, array(
+            $parentForm->add($form, array(
                 'name' => 'credential'
             ));
         });
@@ -116,9 +124,9 @@ class AuthCredential implements PluginInterface
             $ins->add($sm->get('KapitchiIdentity\Form\AuthCredentialLoginInputFilter'), 'credential');
         });
         
-        $em->getSharedManager()->attach('KapitchiIdentity\Controller\AuthController', 'login.auth', function($e) use ($sm) {
+        $em->getSharedManager()->attach('KapitchiIdentity\Controller\AuthController', 'login.auth', function(EventInterface $e) use ($sm) {
             $form = $e->getParam('loginForm');
-            if($e->getTarget()->getRequest()->isPost() && $form->isValid()) {
+            if($form->getInputFilter()->getValue('method') == 'credential') {
                 $data = $form->getData();
                 
                 //TODO mz: to service manager
@@ -126,27 +134,32 @@ class AuthCredential implements PluginInterface
                 $adapter->setPasswordGenerator($sm->get('KapitchiIdentity\PasswordGenerator'));
                 $adapter->setIdentity($data['credential']['username']);
                 $adapter->setCredential($data['credential']['password']);
+                
+                $e->stopPropagation();
                 return $adapter;
             }
         });
         
         $em->getSharedManager()->attach('KapitchiIdentity\Controller\AuthController', 'login.auth.post', function($e) use ($sm) {
             $form = $e->getParam('loginForm');
-            $result = $e->getParam('result');
-            $credential = $form->get('credential');
             
-            switch ($result->getCode()) {
-                case Result::SUCCESS:
-                    //no action
-                    break;
-                case Result::FAILURE_IDENTITY_NOT_FOUND:
-                    $credential->get('username')->setMessages(array('User not found'));
-                    break;
-                case Result::FAILURE_CREDENTIAL_INVALID:
-                    $credential->get('password')->setMessages(array('Invalid password'));
-                    break;
-                default:
-                    $credential->get('username')->setMessages(array("Login error"));
+            if($form->get('method')->getValue() == 'credential') {
+                $result = $e->getParam('result');
+                $credential = $form->get('credential');
+
+                switch ($result->getCode()) {
+                    case Result::SUCCESS:
+                        //no action
+                        break;
+                    case Result::FAILURE_IDENTITY_NOT_FOUND:
+                        $credential->get('username')->setMessages(array('User not found'));
+                        break;
+                    case Result::FAILURE_CREDENTIAL_INVALID:
+                        $credential->get('password')->setMessages(array('Invalid password'));
+                        break;
+                    default:
+                        $credential->get('username')->setMessages(array("Login error"));
+                }
             }
         });
         

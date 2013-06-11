@@ -97,6 +97,7 @@ class Module extends AbstractModule implements
         return array(
             'aliases' => array(
                 'KapitchiIdentity\Mapper\Identity' => 'KapitchiIdentity\Mapper\IdentityDbAdapter',
+                'KapitchiIdentity\Mapper\AuthCredential' => 'KapitchiIdentity\Mapper\AuthCredentialDbAdapter',
                 'KapitchiIdentity\Service\AuthSessionProvider' => 'KapitchiIdentity\Service\AuthSessionProvider\Session',
             ),
             'invokables' => array(
@@ -181,7 +182,9 @@ class Module extends AbstractModule implements
                     return $ins;
                 },
                 'KapitchiIdentity\Form\AuthCredentialRegistrationInputFilter' => function($sm) {
-                    $ins = new Form\AuthCredentialRegistrationInputFilter();
+                    $ins = new Form\AuthCredentialRegistrationInputFilter(
+                        new Validator\AuthCredentialUsernameExists($sm->get('KapitchiIdentity\Mapper\AuthCredential'))
+                    );
                     return $ins;
                 },
                         
@@ -218,7 +221,7 @@ class Module extends AbstractModule implements
                         $sm->get('KapitchiIdentity\Entity\Registration'),
                         $sm->get('KapitchiIdentity\Entity\RegistrationHydrator')
                     );
-                    $s->setIdentityMapper($sm->get('KapitchiIdentity\Mapper\Identity'));
+                    $s->setIdentityService($sm->get('KapitchiIdentity\Service\Identity'));
                     return $s;
                 },
                 'KapitchiIdentity\Mapper\RegistrationDbAdapter' => function ($sm) {

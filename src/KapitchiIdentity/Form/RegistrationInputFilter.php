@@ -18,21 +18,21 @@ class RegistrationInputFilter extends EventManagerAwareInputFilter
             'name'       => 'id',
             'required'   => false,
         ));
-        $this->add(array(
-            'name'       => 'displayName',
-            'required'   => true,
-            'validators' => array(
-                array(
-                    'name'    => 'StringLength',
-                    'options' => array(
-                        'min' => 2,
-                    ),
-                ),
-            ),
-            'filters'   => array(
-                array('name' => 'StringTrim'),
-            ),
-        ));
+//        $this->add(array(
+//            'name'       => 'displayName',
+//            'required'   => true,
+//            'validators' => array(
+//                array(
+//                    'name'    => 'StringLength',
+//                    'options' => array(
+//                        'min' => 2,
+//                    ),
+//                ),
+//            ),
+//            'filters'   => array(
+//                array('name' => 'StringTrim'),
+//            ),
+//        ));
         
     }
 }

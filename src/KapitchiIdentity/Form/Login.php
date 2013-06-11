@@ -16,6 +16,26 @@ class Login extends EventManagerAwareForm
     {
         parent::__construct($name);
         
-        $this->setValidationGroup(array());
+        $this->add(array(
+            'name' => 'method',
+            'type' => 'Zend\Form\Element\Radio',
+            'options' => array(
+                'value_options' => array(),
+                'label' => 'Authentication method',
+            ),
+        ));
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $method = $this->data['method'];
+        if(!empty($method)) {
+            $this->setValidationGroup($method);
+        }
+        
+        return parent::isValid();
     }
 }

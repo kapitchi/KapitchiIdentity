@@ -14,7 +14,7 @@ namespace KapitchiIdentity\Form;
  */
 class AuthCredentialRegistrationInputFilter extends \Zend\InputFilter\InputFilter
 {
-    public function __construct()
+    public function __construct(\KapitchiIdentity\Validator\AuthCredentialUsernameExists $usernameExistsValidator)
     {
         $this->add(array(
             'name'       => 'username',
@@ -22,6 +22,9 @@ class AuthCredentialRegistrationInputFilter extends \Zend\InputFilter\InputFilte
             'filters'   => array(
                 array('name' => 'StringTrim'),
             ),
+            'validators' => array(
+                $usernameExistsValidator
+            )
         ));
         
         $this->add(array(

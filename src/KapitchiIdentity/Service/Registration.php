@@ -15,7 +15,7 @@ use Zend\Http\PhpEnvironment\RemoteAddress;
 class Registration extends EntityService
 {
     protected $remoteAddress;
-    protected $identityMapper;
+    protected $identityService;
     /**
      * Default data to create an identity entity with
      * @var array
@@ -39,6 +39,7 @@ class Registration extends EntityService
         
         $event->setName('register.post');
         $event->setParam('persistEvent', $persistEvent);
+        //identity is implemented using event listener - so it might be interrupted
         $this->getEventManager()->trigger($event);
         return $event;
     }
@@ -50,29 +51,29 @@ class Registration extends EntityService
         $em->attach('register.post', function($e) {
             $target = $e->getTarget();
             
-            $idMapper = $target->getIdentityMapper();
+            $idService = $target->getIdentityService();
+            
             $data = array_merge(array(
                 'created' => new \DateTime(),
             ), $target->getDefaultIdentityData());
-            $entity = $idMapper->getEntityHydrator()->hydrate($data, $idMapper->getEntityPrototype());
-            $identity = $idMapper->persist($entity);
+            $identityEvent = $idService->persist($data);
             
-            $e->setParam('identity', $entity);
-            
+            $identity = $identityEvent->getEntity();
+            $e->setParam('identity', $identity);
             $registration = $e->getParam('persistEvent')->getEntity();
-            $registration->setIdentityId($entity->getId());
+            $registration->setIdentityId($identity->getId());
             $target->getMapper()->persist($registration);
         });
     }
-    
-    public function getIdentityMapper()
+
+    public function getIdentityService()
     {
-        return $this->identityMapper;
+        return $this->identityService;
     }
 
-    public function setIdentityMapper($identityMapper)
+    public function setIdentityService($identityService)
     {
-        $this->identityMapper = $identityMapper;
+        $this->identityService = $identityService;
     }
 
     public function getRemoteAddress()
@@ -83,7 +84,7 @@ class Registration extends EntityService
         return $this->remoteAddress;
     }
 
-    public function setRemoteAddress($remoteAddress)
+    public function setRemoteAddress(RemoteAddress $remoteAddress)
     {
         $this->remoteAddress = $remoteAddress;
     }

@@ -40,37 +40,39 @@ class AuthController extends AbstractActionController {
         
         $this->getEventManager()->trigger('login.pre', $this, $params);
         
-        $data = $this->getRequest()->getPost()->toArray();
-        $form->setData($data);
-        $form->isValid();
-        
-        $res = $this->getEventManager()->trigger('login.auth', $this, $params, function($ret) {
-            return ($ret instanceof AuthAdapter || $ret instanceof Response);
-        });
-        $adapter = $res->last();
-        if($adapter instanceof Response) {
-            return $adapter;
-        }
+        if($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost()->toArray();
+            $form->setData($data);
+            if($form->isValid()) {
+                $res = $this->getEventManager()->trigger('login.auth', $this, $params, function($ret) {
+                    return ($ret instanceof AuthAdapter || $ret instanceof Response);
+                });
+                $adapter = $res->last();
+                if($adapter instanceof Response) {
+                    return $adapter;
+                }
 
-        //auth event returns AuthAdapter -- we are ready to authenticate!
-        if($adapter instanceof AdapterInterface) {
-            $authService = $this->getAuthService();
+                //auth event returns AuthAdapter -- we are ready to authenticate!
+                if($adapter instanceof AdapterInterface) {
+                    $authService = $this->getAuthService();
 
-            $result = $authService->authenticate($adapter);
+                    $result = $authService->authenticate($adapter);
 
-            //do we need to redirect again? example: http auth!
-            if($result instanceof Response) {
-                return $result;
-            }
+                    //do we need to redirect again? example: http auth!
+                    if($result instanceof Response) {
+                        return $result;
+                    }
 
-            $params['adapter'] = $adapter;
-            $params['result'] = $result;
-            $res = $this->getEventManager()->trigger('login.auth.post', $this, $params, function($ret) {
-                return $ret instanceof Response;
-            });
-            $result = $res->last();
-            if($result instanceof Response) {
-                return $result;
+                    $params['adapter'] = $adapter;
+                    $params['result'] = $result;
+                    $res = $this->getEventManager()->trigger('login.auth.post', $this, $params, function($ret) {
+                        return $ret instanceof Response;
+                    });
+                    $result = $res->last();
+                    if($result instanceof Response) {
+                        return $result;
+                    }
+                }
             }
         }
         
