@@ -31,9 +31,10 @@ class Login extends EventManagerAwareForm
      */
     public function isValid()
     {
-        $method = $this->data['method'];
-        if(!empty($method)) {
-            $this->setValidationGroup($method);
+        $this->setValidationGroup('method');
+                
+        if(!empty($this->data['method'])) {
+            $this->setValidationGroup($this->data['method']);
         }
         
         return parent::isValid();
