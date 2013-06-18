@@ -83,8 +83,8 @@ class AuthCredential implements PluginInterface
             $form = $e->getParam('form');
             $inputFilter = $form->getInputFilter();
             $cred = $inputFilter->get('auth_credential');
-            $cred->get('password')->setRequired(false);
-            $cred->get('passwordConfirm')->setRequired(false);
+            $cred->get('password')->setAllowEmpty(true);
+            $cred->get('passwordConfirm')->setAllowEmpty(true);
         });
         
         $em->getSharedManager()->attach('KapitchiIdentity\Service\Identity', 'persist', function($e) use ($sm) {

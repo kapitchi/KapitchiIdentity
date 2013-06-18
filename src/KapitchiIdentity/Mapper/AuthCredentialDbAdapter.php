@@ -28,9 +28,10 @@ class AuthCredentialDbAdapter extends EntityDbAdapterMapper implements AuthCrede
     
     protected function updateArray(array $data)
     {
-        //mz: we just want to make sure passwordHash is not set
-        //it has to be set using persistPasswordHash()
-        unset($data['passwordHash']);
+        //do not update passwordHash if empty
+        if(empty($data['passwordHash'])) {
+            unset($data['passwordHash']);
+        }
         return parent::updateArray($data);
     }
 
