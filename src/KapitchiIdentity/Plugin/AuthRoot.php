@@ -27,7 +27,7 @@ class AuthRoot implements PluginInterface
 
     public function getDescription()
     {
-        return 'TODO';
+        return 'Provides "root" authentication method - password and allowed IPs for which this method is enabled are configurable via config file.';
     }
 
     public function getName()

@@ -24,7 +24,7 @@ class AuthAccessOnly implements PluginInterface
 
     public function getDescription()
     {
-        return 'TODO';
+        return 'The application is locked for authenticated users only.';
     }
 
     public function getName()

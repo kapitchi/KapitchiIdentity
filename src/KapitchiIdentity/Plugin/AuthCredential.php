@@ -25,7 +25,7 @@ class AuthCredential implements PluginInterface
 
     public function getDescription()
     {
-        return 'TODO';
+        return 'Provides username/password authentication';
     }
 
     public function getName()
