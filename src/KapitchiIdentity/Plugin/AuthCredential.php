@@ -161,13 +161,13 @@ class AuthCredential implements PluginInterface
                         $credential->get('password')->setMessages(array('Invalid password'));
                         break;
                     case Result::FAILURE_AUTH_ALREADY:
-                        $rootForm->get('username')->setMessages(array("Identity authenticated already"));
+                        $credential->get('username')->setMessages(array("Identity authenticated already"));
                         break;
                     case Result::FAILURE_AUTH_DISABLED:
-                        $rootForm->get('username')->setMessages(array("Identity authentication disabled"));
+                        $credential->get('username')->setMessages(array("Identity authentication disabled"));
                         break;
                     default:
-                        $rootForm->get('username')->setMessages(array("Authentication failure"));
+                        $credential->get('username')->setMessages(array("Authentication failure"));
                         break;
 
                 }

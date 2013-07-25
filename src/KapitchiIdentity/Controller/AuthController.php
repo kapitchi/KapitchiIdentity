@@ -163,7 +163,7 @@ class AuthController extends AbstractActionController {
     public function getLoginViewModel()
     {
         if($this->loginViewModel === null) {
-            $this->loginViewModel = new \Zend\View\Model\ViewModel();
+            $this->loginViewModel = new \KapitchiIdentity\View\Model\AuthLogin();
         }
         return $this->loginViewModel;
     }
