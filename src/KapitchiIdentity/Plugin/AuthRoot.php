@@ -9,7 +9,7 @@
 namespace KapitchiIdentity\Plugin;
 
 use Zend\EventManager\EventInterface;
-use Zend\Authentication\Result;
+use KapitchiIdentity\Authentication\Result;
 use KapitchiApp\PluginManager\PluginInterface;
 
 /**
@@ -68,7 +68,10 @@ class AuthRoot implements PluginInterface
             
             //add auth option
             $method->setValueOptions(array_merge($method->getValueOptions(), array(
-                'root' => 'Root'
+                'root' => array(
+                    'value' => 'root',
+                    'label' => 'Root',
+                )
             )));
             
             //add form
@@ -122,8 +125,15 @@ class AuthRoot implements PluginInterface
                     case Result::FAILURE_CREDENTIAL_INVALID:
                         $rootForm->get('password')->setMessages(array('Invalid password'));
                         break;
+                    case Result::FAILURE_AUTH_ALREADY:
+                        $rootForm->get('password')->setMessages(array("Identity authenticated already"));
+                        break;
+                    case Result::FAILURE_AUTH_DISABLED:
+                        $rootForm->get('password')->setMessages(array("Identity authentication disabled"));
+                        break;
                     default:
-                        $rootForm->get('password')->setMessages(array("Login error"));
+                        $rootForm->get('password')->setMessages(array("Authentication failure"));
+                        break;
                 }
             }
         });

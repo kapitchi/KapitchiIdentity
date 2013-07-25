@@ -8,13 +8,14 @@
 
 namespace KapitchiIdentity\Service;
 
-use Zend\Authentication\Adapter\AdapterInterface,
-    Zend\EventManager\EventManagerAwareInterface,
-    Zend\EventManager\EventManagerInterface,
-    Zend\EventManager\EventManager,
-    KapitchiIdentity\Model\GenericAuthIdentity,
-    KapitchiIdentity\Model\AuthIdentityInterface,
-    KapitchiIdentity\Authentication\IdentityResolverInterface;
+use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\EventManager;
+use KapitchiIdentity\Authentication\Result;
+use KapitchiIdentity\Model\GenericAuthIdentity;
+use KapitchiIdentity\Model\AuthIdentityInterface;
+use KapitchiIdentity\Authentication\IdentityResolverInterface;
         
 class Auth extends \Zend\Authentication\AuthenticationService implements EventManagerAwareInterface {
     
@@ -46,7 +47,7 @@ class Auth extends \Zend\Authentication\AuthenticationService implements EventMa
                 $identityId = $adapter->resolveIdentityId($result->getIdentity());
                 $idEntity = $this->getIdentityMapper()->find($identityId);
                 if(!$idEntity->getAuthEnabled()) {
-                    return new \Zend\Authentication\Result(\Zend\Authentication\Result::FAILURE, $result->getIdentity(), array(
+                    return new Result(Result::FAILURE_AUTH_DISABLED, $result->getIdentity(), array(
                         'identity' => 'Identity authetication disabled'
                     ));
                 }
@@ -54,7 +55,7 @@ class Auth extends \Zend\Authentication\AuthenticationService implements EventMa
 
             $authIdentity = new GenericAuthIdentity($result->getIdentity(), $identityId);
             if($this->getContainer()->has($authIdentity)) {
-                return new \Zend\Authentication\Result(\Zend\Authentication\Result::FAILURE, $result->getIdentity(), array(
+                return new Result(Result::FAILURE_AUTH_ALREADY, $result->getIdentity(), array(
                     'identity' => 'Already logged in with this identity'
                 ));
             }

@@ -8,8 +8,8 @@
 
 namespace KapitchiIdentity\Authentication\Adapter;
 
-use Zend\Authentication\Result;
 use Zend\Authentication\Adapter\AdapterInterface;
+use KapitchiIdentity\Authentication\Result;
 use KapitchiIdentity\Authentication\IdentityResolverInterface;
 
 class Credential implements AdapterInterface, IdentityResolverInterface
@@ -35,7 +35,7 @@ class Credential implements AdapterInterface, IdentityResolverInterface
         }
         
         if(!$user->getEnabled()) {
-            return new Result(Result::FAILURE_UNCATEGORIZED, $this->getIdentity(), array(
+            return new Result(Result::FAILURE_AUTH_DISABLED, $this->getIdentity(), array(
                 'username' => 'Credential authetication is not enabled'
             ));
         }

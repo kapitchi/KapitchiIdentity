@@ -18,6 +18,8 @@ class AuthController extends AbstractActionController {
     protected $loginViewModel;
     
     public function loginAction() {
+        $viewModel = $this->getLoginViewModel();
+        
         $form = $this->getLoginForm();
         $form->setAttribute('action', $this->plugin('url')->fromRoute('identity/auth/login'));
         
@@ -76,10 +78,10 @@ class AuthController extends AbstractActionController {
             }
         }
         
-        $viewModel = $this->getLoginViewModel();
-        $viewModel->loginForm = $form;
+        $viewModel->form = $form;
         
         $params['viewModel'] = $viewModel;
+        $params['form'] = $form;
         
         $this->getEventManager()->trigger('login.post', $this, $params);
         
@@ -116,6 +118,18 @@ class AuthController extends AbstractActionController {
         $events->attach('login.auth.post', function($e) use ($instance) {
             if($e->getParam('result')->isValid()) {
                 return $instance->redirect()->toRoute('home');
+            }
+        });
+        
+        $events->attach('login.post', function($e) {
+            $form = $e->getParam('form');
+            $element = $form->get('method');
+            if(!$element->getValue()) {
+                $options = $element->getValueOptions();
+                $first = current($options);
+                if($first) {
+                    $element->setValue($first['value']);
+                }
             }
         });
     }
