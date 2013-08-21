@@ -31,11 +31,21 @@ class Root implements AdapterInterface, IdentityResolverInterface
         $this->setPassword($options['password']);
     }
     
-    public function authenticate()
+    public function isAllowed()
+    {
+        return $this->isAllowedIp();
+    }
+    
+    public function isAllowedIp()
     {
         $address = new \Zend\Http\PhpEnvironment\RemoteAddress();
         $ip = $address->getIpAddress();
-        if(!in_array($ip, $this->getAllowedIps())) {
+        return in_array($ip, $this->getAllowedIps());
+    }
+    
+    public function authenticate()
+    {
+        if(!$this->isAllowedIp()) {
             return new Result(Result::FAILURE, $this->getIdentity(), array(
                 'allowedIps' => 'Not allowed IP'
             ));

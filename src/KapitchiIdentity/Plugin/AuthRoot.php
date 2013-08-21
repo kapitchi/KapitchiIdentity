@@ -53,7 +53,9 @@ class AuthRoot implements PluginInterface
         $adapter = new \KapitchiIdentity\Authentication\Adapter\Root($moduleConfig);
         $this->setAdapter($adapter);
 
-        $this->bootstrapAuthentication($e);
+        if($adapter->isAllowed()) {
+            $this->bootstrapAuthentication($e);
+        }
     }
     
     protected function bootstrapAuthentication($e)
