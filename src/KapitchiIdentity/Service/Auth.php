@@ -18,7 +18,7 @@ class Auth extends AuthenticationService implements EventManagerAwareInterface {
     protected $eventManager;
     protected $identityMapper;
 
-    public function authenticate(AdapterInterface $adapter) {
+    public function authenticate(AdapterInterface $adapter = null) {
         $result = $adapter->authenticate();
 
         if($result->isValid()) {
