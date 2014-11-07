@@ -17,7 +17,7 @@ class IdentityRestfulController extends EntityRestfulController
         $query = $this->getRequest()->getQuery();
         $value = $query->get('value');
         if($value) {
-            $entity = $service->find($value);
+            $entity = $service->get($value);
             return new JsonModel(array(
                 'label' => $entity->getDisplayName(),
                 'value' => $entity->getDisplayName(),
